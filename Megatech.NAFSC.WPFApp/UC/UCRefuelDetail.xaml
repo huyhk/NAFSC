@@ -1,0 +1,112 @@
+﻿<UserControl x:Class="Megatech.NAFSC.WPFApp.UC.UCRefuelDetail"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp.UC"
+             xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
+             xmlns:cv="clr-namespace:Megatech.NAFSC.WPFApp"   
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <cv:DecimalPercentageConverter x:Key="DecimalPercentageConverter"/>
+        <Style TargetType="TextBox">
+            <EventSetter Event="GotKeyboardFocus" Handler="TextBox_GotKeyboardFocus"></EventSetter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Padding" Value="2,3"></Setter>
+            <Setter Property="IsReadOnly" Value="True"></Setter>
+            <Setter Property="Background" Value="#fff"></Setter>
+        </Style>
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}"  x:Key="Editable">
+            <Setter Property="IsReadOnly"  Value="False"></Setter>
+            <Setter Property="Background" Value="#ffe"></Setter>
+            <Setter Property="FontWeight"    Value="Bold"></Setter>
+        </Style>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <data:RefuelViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Content="{StaticResource airline}" Grid.Column="0" Grid.Row="0"></Label>
+        <ComboBox SelectedValue="{Binding AirlineId}" Name="cboAirline" SelectedValuePath="Id" DisplayMemberPath="Name"   Grid.Column="1" Grid.Row="0"></ComboBox>
+        <Label Content="{StaticResource parking_lot}" Grid.Column="2" Grid.Row="0"></Label>
+        <TextBox Grid.Column="3" Grid.Row="0" IsReadOnly="True">
+            <TextBox.Text>
+                <MultiBinding StringFormat="{}{0}/{1}">
+                    <Binding Path="ParkingLot" Mode="OneWay" />
+                    <Binding Path="ValvePit" Mode="OneWay" />
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
+        <Label Content="{StaticResource flight_code}" Grid.Column="0" Grid.Row="1"></Label>
+        <TextBox Text="{Binding FlightCode}" Grid.Column="1" Grid.Row="1" IsReadOnly="True"></TextBox>
+        <Label Content="{StaticResource route_name}" Grid.Column="2" Grid.Row="1"></Label>
+        <TextBox Text="{Binding RouteName}" Grid.Column="3" Grid.Row="1" IsReadOnly="True"></TextBox>
+        <Label Content="Loại tàu bay" Grid.Column="0" Grid.Row="2"></Label>
+        <TextBox Text="{Binding AircraftType}" Grid.Column="1" Grid.Row="2" IsReadOnly="True"></TextBox>
+        <Label Content="Số hiệu tàu bay" Grid.Column="2" Grid.Row="2"></Label>
+        <TextBox Text="{Binding AircraftCode}" Grid.Column="3" Grid.Row="2" ></TextBox>
+        <Label Content="Giờ cất cánh" Grid.Column="0" Grid.Row="3"></Label>
+        <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"></TextBox>
+        <Label Content="Giờ hạ cánh" Grid.Column="2" Grid.Row="3"></Label>
+        <TextBox Text="{Binding ArrivalTime, StringFormat={}{0:HH:mm}}" Grid.Column="3" Grid.Row="3" IsReadOnly="True"></TextBox>
+        <Label Content="Giờ tra nạp" Grid.Column="0" Grid.Row="4"></Label>
+        <TextBox Text="{Binding RefuelTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="4" IsReadOnly="True"></TextBox>
+        <Label Content="Sản lượng dự kiến" Grid.Column="0" Grid.Row="5"></Label>
+        <TextBox Text="{Binding EstimateAmount}" Grid.Column="1" Grid.Row="5" IsReadOnly="True"></TextBox>
+        <Label Content="Sản lượng thực tế" Grid.Column="2" Grid.Row="5"></Label>
+        <TextBox Text="{Binding RealAmount, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
+        <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="6"></Label>
+        <TextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}" Grid.Column="1" Grid.Row="6" InputScope="CurrencyAmount"></TextBox>
+        <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="6"></Label>
+        <TextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}"  Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="6" InputScope="CurrencyAmount"></TextBox>
+        <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="7"></Label>
+        <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="7"></TextBox>
+        <Label Content="Thuế suất VAT%" Grid.Column="2" Grid.Row="7"></Label>
+        <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" Grid.Column="3" Grid.Row="7"></TextBox>
+        <Label Content="Tách hóa đơn"  Grid.Column="0" Grid.Row="8"></Label>
+        <CheckBox Grid.Column="1" Grid.Row="8" VerticalAlignment="Center"></CheckBox>
+        <Label Content="Số lít tách hóa đơn"  Grid.Column="2" Grid.Row="8"></Label>
+        <TextBox Text="{Binding Split, Mode=TwoWay,  StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="8"></TextBox>
+        <CheckBox Grid.Column="1" Grid.Row="8" VerticalAlignment="Center"></CheckBox>
+        <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="4" >
+            <ListView.DataContext>
+                <data:RefuelViewModel/>
+            </ListView.DataContext>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View >
+                <GridView >
+
+                    <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="100"   />
+                    <GridViewColumn Header="Đồng hồ trước"  Width="120" DisplayMemberBinding="{Binding StartNumber, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
+                    <GridViewColumn Header="Đồng hồ sau" Width="120" DisplayMemberBinding="{Binding EndNumber, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
+                    <GridViewColumn Header="Lít thực tế" Width="200" DisplayMemberBinding="{Binding Volume, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

@@ -1,0 +1,77 @@
+﻿using FMS.Data;
+using Megatech.NAFSC.WPFApp.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace Megatech.NAFSC.WPFApp
+{
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            CheckInternet();
+        }
+
+        private void CheckInternet()
+        {
+            int retries = 0;
+            while (!InternetHelper.IsConnectedToInternet() && retries < 3)
+            {
+                
+                RunCommand("rasdial Advantech Advantech forid");
+                
+                Thread.Sleep(1000 * 1);
+                retries++;
+            }
+
+            if (!InternetHelper.IsConnectedToInternet())
+                MessageBox.Show(FindResource("no_internet_msg").ToString(), FindResource("no_internet_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        private void RunCommand(string cmd)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C " + cmd;
+            process.StartInfo = startInfo;
+            process.Start();
+        }
+        private void InitDatabase()
+        {
+            using (DataContext db = new DataContext())
+            {
+                
+            }
+            
+        }
+
+        private void TextBox_GotKeyboardFocus(Object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
+        }
+    }
+
+    
+}

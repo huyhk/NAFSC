@@ -1,0 +1,74 @@
+﻿<Application x:Class="Megatech.NAFSC.WPFApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+              xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <clr:String x:Key="app_name">FMS Delivery</clr:String>
+        <clr:String x:Key="login_error_msg">Không thể đăng nhập, vui lòng kiểm tra thông tin</clr:String>
+        <clr:String x:Key="login_error_title">Lỗi đăng nhập</clr:String>
+        <clr:String x:Key="flight_code">Mã chuyến bay</clr:String>
+        <clr:String x:Key="airline">Hãng bay</clr:String>
+        <clr:String x:Key="aircraft_code">Số hiệu tàu bay</clr:String>
+        <clr:String x:Key="parking_lot">Bãi đỗ / Hố valve</clr:String>
+        <clr:String x:Key="route_name">Đường bay</clr:String>
+        <clr:String x:Key="arrival_time">Giờ hạ cánh</clr:String>
+        <clr:String x:Key="departure_time">Giờ cất cánh</clr:String>
+        <clr:String x:Key="refuel_time">Giờ tra nạp</clr:String>
+        <clr:String x:Key="estimate_amount">Sản lượng dự kiến</clr:String>
+        <clr:String x:Key="real_amount">Sản lượng thực tế</clr:String>
+        <clr:String x:Key="tax_rate">VAT %</clr:String>
+        <clr:String x:Key="real_temp">Nhiệt độ thực tế</clr:String>
+        <clr:String x:Key="density">Tỷ trọng</clr:String>
+        <clr:String x:Key="qc_no">Số phiếu hóa nghiệm</clr:String>
+        <clr:String x:Key="btn_back">Trở lại</clr:String>
+        <clr:String x:Key="btn_save">Lưu</clr:String>
+        <clr:String x:Key="com_port">Địa chỉ đồng hồ</clr:String>
+        <clr:String x:Key="truck_no">Số xe</clr:String>
+        <clr:String x:Key="volume">Thể tích</clr:String>
+        <clr:String x:Key="start_meter">Thể tích</clr:String>
+        <clr:String x:Key="end_meter">Thể tích</clr:String>
+        <clr:String x:Key="temperature">Nhiệt độ</clr:String>
+        <clr:String x:Key="flow_rate">Lưu lượng</clr:String>
+        <clr:String x:Key="start">Bắt đầu</clr:String>
+        <clr:String x:Key="starting">Đang bắt đầu</clr:String>
+        <clr:String x:Key="update">Cập nhật đồng hồ</clr:String>
+
+        <clr:String x:Key="end">Kết thúc</clr:String>
+        <clr:String x:Key="stopping">Đang kết thúc</clr:String>
+        <clr:String x:Key="error_start_meter">Không thể kết nối đồng hồ. Vui lòng kiểm tra lại thiết bị</clr:String>
+        <clr:String x:Key="error_start_meter_header">Lỗi kết nối</clr:String>
+        <clr:String x:Key="setting_title">Thiết lập cấu hình</clr:String>
+        <clr:String x:Key="logout">Thoát</clr:String>
+        <clr:String x:Key="login">Đăng nhập</clr:String>
+        <clr:String x:Key="exit_confirmation_msg">Bạn thực sự muốn thoát khỏi chương trình?</clr:String>
+        <clr:String x:Key="exit_confirmation_title">Thoát</clr:String>
+        <clr:String x:Key="data_change_confirm">Dữ liệu đã có thay đổi, bạn có muốn lưu trước khi in?</clr:String>
+        <clr:String x:Key="data_change_title">Dữ liệu thay đổi</clr:String>
+        <clr:String x:Key="refuel">Tra nạp</clr:String>
+        <clr:String x:Key="device_error_msg">Không kết nối được thiết bị đo, vui lòng kiểm tra lại</clr:String>
+        <clr:String x:Key="device_error_title">Lỗi kết nối thiết bị</clr:String>
+        <clr:String x:Key="no_internet_msg">Chưa có kết nối Internet, vui lòng kiểm tra lại </clr:String>
+        <clr:String x:Key="no_internet_title">Lỗi kết nối</clr:String>
+        <clr:String x:Key="driver">Lái xe</clr:String>
+        <clr:String x:Key="operator">Nhân viên tra nạp</clr:String>
+        <clr:String x:Key="select_user">Chọn nhân viên</clr:String>
+        <clr:String x:Key="btn_ok">Đồng ý</clr:String>
+        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Height" Value="40"/>
+        </Style>
+        <Style TargetType="ToolBarPanel">
+            <Setter Property="Height" Value="48"/>
+        </Style>
+        
+            <Style TargetType="TextBox">
+                <EventSetter Event="GotKeyboardFocus" Handler="TextBox_GotKeyboardFocus"/>
+            </Style>
+        
+    </Application.Resources>
+</Application>

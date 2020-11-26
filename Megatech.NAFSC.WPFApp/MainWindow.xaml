@@ -1,0 +1,81 @@
+﻿<Window x:Class="Megatech.NAFSC.WPFApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:uc="clr-namespace:Megatech.NAFSC.WPFApp.UC"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:cvt="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
+        mc:Ignorable="d"
+        Title="{StaticResource app_name}" Height="600" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized"  >
+    <Window.Resources>
+
+        <sys:String x:Key="refuel_list">Danh sách tra nạp</sys:String>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+           TargetType="TextBlock" x:Key="TitleText">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+           TargetType="TextBlock" x:Key="GroupHeader">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+        <cvt:VisibilityConverter x:Key="VisibilityConverter"></cvt:VisibilityConverter>
+    </Window.Resources>
+    <Window.DataContext>
+        <data:RefuelViewModel></data:RefuelViewModel>
+    </Window.DataContext>
+    <DockPanel>
+        <ToolBarPanel Height="48" DockPanel.Dock="Top">
+
+
+            <ToolBar >
+                <ToolBar.Resources>
+                    <Style TargetType="{x:Type ToolBarPanel}">
+                        <Setter Property="Orientation" Value="Vertical"/>
+                    </Style>
+                </ToolBar.Resources>
+
+
+                <DockPanel >
+
+                    <Button Content="Cấu hình" Click="Button_Click" Padding="5" ></Button>
+                    <Button Content="Cập nhật danh sách" Click="btnUpdate_Click" Name="btnUpdate" Padding="5" ></Button>
+
+                    <Button  Name="btnLogout" Click="btnLogout_Click" HorizontalAlignment="Right"  DockPanel.Dock="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/exit.png" Height="32"></Image>
+                            <Label Content="{StaticResource logout}" VerticalAlignment="Center"></Label>
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+            </ToolBar>
+
+
+        </ToolBarPanel>
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBox x:Name="txtFilter" Height="23" TextWrapping="Wrap" Text=""  Width="180" />
+                <Button Click="btnFilter_Click" Name="btnFilter" Padding="10,0"  Content="Filter" ></Button>
+            </StackPanel>
+            <uc:UCRefuelList x:Name="ucActiveRefuelList" Grid.Row="1"></uc:UCRefuelList>
+            
+        </Grid>
+    </DockPanel>
+</Window>

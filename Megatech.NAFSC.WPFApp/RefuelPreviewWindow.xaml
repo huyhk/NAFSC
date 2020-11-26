@@ -1,0 +1,34 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:UC="clr-namespace:Megatech.NAFSC.WPFApp.UC" x:Class="Megatech.NAFSC.WPFApp.RefuelPreviewWindow"
+        mc:Ignorable="d"
+        Title="Thông tin chuyến tra nạp" Height="500" Width="600" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <DockPanel>
+        <ToolBarPanel DockPanel.Dock="Top">
+            
+               
+            <ToolBar>
+                <ToolBar.Resources>
+                    <Style TargetType="{x:Type ToolBarPanel}">
+                        <Setter Property="Orientation" Value="Vertical"/>
+                    </Style>
+                </ToolBar.Resources>
+
+            
+                <DockPanel Height="48">
+                    <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
+                    <Button Padding="20,0" Content="In Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                </DockPanel>
+            </ToolBar>
+        </ToolBarPanel>
+    <Grid DockPanel.Dock="Top" Margin="10">
+
+        <UC:UCRefuelDetail x:Name="ucDetail"/>
+
+        </Grid>
+    </DockPanel>
+</Window>
