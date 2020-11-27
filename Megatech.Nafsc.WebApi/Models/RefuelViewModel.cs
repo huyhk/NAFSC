@@ -56,6 +56,7 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Weight { get; set; }
 
         public decimal Volume { get; set; }
+        public decimal Extract { get; set; }
         public int AirlineId { get; set; }
         public AirlineViewModel Airline { get; set; }
 
@@ -67,5 +68,11 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Gallon { get;  set; }
 
         public REFUEL_ITEM_TYPE RefuelItemType { get; set; }
+
+        public ITEM_PRINT_STATUS PrintStatus { get; set; }
+
+        public int? DriverId { get; set; }
+
+        public int? OperatorId { get; set; }
     }
 }

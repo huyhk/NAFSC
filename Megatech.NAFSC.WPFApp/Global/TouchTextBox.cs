@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Osklib;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,9 +15,12 @@ namespace Megatech.NAFSC.WPFApp.Controls
         public TouchEnabledTextBox()
         {
             this.GotTouchCapture += TouchEnabledTextBox_GotTouchCapture;
-            this.LostFocus += TouchEnabledTextBox_LostFocus;
             this.GotFocus += TouchEnabledTextBox_GotFocus;
+            this.GotKeyboardFocus += TouchEnabledTextBox_GotKeyboardFocus;
+            this.GotMouseCapture += TouchEnabledTextBox_GotMouseCapture;
         }
+
+       
 
         private void TouchEnabledTextBox_GotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -35,16 +39,10 @@ namespace Megatech.NAFSC.WPFApp.Controls
 
         private void ShowKeyboard()
         {
-            string touchKeyboardPath =
-              @"C:\Program Files\Common Files\Microsoft Shared\Ink\TabTip.exe";
-            _touchKeyboardProcess = Process.Start(touchKeyboardPath);
+            OnScreenKeyboard.Show();
         }
 
-        //added field
-        private Process _touchKeyboardProcess = null;
-
-        //replace Process.Start line from the previous listing with
-       
+        
         private void TouchEnabledTextBox_GotTouchCapture(
            object sender,
            System.Windows.Input.TouchEventArgs e)
@@ -53,14 +51,6 @@ namespace Megatech.NAFSC.WPFApp.Controls
         }
        
 
-        private void TouchEnabledTextBox_LostFocus(object sender, RoutedEventArgs eventArgs)
-        {
-            if (_touchKeyboardProcess != null && !_touchKeyboardProcess.HasExited)
-            {
-                _touchKeyboardProcess.Kill();
-                //nullify the instance pointing to the now-invalid process
-                _touchKeyboardProcess = null;
-            }
-        }
+       
     }
 }

@@ -15,5 +15,7 @@ namespace FMS.Data
         public int? ProductId { get; set; }
 
         public int? AirtportId { get; set; }
+
+        public string FileUrl { get; set; }
     }
 }

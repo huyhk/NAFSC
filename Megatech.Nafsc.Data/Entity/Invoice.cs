@@ -7,6 +7,9 @@ namespace FMS.Data
     public class Invoice: BaseEntity
     {
         public int FlightId { get; set; }
+        public int? PrimaryInvoiceId { get; set; }
+        public Invoice PrimaryInvoice { get; set; }
+
 
         public string InvoiceNumber { get; set; }
 

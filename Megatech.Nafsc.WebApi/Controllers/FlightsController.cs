@@ -24,11 +24,11 @@ namespace Megatech.FMS.WebAPI.Controllers
         }
 
         // GET: api/Flights/5
-        [ResponseType(typeof(FlightViewModel))]
+        [ResponseType(typeof(InvoiceViewModel))]
         public IHttpActionResult GetFlight(int id)
         {
             var item = db.Flights.Include(f=>f.Airline).Where(f => f.Id == id)
-                .Select(f => new FlightViewModel
+                .Select(f => new InvoiceViewModel
                 {
                     Id = f.Id,
                     AircraftCode = f.AircraftCode,

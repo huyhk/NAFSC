@@ -22,12 +22,18 @@ namespace Megatech.NAFSC.WPFApp
     /// </summary>
     public partial class SelectUserWindow : Window
     {
+        public SelectUserWindow(bool exit) : this()
+        {
+            this.exit = exit;
+        }
+
         public SelectUserWindow()
         {
             InitializeComponent();
             LoadData();
         }
         private DataRepository _db = DataRepository.GetInstance();
+        private bool exit = false;
         private void LoadData()
         {
             var lstUser = _db.GetUsers();
@@ -51,9 +57,6 @@ namespace Megatech.NAFSC.WPFApp
             this.Close();
         }
 
-        private void cboDriver_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+        
     }
 }

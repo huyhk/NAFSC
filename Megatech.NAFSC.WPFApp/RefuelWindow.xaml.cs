@@ -104,12 +104,18 @@ namespace Megatech.NAFSC.WPFApp
                 btn.Content = FindResource("end");
                     
                 ((RefuelViewModel)this.DataContext).StartTime = DateTime.Now;
-                
+
+                btnBack.IsEnabled = false;
+                allowClose = false;
             }
             else
             {
-                btn.Content = FindResource("stopping");
-                
+                if (erm.CurrentData.Rate > 0)
+                {
+                    
+                    return;
+                }
+                btn.Content = FindResource("stopping");                
                 erm.End();
                 tmr.Stop();
                 started = false;
@@ -118,7 +124,7 @@ namespace Megatech.NAFSC.WPFApp
                 StopRefuel();
             }
         }
-
+        private bool allowClose = true;
         private void StopRefuel()
         {
             
@@ -131,12 +137,13 @@ namespace Megatech.NAFSC.WPFApp
             model.Status = REFUEL_ITEM_STATUS.DONE;
             model.RefuelTime = model.EndTime;
             repo.PostRefuel(model);
-            this.Close();
+            allowClose = true;
+            Close();    
             RefuelPreviewWindow preview = new RefuelPreviewWindow(model);
             preview.ShowDialog();
             
         }
-
+        
         private void UpdateMeter()
         {
             tmr.Stop();
@@ -162,18 +169,29 @@ namespace Megatech.NAFSC.WPFApp
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
-
             UpdateMeter();
-
         }
         protected override void OnClosing(CancelEventArgs e)
         {
-            base.OnClosing(e);
-            tmr.Stop();
-            
-            if (erm != null)
-                erm.Dispose();
+            if (!allowClose)
+            {
+                MessageBox.Show(FindResource("not_allow_closing").ToString(), FindResource("not_allow_closing_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
+                e.Cancel = true;
+            }
+            else
+            {
+                base.OnClosing(e);
+                tmr.Stop();
+
+                if (erm != null)
+                    erm.Dispose();
+            }
         }
 
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
+        }
     }
 }

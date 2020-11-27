@@ -51,5 +51,6 @@ namespace Megatech.NAFSC.WPFApp.UC
             TextBox tb = (TextBox)sender;
             tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
         }
+        
     }
 }

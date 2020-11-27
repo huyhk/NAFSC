@@ -196,9 +196,9 @@
             </TextBox>
             <TextBox Text="{Binding EstimateAmount}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"/>
             <TextBox Text="{Binding RealAmount, Mode=TwoWay}" Grid.Column="3" Grid.Row="3"/>
-            <TextBox Text="{Binding DapertureTime}" Grid.Column="3" Grid.Row="2" IsReadOnly="True"/>
-            <ctl:TouchEnabledTextBox Text="{Binding ManualTemperature}" Grid.Column="1" Grid.Row="4"/>
-            <TextBox Text="{Binding Density, Mode=TwoWay, StringFormat={}{0:#,0.00}}" Grid.Column="3" Grid.Row="4"/>
+            <TextBox Text="{Binding DapertureTime}" Grid.Column="3" Grid.Row="2" IsReadOnly="True" />
+            <TextBox Text="{Binding ManualTemperature}" Grid.Column="1" Grid.Row="4" GotFocus="TextBox_GotFocus"/>
+            <TextBox Text="{Binding Density, Mode=TwoWay, StringFormat={}{0:#,0.00}}" Grid.Column="3" Grid.Row="4" GotFocus="TextBox_GotFocus"/>
             <TextBox Text="{Binding QualityNo, Mode=TwoWay}" Grid.Column="1" Grid.Row="5"/>
             <TextBox Text="{Binding TaxRate, Mode=TwoWay, StringFormat={}{0:P}}" Grid.Column="3" Grid.Row="5"/>
         </Grid>

@@ -30,7 +30,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock Text="{StaticResource driver}" Grid.Column="0" Grid.Row="0"></TextBlock>
-        <ComboBox SelectionChanged="cboDriver_SelectionChanged" 
+        <ComboBox 
                   SelectedValue="{Binding DriverId,  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                   Name="cboDriver" Grid.Row="0" Grid.Column="1"             
                   SelectedValuePath="Id" DisplayMemberPath="Name"
@@ -45,7 +45,7 @@
             
         </ComboBox>
         <TextBlock Text="{StaticResource operator}" Grid.Column="0" Grid.Row="1"></TextBlock>
-        <ComboBox SelectionChanged="cboDriver_SelectionChanged" 
+        <ComboBox 
                   SelectedValue="{Binding OperatorId,  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}" 
                   Name="cboOperator" Grid.Row="1" Grid.Column="1" 
                   HorizontalAlignment="Stretch" 

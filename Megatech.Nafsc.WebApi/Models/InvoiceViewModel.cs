@@ -5,9 +5,13 @@ using System.Web;
 
 namespace Megatech.FMS.WebAPI.Models
 {
-    public class FlightViewModel
+    public class InvoiceViewModel
     {
         public int Id { get; set; }
+
+        public string InvoiceNumber { get; set; }
+
+        public int? PrimaryInvoiceId { get; set; }
 
         public string FlightCode { get; set; }
 

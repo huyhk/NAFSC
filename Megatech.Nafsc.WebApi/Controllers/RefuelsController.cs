@@ -39,10 +39,7 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             var airportId = user != null ? user.AirportId : 0;
 
-            //var airport = db.Airports.FirstOrDefault(a => a.Id == user.AirportId);
-
-            //db.SetFilterGlobalParameterValue("Branch", airport.Branch);
-            //db.EnableFilter("Branch");
+           
 
             var now = DateTime.Now.TimeOfDay;// DbFunctions.CreateTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
@@ -69,8 +66,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 start = DateTime.MinValue;
                 end = DateTime.MaxValue;
             }
-
-            var qcNo = db.QCNoHistory.DefaultIfEmpty(new QCNoHistory { QCNo=null }).FirstOrDefault(q => q.StartDate <= DateTime.Now).QCNo;
+            //Get default QCNo
+            var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
 
             db.Configuration.ProxyCreationEnabled = false;
             var query = db.RefuelItems.Include(r => r.Flight.Airline).Include(r => r.Truck);
@@ -220,7 +217,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
             var today = DateTime.Today;
 
-            var qcNo = db.QCNoHistory.DefaultIfEmpty(new QCNoHistory { QCNo = null }).FirstOrDefault(q => q.StartDate <= DateTime.Now).QCNo;
+            var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
             //select general price
             var gprice = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
             if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" } };
@@ -379,7 +376,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
 
             var model = db.RefuelItems.Include(r => r.Flight).FirstOrDefault(r => r.Id == refuel.Id);
-            var qcNo = db.QCNoHistory.DefaultIfEmpty(new QCNoHistory { QCNo = null }).FirstOrDefault(q => q.StartDate <= DateTime.Now).QCNo;
+            var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
             if (model == null)
             {
                 model = new RefuelItem
@@ -426,9 +423,14 @@ namespace Megatech.FMS.WebAPI.Controllers
                 model.DeviceStartTime = refuel.DeviceStartTime;
                 model.DeviceEndTime = refuel.DeviceEndTime;
                 model.Gallon = refuel.Gallon;
+                model.Weight = refuel.Weight;
+                model.Volume = refuel.Volume;
+                model.Extract = refuel.Extract;
                 model.DateUpdated = DateTime.Now;
                 model.UserUpdatedId = userId;
                 model.RefuelItemType = refuel.RefuelItemType;
+                model.OperatorId = refuel.OperatorId;
+                model.DriverId = refuel.DriverId;
 
             }
             db.SaveChanges();

@@ -9,8 +9,7 @@
         Title="Thông tin chuyến tra nạp" Height="500" Width="600" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
         <ToolBarPanel DockPanel.Dock="Top">
-            
-               
+                           
             <ToolBar>
                 <ToolBar.Resources>
                     <Style TargetType="{x:Type ToolBarPanel}">
@@ -21,7 +20,10 @@
             
                 <DockPanel Height="48">
                     <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
-                    <Button Padding="20,0" Content="In Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button Padding="20,0" Content="Tạo Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                        <Button Padding="20,0" Content="Hủy Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                    </StackPanel> 
                 </DockPanel>
             </ToolBar>
         </ToolBarPanel>
