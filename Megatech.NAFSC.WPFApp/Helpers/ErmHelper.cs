@@ -478,23 +478,35 @@ namespace Megatech.NAFSC.WPFApp.Helpers
     public class EMRData : INotifyPropertyChanged
     {
         private double _rate;
+        private double _totalizer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Status { get; set; }
         public double StartMeter
         {
-            get { return Totalizer - Volume; }
+            get;
+            set;
         }
         public double EndMeter
         {
-            get
-            {
-                return Totalizer;
-            }
+            get;
+            set;
         }
         public double Volume { get; set; }
-        public double Totalizer { get; set; }
+        public double Totalizer {
+            get
+            {
+                return _totalizer;
+            }
+            set {
+                if (_totalizer == 0)
+                    StartMeter = value;
+                EndMeter = value;
+                _totalizer = value;
+
+            }
+        }
         public double Rate
         {
             get

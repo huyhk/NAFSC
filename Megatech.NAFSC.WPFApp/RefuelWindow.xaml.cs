@@ -41,7 +41,7 @@ namespace Megatech.NAFSC.WPFApp
 
         public RefuelWindow(RefuelViewModel item):this()
         {
-            this.item = repo.GetRefuel(item.Id);
+            this.item = _db.GetRefuel(item.Id);
             if (this.item == null)
                 this.item = item;
            
@@ -52,11 +52,12 @@ namespace Megatech.NAFSC.WPFApp
 
       
 
-        private DataRepository repo = DataRepository.GetInstance();
+        private DataRepository _db = DataRepository.GetInstance();
         private RefuelViewModel item;
 
         private void LoadData()
         {
+
             erm = new ErmHelper(AppSetting.CurrentSetting.ComPort);
             erm.StatusChanged += Erm_StatusChanged;
             erm.Open();
@@ -69,7 +70,12 @@ namespace Megatech.NAFSC.WPFApp
             ucMeter.SetDataSource(erm.CurrentData);
             this.DataContext = item;
 
-            this.cboAirline.ItemsSource = repo.GetAirlines();
+            this.cboAirline.ItemsSource = _db.GetAirlines();
+            var lstUser = _db.GetUsers();
+            cboDriver.ItemsSource = cboOperator.ItemsSource = lstUser;
+
+            cboDriver.SelectedValue = item.DriverId;
+            cboOperator.SelectedValue = item.OperatorId;
 
         }
 
@@ -110,9 +116,9 @@ namespace Megatech.NAFSC.WPFApp
             }
             else
             {
-                if (erm.CurrentData.Rate > 0)
+                if (erm.CurrentData.Rate > 0.001)
                 {
-                    
+                    MessageBox.Show(FindResource("processing_alert").ToString(), FindResource("processing_alert_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
                 btn.Content = FindResource("stopping");                
@@ -126,8 +132,7 @@ namespace Megatech.NAFSC.WPFApp
         }
         private bool allowClose = true;
         private void StopRefuel()
-        {
-            
+        {            
             ermData = erm.CurrentData;
             RefuelViewModel model = (RefuelViewModel )this.DataContext;
             model.RealAmount = (decimal)ermData.Volume;
@@ -136,7 +141,7 @@ namespace Megatech.NAFSC.WPFApp
             model.ManualTemperature = (decimal)ermData.Temperature;
             model.Status = REFUEL_ITEM_STATUS.DONE;
             model.RefuelTime = model.EndTime;
-            repo.PostRefuel(model);
+            _db.PostRefuel(model);
             allowClose = true;
             Close();    
             RefuelPreviewWindow preview = new RefuelPreviewWindow(model);

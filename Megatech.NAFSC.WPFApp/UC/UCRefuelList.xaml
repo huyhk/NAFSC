@@ -32,9 +32,10 @@
         </Style>
         <cvt:VisibilityConverter x:Key="VisibilityConverter"></cvt:VisibilityConverter>
         <cvt:StatusConverter x:Key="StatusConverter"></cvt:StatusConverter>
+        <data:RefuelViewModel x:Key="DesignViewModel"/>
     </UserControl.Resources>
 
-    <ListView Name="lvRefuelList" Width="Auto" Height="Auto" Grid.Row="1" >
+    <ListView Name="lvRefuelList" Width="Auto" Height="Auto" Grid.Row="1" d:DataContext="{Binding Source={StaticResource DesignViewModel}}" >
 
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
@@ -72,9 +73,9 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding DataContext.FlightCode, RelativeSource={RelativeSource FindAncestor, AncestorType=Expander}}" Grid.Column="0"></TextBlock>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding DataContext.RouteName, RelativeSource={RelativeSource FindAncestor, AncestorType=Expander}}" Grid.Column="1"></TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding AircraftType}" Grid.Column="2"></TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding AircraftCode}" Grid.Column="3"></TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding ParkingLot}" Grid.Column="4"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding DataContext.AircraftType, RelativeSource={RelativeSource FindAncestor, AncestorType=Expander}}" Grid.Column="2"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding DataContext.AircraftCode, RelativeSource={RelativeSource FindAncestor, AncestorType=Expander}}" Grid.Column="3"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding DataContext.ParkingLot, RelativeSource={RelativeSource FindAncestor, AncestorType=Expander}}" Grid.Column="4"></TextBlock>
                             </Grid>
                         </DataTemplate>
                     </Expander.HeaderTemplate>

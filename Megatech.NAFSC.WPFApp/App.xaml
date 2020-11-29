@@ -57,6 +57,9 @@
         <clr:String x:Key="btn_ok">Đồng ý</clr:String>
         <clr:String x:Key="not_allow_closing">Không thể đóng cửa sổ khi đang tra nạp</clr:String>
         <clr:String x:Key="not_allow_closing_title">Đang tra nạp</clr:String>
+
+        <clr:String x:Key="processing_alert">Đang tra nạp không thể kết thúc</clr:String>
+        <clr:String x:Key="processing_alert_title">Đang tra nạp</clr:String>
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Padding" Value="10,0"/>

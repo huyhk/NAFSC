@@ -111,6 +111,8 @@ namespace FMS.Data
         }
         [NotMapped]
         public bool ImportError { get; set; }
+
+        public OilCompany OilCompany { get; set; }
     }
     public enum FlightStatus
     {

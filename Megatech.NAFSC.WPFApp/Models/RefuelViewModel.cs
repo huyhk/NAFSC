@@ -30,9 +30,9 @@ namespace Megatech.FMS.WebAPI.Models
         public int TruckId { get; set; }
         public decimal RealAmount { get; set; }
 
-        public int DriverId { get; set; }
+        public int? DriverId { get; set; }
 
-        public int OperatorId { get; set; }
+        public int? OperatorId { get; set; }
 
         public decimal Temperature { get; set; }
 

@@ -96,5 +96,12 @@ namespace Megatech.NAFSC.WPFApp
             ((Button)sender).Visibility = Visibility.Collapsed;
             btnSave.Visibility = Visibility.Visible;
         }
+
+        private void btnInvoice_Click(object sender, RoutedEventArgs e)
+        {
+            InvoiceWindow inv = new InvoiceWindow();
+            inv.ShowDialog();
+
+        }
     }
 }

@@ -168,6 +168,9 @@
     <Compile Include="Helpers\ErmHelper.cs" />
     <Compile Include="Helpers\InternetHelper.cs" />
     <Compile Include="Helpers\NumberConvert.cs" />
+    <Compile Include="InvoiceWindow.xaml.cs">
+      <DependentUpon>InvoiceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AirlineViewModel.cs" />
@@ -215,6 +218,10 @@
       <DependentUpon>UCRefuelList.xaml</DependentUpon>
     </Compile>
     <Page Include="EMRTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InvoiceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

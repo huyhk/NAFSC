@@ -9,7 +9,7 @@
         Title="Thông tin chuyến tra nạp" Height="500" Width="600" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
         <ToolBarPanel DockPanel.Dock="Top">
-                           
+
             <ToolBar>
                 <ToolBar.Resources>
                     <Style TargetType="{x:Type ToolBarPanel}">
@@ -17,19 +17,23 @@
                     </Style>
                 </ToolBar.Resources>
 
-            
+
                 <DockPanel Height="48">
                     <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Padding="20,0" Content="Tạo Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                        <Button Padding="20,0" Content="Tạo Hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>
                         <Button Padding="20,0" Content="Hủy Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
-                    </StackPanel> 
+                    </StackPanel>
                 </DockPanel>
             </ToolBar>
         </ToolBarPanel>
-    <Grid DockPanel.Dock="Top" Margin="10">
+        <Grid DockPanel.Dock="Top" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="199*"/>
+                <ColumnDefinition Width="87*"/>
+            </Grid.ColumnDefinitions>
 
-        <UC:UCRefuelDetail x:Name="ucDetail"/>
+            <UC:UCRefuelDetail x:Name="ucDetail" Grid.ColumnSpan="2"/>
 
         </Grid>
     </DockPanel>

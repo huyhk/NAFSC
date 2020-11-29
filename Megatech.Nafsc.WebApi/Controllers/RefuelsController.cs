@@ -12,6 +12,7 @@ using FMS.Data;
 using Megatech.FMS.WebAPI.Models;
 using System.Security.Claims;
 using EntityFramework.DynamicFilters;
+using System.Globalization;
 
 namespace Megatech.FMS.WebAPI.Controllers
 {
@@ -29,7 +30,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         [Authorize]
 
         // GET: api/Refuels
-        public IEnumerable<RefuelViewModel> GetRefuels(string truckNo = "", int o = 1, REFUEL_ITEM_TYPE type = REFUEL_ITEM_TYPE.REFUEL, TIME_RANGE range=TIME_RANGE.TODAY)
+        public IEnumerable<RefuelViewModel> GetRefuels(string sdate = "", int o = 1, REFUEL_ITEM_TYPE type = REFUEL_ITEM_TYPE.REFUEL, TIME_RANGE range=TIME_RANGE.TODAY)
         {
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
 
@@ -37,21 +38,23 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             var user = db.Users.FirstOrDefault(u => u.UserName == userName);
 
-            var airportId = user != null ? user.AirportId : 0;
+            var airportId = (int)(user != null ? user.AirportId : 0);
 
-           
-
-            var now = DateTime.Now.TimeOfDay;// DbFunctions.CreateTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-
-
-            var qshift = db.Shifts.Where(s => (s.StartTime < s.EndTime && DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) <= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) >= now)
-                                            || (s.StartTime > s.EndTime && (DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) <= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) <= now
-                                                                            || DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) >= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) >= now)))
-
-                .Where(s => s.AirportId == airportId);
-            var shift = qshift.FirstOrDefault();
             var start = DateTime.Today;
-            var end = DateTime.Today;
+            var end = DateTime.Today.AddDays(1);
+
+            if (!string.IsNullOrEmpty(sdate))
+            {
+                var date = DateTime.Today;
+                if (DateTime.TryParseExact(sdate, "yyyyMMdd", new CultureInfo("en-US"), DateTimeStyles.None, out date))
+                {
+                    start = date; end = date.AddDays(1);
+                }
+            }
+
+            /*
+            var shift = GetCurrentShift(airportId);                        
+            
             if (range == TIME_RANGE.SHIFT && shift != null)
             {
                 start = start.Add(shift.StartTime.TimeOfDay);
@@ -66,6 +69,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 start = DateTime.MinValue;
                 end = DateTime.MaxValue;
             }
+            */
+
             //Get default QCNo
             var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
 
@@ -124,50 +129,21 @@ namespace Megatech.FMS.WebAPI.Controllers
                 }).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);
 
             var flights = list.Select(item => item.FlightId).ToArray();
-            /*
-            var items = list.Select(item => item.Id).ToArray();
-
-            var others = db.RefuelItems.Where(r=> flights.Contains(r.FlightId) && !items.Contains(r.Id))
-                .Select(r => new RefuelViewModel
-                {
-                    FlightId = r.FlightId,
-                    FlightCode = r.Flight.Code,
-                    EstimateAmount = r.Flight.EstimateAmount,
-                    Id = r.Id,
-                    AircraftType = r.Flight.AircraftType,
-                    AircraftCode = r.Flight.AircraftCode,
-                    ParkingLot = r.Flight.Parking,
-                    RouteName = r.Flight.RouteName,
-                    Status = r.Status,
-                    ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
-                    DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                    RefuelTime = r.Flight.RefuelTime ,
-                    RealAmount = r.Amount,
-                    StartTime = r.StartTime,
-                    EndTime = r.EndTime ?? DateTime.MinValue,
-                    DeviceEndTime = r.DeviceEndTime ,
-                    DeviceStartTime = r.DeviceStartTime ,
-                    StartNumber = r.StartNumber,
-                    EndNumber = r.EndNumber,
-                    Density = r.Density,
-                    ManualTemperature = r.ManualTemperature,
-                    Temperature = r.Temperature,
-                    QualityNo = r.QCNo,
-                    TaxRate = r.TaxRate,
-                    Price = r.Price,
-                    TruckNo = r.Truck.Code,
-                    Gallon = r.Gallon,
-                    AirlineId = r.Flight.AirlineId ?? 0,
-
-
-                }).ToList().OrderBy(r => r.Status).ThenBy(r => r.DepartureTime);
-            foreach (var item in list)
-            {
-                item.Others = others.Where(r => r.FlightId == item.FlightId).ToList();
-
-            }
-            */
+            
             return list;
+        }
+
+        private Shift GetCurrentShift(int airportId)
+        {
+            var now = DateTime.Now.TimeOfDay;
+
+
+            var qshift = db.Shifts.Where(s => (s.StartTime < s.EndTime && DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) <= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) >= now)
+                                            || (s.StartTime > s.EndTime && (DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) <= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) <= now
+                                                                            || DbFunctions.CreateTime(s.StartTime.Hour, s.StartTime.Minute, s.StartTime.Second) >= now && DbFunctions.CreateTime(s.EndTime.Hour, s.EndTime.Minute, s.EndTime.Second) >= now)))
+
+                .Where(s => s.AirportId == airportId);
+            return qshift.FirstOrDefault();
         }
 
         // GET: api/Refuels/5
@@ -207,7 +183,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                 TruckNo = r.Truck.Code,
                 Gallon = r.Gallon,
                 AirlineId = r.Flight.AirlineId ?? 0,
-                RefuelItemType = r.RefuelItemType
+                RefuelItemType = r.RefuelItemType,
+                DriverId = r.DriverId,
+                OperatorId = r.OperatorId
 
 
             }).FirstOrDefault(r => r.Id == id);
@@ -435,6 +413,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
             db.SaveChanges();
 
+            
             var flight = db.Flights.Include(f => f.RefuelItems).FirstOrDefault(f => f.Id == model.FlightId);
             if (flight != null)
             {
@@ -461,6 +440,19 @@ namespace Megatech.FMS.WebAPI.Controllers
                 flight.DateUpdated = DateTime.Now;
                 flight.UserUpdatedId = userId;
 
+                //get current price
+
+                var price = db.ProductPrices.OrderByDescending(p => p.StartDate)
+                    .Where(p => p.StartDate <= flight.RefuelTime)
+                    .Where(p => p.CustomerId == refuel.AirlineId)
+                    .FirstOrDefault();
+
+                if (price != null)
+                {
+                    flight.OilCompany = price.OilCompany;
+                    model.Price = price.Price;
+                }
+                    
                 db.SaveChanges();
             }
 

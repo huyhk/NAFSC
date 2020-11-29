@@ -71,6 +71,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                <DatePicker Name="dtPicker"  ></DatePicker>
                 <TextBox x:Name="txtFilter" Height="23" TextWrapping="Wrap" Text=""  Width="180" />
                 <Button Click="btnFilter_Click" Name="btnFilter" Padding="10,0"  Content="Filter" ></Button>
             </StackPanel>

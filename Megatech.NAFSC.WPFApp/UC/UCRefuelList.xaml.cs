@@ -34,8 +34,8 @@ namespace Megatech.NAFSC.WPFApp.UC
         {
             lvRefuelList.ItemsSource = dataSource;
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvRefuelList.ItemsSource);
-            if (view!=null)
-            view.Filter = FlightFilter;
+            if (view != null)
+                view.Filter = FlightFilter;
             //if (lvRefuelList.Items.Count > 0)
             //{
             //    CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvRefuelList.ItemsSource);

@@ -13,7 +13,7 @@
         <cv:DecimalPercentageConverter x:Key="DecimalPercentageConverter"/>
         <Style TargetType="TextBox">
             <EventSetter Event="GotKeyboardFocus" Handler="TextBox_GotKeyboardFocus"></EventSetter>
-
+            <Setter Property="TextAlignment" Value="Center"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Padding" Value="2,3"></Setter>
             <Setter Property="IsReadOnly" Value="True"></Setter>
@@ -71,24 +71,28 @@
         <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"></TextBox>
         <Label Content="Giờ hạ cánh" Grid.Column="2" Grid.Row="3"></Label>
         <TextBox Text="{Binding ArrivalTime, StringFormat={}{0:HH:mm}}" Grid.Column="3" Grid.Row="3" IsReadOnly="True"></TextBox>
-        <Label Content="Giờ tra nạp" Grid.Column="0" Grid.Row="4"></Label>
-        <TextBox Text="{Binding RefuelTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="4" IsReadOnly="True"></TextBox>
+        <Label Content="Giờ bắt đầu tra nạp" Grid.Column="0" Grid.Row="4"></Label>
+        <TextBox Text="{Binding StartTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="4" IsReadOnly="True"></TextBox>
+        <Label Content="Giờ kết thúc" Grid.Column="2" Grid.Row="4"></Label>
+        <TextBox Text="{Binding EndTime, StringFormat={}{0:HH:mm}}" Grid.Column="3" Grid.Row="4" IsReadOnly="True"></TextBox>
         <Label Content="Sản lượng dự kiến" Grid.Column="0" Grid.Row="5"></Label>
         <TextBox Text="{Binding EstimateAmount}" Grid.Column="1" Grid.Row="5" IsReadOnly="True"></TextBox>
         <Label Content="Sản lượng thực tế" Grid.Column="2" Grid.Row="5"></Label>
-        <TextBox Text="{Binding RealAmount, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
-        <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="7" FontSize="16" FontWeight="Bold"></Label>
-        <ctl:TouchEnabledTextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}" Grid.Column="1" Grid.Row="7" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>
-        <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="7" FontSize="16" FontWeight="Bold"></Label>
-        <ctl:TouchEnabledTextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}"  Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="7" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>
-        <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="6"></Label>
-        <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="6"></TextBox>
-        <Label Content="Thuế suất VAT%" Grid.Column="2" Grid.Row="6"></Label>
-        <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" Grid.Column="3" Grid.Row="6"></TextBox>
-        <Label Content="Hút nhiên liệu"  Grid.Column="0" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Split, Mode=TwoWay,  StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Editable}"  Grid.Column="1" Grid.Row="8" FontSize="16"></TextBox>
-        <Label Content="Tách hóa đơn"  Grid.Column="0" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Split, Mode=TwoWay,  StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Editable}"  Grid.Column="1" Grid.Row="9" FontSize="16"></TextBox>
+        <TextBox Text="{Binding RealAmount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
+        <Label Content="Đồng hồ bắt đầu" Grid.Column="0" Grid.Row="6"></Label>
+        <TextBox Text="{Binding StartNumber}" Grid.Column="1" Grid.Row="6" IsReadOnly="True"></TextBox>
+        <Label Content="Đồng hồ kết thúc" Grid.Column="2" Grid.Row="6"></Label>
+        <TextBox Text="{Binding EndNumber}" Grid.Column="3" Grid.Row="6" IsReadOnly="True"></TextBox>
+        <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="7"></Label>
+        <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="7"></TextBox>
+        <Label Content="Thuế suất VAT%" Grid.Column="2" Grid.Row="7"></Label>
+        <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" Grid.Column="3" Grid.Row="7"></TextBox>
+        <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
+        <ctl:TouchEnabledTextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}" Grid.Column="1" Grid.Row="8" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>
+        <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
+        <ctl:TouchEnabledTextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}"  Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="8" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>        
+        <Label Content="Hút nhiên liệu"  Grid.Column="0" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
+        <TextBox Text="{Binding Extract, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}"  Grid.Column="1" Grid.Row="9" FontSize="16"></TextBox>
         <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="4" >
             <ListView.DataContext>
                 <data:RefuelViewModel/>
@@ -98,7 +102,9 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            <ListView.View >
+            
+            <ListView.View  >
+                
                 <GridView >
 
                     <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="100"   />

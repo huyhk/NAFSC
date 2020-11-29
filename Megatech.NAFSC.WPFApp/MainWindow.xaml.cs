@@ -58,6 +58,7 @@ namespace Megatech.NAFSC.WPFApp
             tmr.Interval = new TimeSpan(0, 0, 1, 0);
             tmr.Tick += Tmr_Tick;
             tmr.Start();
+            dtPicker.SelectedDate = DateTime.Today;
         }
 
         private void Tmr_Tick(object sender, EventArgs e)
