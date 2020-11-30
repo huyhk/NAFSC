@@ -111,6 +111,11 @@ namespace Megatech.FMS.WebAPI.Models
 
         public string OperatorName { get; set; }
 
+
+        public int InvoiceId { get; set; }
+
+        public bool Printed { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

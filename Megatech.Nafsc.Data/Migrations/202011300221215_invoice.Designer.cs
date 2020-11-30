@@ -13,7 +13,7 @@ namespace Megatech.Nafsc.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202011300153579_invoice"; }
+            get { return "202011300221215_invoice"; }
         }
         
         string IMigrationMetadata.Source

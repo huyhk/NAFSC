@@ -73,5 +73,12 @@ namespace Megatech.NAFSC.WPFApp.Data
             var respItem = JsonConvert.DeserializeObject<InvoiceViewModel>(response);
             return respItem;
         }
+
+        internal void CancelInvoice(int id)
+        {
+            ApiHelper client = new ApiHelper();
+            var response = client.CancelInvoice(id);
+            
+        }
     }
 }

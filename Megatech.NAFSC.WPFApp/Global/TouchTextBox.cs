@@ -39,7 +39,8 @@ namespace Megatech.NAFSC.WPFApp.Controls
 
         private void ShowKeyboard()
         {
-            OnScreenKeyboard.Show();
+            if (!IsReadOnly)
+                OnScreenKeyboard.Show();
         }
 
         

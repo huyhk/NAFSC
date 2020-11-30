@@ -62,7 +62,7 @@
                 <DockPanel >
 
                     <Button Content="Cấu hình" Click="Button_Click" Padding="5" ></Button>
-                    <Button Content="Cập nhật danh sách" Click="btnUpdate_Click" Name="btnUpdate" Padding="5" ></Button>
+                    <Button  Visibility="Hidden" Content="Cập nhật danh sách" Click="btnUpdate_Click" Name="btnUpdate" Padding="5" ></Button>
 
                     <Button  Name="btnLogout" Click="btnLogout_Click" HorizontalAlignment="Right"  DockPanel.Dock="Right">
                         <StackPanel Orientation="Horizontal">
@@ -82,10 +82,10 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                <DatePicker Name="dtPicker" SelectedDate="{Binding PropertyName, StringFormat=dd/MM/yyyy}" >
+                <DatePicker Name="dtPicker"  SelectedDate="{Binding PropertyName, StringFormat=dd/MM/yyyy}" >
 
                 </DatePicker>
-                <Button Click="btnFilter_Click" Name="btnFilter" Padding="10,0"  Content="Filter" ></Button>
+                <Button Click="btnFilter_Click" Name="btnFilter" Padding="10,0"  Content="Cập nhật danh sách" ></Button>
             </StackPanel>
             <uc:UCRefuelList x:Name="ucActiveRefuelList" Grid.Row="1"></uc:UCRefuelList>
 

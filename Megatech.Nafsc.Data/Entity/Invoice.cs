@@ -40,6 +40,8 @@ namespace FMS.Data
 
         public decimal TaxRate { get; set; }
 
+        public List<InvoiceItem> Items { get; set; }
+
         public decimal SubTotal
         {
             get;
@@ -57,10 +59,18 @@ namespace FMS.Data
             get { return SubTotal + Tax; }
         }
 
+        public void AddItem(InvoiceItem invoiceItem)
+        {
+            if (this.Items == null)
+                this.Items = new List<InvoiceItem>();
+            this.Items.Add(invoiceItem);
+        }
     }
 
     public class InvoiceItem:BaseEntity
     {
+
+        public int InvoiceId { get; set; }
         public decimal RealAmount { get; set; }
         public decimal Volume { get; set; }
         public decimal Weight { get; set; }

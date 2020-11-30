@@ -189,7 +189,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                 AirlineId = r.Flight.AirlineId ?? 0,
                 RefuelItemType = r.RefuelItemType,
                 DriverId = r.DriverId,
-                OperatorId = r.OperatorId
+                OperatorId = r.OperatorId,
+                Printed = r.Printed,
+                InvoiceId = r.InvoiceId ?? 0
 
 
             }).FirstOrDefault(r => r.Id == id);

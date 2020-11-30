@@ -76,6 +76,18 @@ namespace Megatech.NAFSC.WPFApp.Helpers
             return t.Result;
         }
 
+        internal object CancelInvoice(int id)
+        {
+            var url = "api/invoices/cancel";
+
+            string data = JsonConvert.SerializeObject(new InvoiceViewModel { Id = id });
+            HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var t = Task.Run(() => PostData(url, content));
+            t.Wait();
+
+            return t.Result;
+        }
+
         internal string PostRefuel(RefuelViewModel model)
         {
             var url = "api/refuels";

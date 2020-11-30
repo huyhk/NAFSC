@@ -21,8 +21,8 @@
                 <DockPanel Height="48">
                     <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Padding="20,0" Content="Hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>
-                        
+                        <Button Padding="20,0" Content="Tạo hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>
+                        <Button Padding="20,0" Content="Hủy hóa đơn" Name="btnCancel" Click="btnCancel_Click"  HorizontalAlignment="Right"></Button>
                     </StackPanel>
                 </DockPanel>
             </ToolBar>
@@ -33,7 +33,7 @@
                 <ColumnDefinition Width="87*"/>
             </Grid.ColumnDefinitions>
 
-            <UC:UCRefuelDetail x:Name="ucDetail" Grid.ColumnSpan="2"/>
+            <UC:UCRefuelDetail x:Name="ucDetail"  Grid.ColumnSpan="2"/>
 
         </Grid>
     </DockPanel>

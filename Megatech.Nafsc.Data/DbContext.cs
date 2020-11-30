@@ -144,10 +144,17 @@ namespace FMS.Data
                     cs.ToTable("UserAirport");
                 });
 
+          
+
             modelBuilder.Entity<Invoice>()
-                    .HasOptional(c => c.ParentInvoice)
+                    .HasOptional(c => c.ChildInvoice)
                     .WithMany()
-                    .HasForeignKey(c => c.ParentId);
+                    .HasForeignKey(c => c.ChildId);
+
+            modelBuilder.Entity<Invoice>()
+                  .HasOptional(c => c.ParentInvoice)
+                  .WithMany()
+                  .HasForeignKey(c => c.ParentId);
 
         }
 

@@ -42,17 +42,48 @@
                         IsDeleted = c.Boolean(nullable: false),
                         DateDeleted = c.DateTime(),
                         UserDeletedId = c.Int(),
-                        ChildInvoice_Id = c.Int(),
+                        
                     },
                 annotations: new Dictionary<string, object>
                 {
                     { "DynamicFilter_Invoice_IsNotDeleted", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Invoices", t => t.ChildInvoice_Id)
+                .ForeignKey("dbo.Invoices", t => t.ChildId)
                 .ForeignKey("dbo.Invoices", t => t.ParentId)
                 .Index(t => t.ParentId)
-                .Index(t => t.ChildInvoice_Id);
+                .Index(t => t.ChildId);
+            
+            CreateTable(
+                "dbo.InvoiceItems",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        InvoiceId = c.Int(nullable: false),
+                        RealAmount = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Volume = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Weight = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Gallon = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Density = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Temperature = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        TruckNo = c.String(),
+                        StartNumber = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        EndNumber = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        DateCreated = c.DateTime(nullable: false),
+                        DateUpdated = c.DateTime(nullable: false),
+                        UserCreatedId = c.Int(),
+                        UserUpdatedId = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
+                        DateDeleted = c.DateTime(),
+                        UserDeletedId = c.Int(),
+                    },
+                annotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_InvoiceItem_IsNotDeleted", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Invoices", t => t.InvoiceId, cascadeDelete: true)
+                .Index(t => t.InvoiceId);
             
             CreateTable(
                 "dbo.Agencies",
@@ -127,8 +158,10 @@
             DropForeignKey("dbo.TruckAssigns", "DriverId", "dbo.Users");
             DropForeignKey("dbo.ProductPrices", "AgencyId", "dbo.Agencies");
             DropForeignKey("dbo.Invoices", "ParentId", "dbo.Invoices");
+            DropForeignKey("dbo.InvoiceItems", "InvoiceId", "dbo.Invoices");
             DropForeignKey("dbo.Invoices", "ChildInvoice_Id", "dbo.Invoices");
             DropIndex("dbo.ProductPrices", new[] { "AgencyId" });
+            DropIndex("dbo.InvoiceItems", new[] { "InvoiceId" });
             DropIndex("dbo.Invoices", new[] { "ChildInvoice_Id" });
             DropIndex("dbo.Invoices", new[] { "ParentId" });
             DropColumn("dbo.ProductPrices", "AirportId");
@@ -149,6 +182,11 @@
                 removedAnnotations: new Dictionary<string, object>
                 {
                     { "DynamicFilter_Agency_IsNotDeleted", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                });
+            DropTable("dbo.InvoiceItems",
+                removedAnnotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_InvoiceItem_IsNotDeleted", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 });
             DropTable("dbo.Invoices",
                 removedAnnotations: new Dictionary<string, object>

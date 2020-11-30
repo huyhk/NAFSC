@@ -60,6 +60,13 @@
 
         <clr:String x:Key="processing_alert">Đang tra nạp không thể kết thúc</clr:String>
         <clr:String x:Key="processing_alert_title">Đang tra nạp</clr:String>
+
+        <clr:String x:Key="view_invoice">Xem hóa đơn</clr:String>
+        <clr:String x:Key="create_invoice">Tạo hóa đơn</clr:String>
+
+        <clr:String x:Key="cancel_invoice_confirm">Bạn có chắc chắn hủy hóa đơn?</clr:String>
+        <clr:String x:Key="confirm">Xác nhận</clr:String>
+
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Padding" Value="10,0"/>

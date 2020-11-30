@@ -126,6 +126,8 @@ namespace FMS.Data
         [NotMapped]
         public string InvoiceNumber { get; set; }
 
+        public int? InvoiceId { get; set; }
+
     }
 
     public enum REFUEL_ITEM_STATUS

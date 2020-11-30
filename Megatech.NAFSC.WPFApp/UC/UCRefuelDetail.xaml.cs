@@ -1,4 +1,5 @@
 ﻿using Megatech.FMS.WebAPI.Models;
+using Megatech.NAFSC.WPFApp.Controls;
 using Megatech.NAFSC.WPFApp.Data;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,13 @@ namespace Megatech.NAFSC.WPFApp.UC
             TextBox tb = (TextBox)sender;
             tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
         }
-        
+
+        internal void SetReadOnly(bool printed)
+        {
+            foreach (var item in this.grid.Children.OfType<TouchEnabledTextBox>())
+            {
+                item.IsReadOnly = printed;
+            }
+        }
     }
 }

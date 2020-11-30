@@ -38,8 +38,14 @@ namespace Megatech.NAFSC.WPFApp
         {
             model.PropertyChanged += Model_PropertyChanged;
             this.ucDetail.SetDataSource(model);
-            
-           
+
+            btnCancel.Visibility = model.Printed ? Visibility.Visible : Visibility.Hidden;
+            //btnInvoice.Visibility = !model.Printed ? Visibility.Visible : Visibility.Hidden;
+            btnInvoice.Content = FindResource(model.Printed ? "view_invoice": "create_invoice").ToString();
+
+            ucDetail.SetReadOnly(model.Printed);
+            isChanged = false;
+            btnSave.IsEnabled = false;
         }
 
         private bool isChanged = false;
@@ -49,11 +55,7 @@ namespace Megatech.NAFSC.WPFApp
             isChanged = true;
             btnSave.IsEnabled = true;
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-           
-        }
+              
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -80,6 +82,15 @@ namespace Megatech.NAFSC.WPFApp
         }
 
         private DataRepository db = DataRepository.GetInstance();
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(FindResource("cancel_invoice_confirm").ToString(), FindResource("confirm").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                db.CancelInvoice(model.InvoiceId);
+                model.Printed = false;
+                LoadData();
+            }
+        }
         private void btnInvoice_Click(object sender, RoutedEventArgs e)
         {
             if (isChanged)
@@ -93,10 +104,12 @@ namespace Megatech.NAFSC.WPFApp
             if (wnd.ShowDialog().Value)
             {
                 var option = wnd.Model;
-                var model = (RefuelViewModel)ucDetail.DataContext;
+                //var model = (RefuelViewModel)ucDetail.DataContext;
                 InvoiceViewModel invoice = new InvoiceViewModel(model, option);
                 var inv = db.PostInvoice(invoice);
-
+                model.Printed = true;
+                
+                LoadData();
                 PrintPreview preview = new PrintPreview();
                 preview.SetDataSource(invoice);
                 preview.ShowDialog();

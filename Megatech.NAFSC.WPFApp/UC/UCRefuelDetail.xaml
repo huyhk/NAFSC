@@ -28,7 +28,7 @@
     <UserControl.DataContext>
         <data:RefuelViewModel/>
     </UserControl.DataContext>
-    <Grid>
+    <Grid Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>

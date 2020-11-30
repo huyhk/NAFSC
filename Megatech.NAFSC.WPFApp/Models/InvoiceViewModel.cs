@@ -25,9 +25,11 @@ namespace Megatech.FMS.WebAPI.Models
                 model.RealAmount = option.SplitAmount;
                 InvoiceNumber = option.InvoiceNumber;
                 ChildInvoice = child;
+                
             }
             InvoiceItems.Add(new InvoiceItemModel(model));
-                        
+
+            RefuelItemId = model.Id;
             //foreach (var item in model.Others)
             //{
             //    InvoiceItemModel invoiceItem = new InvoiceItemModel(item);
@@ -41,6 +43,7 @@ namespace Megatech.FMS.WebAPI.Models
 
         private void FillFlightData(RefuelViewModel item)
         {
+            FlightId = item.FlightId;
             FlightCode = item.FlightCode;
             AircraftCode = item.AircraftCode;
             AircraftType = item.AircraftType;
@@ -48,6 +51,7 @@ namespace Megatech.FMS.WebAPI.Models
             RouteName = item.RouteName;
             RefuelTime = item.RefuelTime.Value;
             Price = item.Price;
+            CustomerId = item.AirlineId;
             CustomerName = item.Airline.InvoiceName + " " + item.Airline.Name;
             ProductName = item.Airline.ProductName;
             Currency = item.Airline.Currency.ToString();
@@ -67,7 +71,8 @@ namespace Megatech.FMS.WebAPI.Models
             }
         }
         public int Id { get; set; }
-
+        public int? RefuelItemId { get; set; }
+        public int FlightId { get; set; }
         public string FlightCode { get; set; }
 
         public string AircraftCode { get; set; }
@@ -76,8 +81,9 @@ namespace Megatech.FMS.WebAPI.Models
 
         public string ParkingLot  { get; set; }
 
-        public string  RouteName { get; set; }      
-       
+        public string  RouteName { get; set; }
+
+        public int CustomerId { get; set; }
         public string CustomerName { get; set; }
 
         public string TaxCode { get; set; }

@@ -39,24 +39,27 @@ namespace Megatech.NAFSC.WPFApp
 
         private bool Validate()
         {
-            var isValid = false;
+            var isValid = true;
             string msg = string.Empty;
             if (string.IsNullOrEmpty(Model.InvoiceNumber))
             {
+                isValid = false;
                 msg = "Nhập số hóa đơn";
             }
             else if (Model.Split)
             {
                 if (Model.SplitAmount <=0)
                 {
+                    isValid = false;
                     msg = "Nhập số lượng cần tách";
                 }
-                if (string.IsNullOrEmpty(Model.InvoiceNumber2))
+                else if (string.IsNullOrEmpty(Model.InvoiceNumber2))
                 {
+                    isValid = false;
                     msg = "Nhập số hóa đơn thứ 2";
                 }
             }
-            else isValid = true;
+           
             if (!isValid)
             {
                 MessageBox.Show(msg, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);

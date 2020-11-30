@@ -32,12 +32,14 @@ namespace Megatech.FMS.WebAPI.Models
         public InvoiceViewModel(IList<RefuelViewModel> items)
         {
             InvoiceItems = InvoiceItemModel.CreateList(items);
-            if (items.Count > 0)
+            if (items!=null && items.Count > 0)
             {
                 FillFlightData(items[0]);
             }
         }
         public int Id { get; set; }
+
+        public int? RefuelItemId { get; set; }
 
         public string FlightCode { get; set; }
 
@@ -209,9 +211,12 @@ namespace Megatech.FMS.WebAPI.Models
         internal static IList<InvoiceItemModel> CreateList(IList<RefuelViewModel> items)
         {
             var list = new List<InvoiceItemModel>();
-            foreach (var item in items)
+            if (items != null)
             {
-                list.Add(new InvoiceItemModel(item));
+                foreach (var item in items)
+                {
+                    list.Add(new InvoiceItemModel(item));
+                }
             }
             return list;
         }
