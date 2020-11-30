@@ -69,9 +69,10 @@ namespace Megatech.NAFSC.WPFApp
         DispatcherTimer tmr = new DispatcherTimer();
         private DataRepository repo = DataRepository.GetInstance();
         private ICollection<RefuelViewModel> _refuelList, _filteredList;
+        private DateTime _date = DateTime.Today;
         public void LoadData()
         {
-            _refuelList = repo.GetRefuelList(AppSetting.CurrentSetting.TruckNo);
+            _refuelList = repo.GetRefuelList(_date.ToString("yyyyMMdd"));
             _filteredList = _refuelList;
 
             //lvRefuelList.ItemsSource = _filteredList;
@@ -114,8 +115,12 @@ namespace Megatech.NAFSC.WPFApp
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
-            var filterText = txtFilter.Text;
-            Filter(filterText);
+            if (dtPicker.SelectedDate.HasValue)
+            {
+                _date = dtPicker.SelectedDate.Value;
+                LoadData();
+            }
+
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)

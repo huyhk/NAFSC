@@ -27,36 +27,36 @@ namespace Megatech.FMS.WebAPI.Controllers
         [ResponseType(typeof(InvoiceViewModel))]
         public IHttpActionResult GetFlight(int id)
         {
-            var item = db.Flights.Include(f=>f.Airline).Where(f => f.Id == id)
-                .Select(f => new InvoiceViewModel
-                {
-                    Id = f.Id,
-                    AircraftCode = f.AircraftCode,
-                    FlightCode = f.Code,
-                    AircraftType = f.AircraftType,
-                    CustomerName = f.Airline.Name,
-                    TaxCode = f.Airline.TaxCode,
-                    Address = f.Airline.Address,
-                    RouteName = f.RouteName,
+            //var item = db.Flights.Include(f=>f.Airline).Where(f => f.Id == id)
+            //    .Select(f => new InvoiceViewModel
+            //    {
+            //        Id = f.Id,
+            //        AircraftCode = f.AircraftCode,
+            //        FlightCode = f.Code,
+            //        AircraftType = f.AircraftType,
+            //        CustomerName = f.Airline.Name,
+            //        TaxCode = f.Airline.TaxCode,
+            //        Address = f.Airline.Address,
+            //        RouteName = f.RouteName,
                     
 
-                })
-                .FirstOrDefault();
-            var refuels = db.RefuelItems.Where(r => r.FlightId == id && r.Status == REFUEL_ITEM_STATUS.DONE)
-                .Select(r => new RefuelViewModel
-                {
-                   TruckNo = r.Truck.Code,
-                   RealAmount = r.Amount,
-                   Density = r.Density,
-                   StartNumber = r.StartNumber,
-                   EndNumber = r.EndNumber,
-                   ManualTemperature = r.ManualTemperature,
-                   Price = r.Price,
-                   TaxRate = r.TaxRate
-                }).ToList();
-            item.RefuelItems = refuels;
+            //    })
+            //    .FirstOrDefault();
+            //var refuels = db.RefuelItems.Where(r => r.FlightId == id && r.Status == REFUEL_ITEM_STATUS.DONE)
+            //    .Select(r => new RefuelViewModel
+            //    {
+            //       TruckNo = r.Truck.Code,
+            //       RealAmount = r.Amount,
+            //       Density = r.Density,
+            //       StartNumber = r.StartNumber,
+            //       EndNumber = r.EndNumber,
+            //       ManualTemperature = r.ManualTemperature,
+            //       Price = r.Price,
+            //       TaxRate = r.TaxRate
+            //    }).ToList();
+            //item.RefuelItems = refuels;
 
-            return Ok(item);
+            return Ok();
         }
 
         // PUT: api/Flights/5

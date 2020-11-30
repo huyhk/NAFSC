@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="780" d:DesignWidth="600">
     <UserControl.DataContext>
-        <data:FlightViewModel/>
+        <data:InvoiceViewModel/>
     </UserControl.DataContext>
     <Grid>
         <FlowDocumentPageViewer Name="pvPA">

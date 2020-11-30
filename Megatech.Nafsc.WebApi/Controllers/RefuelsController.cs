@@ -75,7 +75,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
 
             db.Configuration.ProxyCreationEnabled = false;
-            var query = db.RefuelItems.Include(r => r.Flight.Airline).Include(r => r.Truck);
+            var query = db.RefuelItems.Include(r => r.Flight.Airline).Include(r => r.Truck).Include(r=>r.Driver).Include(r=>r.Operator);
             query = query
                     .Where(r => r.Flight.RefuelScheduledTime >= start)
                     .Where(r => r.Flight.RefuelScheduledTime <= end)
@@ -123,7 +123,11 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Gallon = r.Gallon,
                     AirlineId = r.Flight.AirlineId ?? 0,
                     Airline = new AirlineViewModel { Name = r.Flight.Airline.Name, InvoiceName = r.Flight.Airline.InvoiceName},
-                    RefuelItemType = r.RefuelItemType
+                    RefuelItemType = r.RefuelItemType,
+                    DriverId = r.DriverId,
+                    OperatorId = r.OperatorId,
+                    DriverName = r.Driver == null? "": r.Driver.FullName,
+                    OperatorName = r.Operator == null ? "" : r.Operator.FullName,
 
 
                 }).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);

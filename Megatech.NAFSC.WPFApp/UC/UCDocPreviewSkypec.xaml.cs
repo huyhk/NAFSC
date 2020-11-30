@@ -26,10 +26,10 @@ namespace Megatech.NAFSC.WPFApp.UC
             InitializeComponent();
         }
 
-        public void SetDataSource(FlightViewModel model)
+        public void SetDataSource(InvoiceViewModel model)
         {
             DataContext = model;
-            lvItems.ItemsSource = model.RefuelItems;
+            lvItems.ItemsSource = model.InvoiceItems;
         }
     }
 }

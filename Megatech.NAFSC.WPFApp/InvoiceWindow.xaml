@@ -4,14 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:data="clr-namespace:Megatech.NAFSC.WPFApp.Models"
         mc:Ignorable="d"
-        Title="Hóa đơn" Height="300" Width="300">
+        Title="Hóa đơn" Height="500" Width="500">
     <Window.Resources>
         <Style TargetType="TextBlock" >
             <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="Margin" Value="0,10"></Setter>
         </Style>
-
+        <local:VisibilityConverter x:Key="VisibilityConverter"></local:VisibilityConverter>
     </Window.Resources>
+    <Window.DataContext>
+        <data:InvoiceOption></data:InvoiceOption>
+    </Window.DataContext> 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -21,13 +27,18 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Số hóa đơn" Grid.Row="0" Grid.Column="0" FontSize="18" VerticalAlignment="Center"></TextBlock>
-        <TextBox Name="txtInvoiceNumber" Grid.Column="1" FontSize="18" VerticalAlignment="Center"></TextBox>
-        <CheckBox Content="Tách hóa đơn" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Grid.Row="1" Grid.Column="0" Name="chkSplit" FontSize="18" VerticalAlignment="Center" ></CheckBox>
-        <TextBox Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ElementName=chkSplit, Path=IsChecked}"></TextBox>
-        <Button Grid.ColumnSpan="2" Grid.Row="2" Content="Tạo hóa đơn" FontSize="16" Margin="5"></Button>
+        <TextBlock Text="Số hóa đơn"  Grid.Row="0" Grid.Column="0" FontSize="18" VerticalAlignment="Center"></TextBlock>
+        <TextBox Name="txtInvoiceNumber" Text="{Binding InvoiceNumber}" Grid.Column="1" FontSize="18" VerticalAlignment="Center"></TextBox>
+        <CheckBox Content="Tách hóa đơn" IsChecked="{Binding Split}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="0" Name="chkSplit" FontSize="18" VerticalAlignment="Center" ></CheckBox>
+        <TextBlock Text="Số lít tách" Visibility="{Binding ElementName=chkSplit, Path=IsChecked, Converter={StaticResource VisibilityConverter}}" Grid.Row="2" Grid.Column="0" FontSize="18" VerticalAlignment="Center"></TextBlock>
+        <TextBox Name="txtSplit" Text="{Binding SplitAmount}" Visibility="{Binding ElementName=chkSplit, Path=IsChecked, Converter={StaticResource VisibilityConverter}}" Grid.Row="2" Grid.Column="1" FontSize="18" VerticalAlignment="Center"></TextBox>
+        <TextBlock Text="Số hóa đơn #2" Visibility="{Binding ElementName=chkSplit, Path=IsChecked, Converter={StaticResource VisibilityConverter}}" Grid.Row="3" Grid.Column="0" FontSize="18" VerticalAlignment="Center"></TextBlock>
+        <TextBox Name="txtInvoiceNumber2" Text="{Binding InvoiceNumber2}" Visibility="{Binding ElementName=chkSplit, Path=IsChecked, Converter={StaticResource VisibilityConverter}}" Grid.Row="3" Grid.Column="1" FontSize="18" VerticalAlignment="Center"></TextBox>
+        <Button  Padding="5" Grid.ColumnSpan="2" Grid.Row="4" Content="Tạo hóa đơn" Click="Button_Click" FontSize="16" Margin="5"></Button>
     </Grid>
 </Window>

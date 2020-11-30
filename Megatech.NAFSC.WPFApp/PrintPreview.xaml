@@ -31,7 +31,7 @@
         </Style>
     </Window.Resources>
     <Window.DataContext>
-        <data:FlightViewModel/>
+        <data:InvoiceViewModel/>
     </Window.DataContext>
     <DockPanel>
         <ToolBarPanel DockPanel.Dock="Top">

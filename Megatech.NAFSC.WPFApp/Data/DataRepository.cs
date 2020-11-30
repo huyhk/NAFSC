@@ -22,11 +22,11 @@ namespace Megatech.NAFSC.WPFApp.Data
             
         }
 
-        public ICollection<RefuelViewModel> GetRefuelList(string truckNo)
+        public ICollection<RefuelViewModel> GetRefuelList(string sDate)
         {
             ApiHelper client = new ApiHelper();
 
-            return client.GetRefuels(truckNo);
+            return client.GetRefuels(sDate);
            
         }
 
@@ -64,6 +64,14 @@ namespace Megatech.NAFSC.WPFApp.Data
         {
             ApiHelper client = new ApiHelper();
             return client.GetTrucks();
+        }
+
+        internal InvoiceViewModel PostInvoice(InvoiceViewModel invoice)
+        {
+            ApiHelper client = new ApiHelper();
+            var response = client.PostInvoice(invoice);
+            var respItem = JsonConvert.DeserializeObject<InvoiceViewModel>(response);
+            return respItem;
         }
     }
 }

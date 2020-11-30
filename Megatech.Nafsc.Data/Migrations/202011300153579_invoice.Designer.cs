@@ -7,13 +7,13 @@ namespace Megatech.Nafsc.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class qcNo : IMigrationMetadata
+    public sealed partial class invoice : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(qcNo));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(invoice));
         
         string IMigrationMetadata.Id
         {
-            get { return "202011260749478_qcNo"; }
+            get { return "202011300153579_invoice"; }
         }
         
         string IMigrationMetadata.Source

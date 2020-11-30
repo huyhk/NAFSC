@@ -38,7 +38,8 @@ namespace FMS.Data
 
         public DbSet<Truck> Trucks { get; set; }
 
-       
+        public DbSet<Invoice> Invoices { get; set; }
+
         //public DbSet<TruckAssign> TruckAssigns { get; set; }
 
         public DbSet<Device> Devices { get; set; }
@@ -143,6 +144,10 @@ namespace FMS.Data
                     cs.ToTable("UserAirport");
                 });
 
+            modelBuilder.Entity<Invoice>()
+                    .HasOptional(c => c.ParentInvoice)
+                    .WithMany()
+                    .HasForeignKey(c => c.ParentId);
 
         }
 

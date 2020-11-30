@@ -87,9 +87,9 @@
     <Compile Include="Entity\User.cs" />
     <Compile Include="Entity\UserLog.cs" />
     <Compile Include="Entity\Vehicle.cs" />
-    <Compile Include="Migrations\202011260749478_qcNo.cs" />
-    <Compile Include="Migrations\202011260749478_qcNo.designer.cs">
-      <DependentUpon>202011260749478_qcNo.cs</DependentUpon>
+    <Compile Include="Migrations\202011300153579_invoice.cs" />
+    <Compile Include="Migrations\202011300153579_invoice.designer.cs">
+      <DependentUpon>202011300153579_invoice.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,9 +99,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202011260749478_qcNo.resx">
-      <DependentUpon>202011260749478_qcNo.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202011300153579_invoice.resx">
+      <DependentUpon>202011300153579_invoice.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\invoice.sql" />
+    <Content Include="Scripts\QCNoHistory.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

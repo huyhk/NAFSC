@@ -175,6 +175,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AirlineViewModel.cs" />
     <Compile Include="Models\InvoiceViewModel.cs" />
+    <Compile Include="Models\InvoiceWindowViewModel.cs" />
     <Compile Include="Models\PermissionViewModel.cs" />
     <Compile Include="Models\RefuelViewModel.cs" />
     <Compile Include="Models\ShiftViewModel.cs" />
@@ -346,6 +347,9 @@
     <Resource Include="Images\check_blue.png" />
     <Resource Include="Images\exit.png" />
     <Resource Include="Images\check.jpg" />
+    <Resource Include="Images\map.png" />
+    <Resource Include="Images\operator.png" />
+    <Resource Include="Images\driver.png" />
     <Content Include="Nafsc.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

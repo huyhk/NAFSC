@@ -103,7 +103,7 @@ namespace Megatech.NAFSC.WPFApp
                 ev.HasMorePages = false;
         }
 
-        private string[] BuildTextPrint(FlightViewModel model)
+        private string[] BuildTextPrint(InvoiceViewModel model)
         {
             if (model.Vendor == Vendor.SKYPEC)
                 return BuildTextPrintSkypec(model);
@@ -111,7 +111,7 @@ namespace Megatech.NAFSC.WPFApp
                 return BuildTextPrintPA(model);
         }
 
-        private string[] BuildTextPrintSkypec(FlightViewModel model)
+        private string[] BuildTextPrintSkypec(InvoiceViewModel model)
         {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < 1; i++)
@@ -134,19 +134,19 @@ namespace Megatech.NAFSC.WPFApp
             builder.AppendFormat("{0}\n", model.ProductName);
             for (int i = 0; i < 1; i++)
                 builder.AppendLine();
-            foreach (var item in model.RefuelItems)
+            foreach (var item in model.InvoiceItems)
             {
                 builder.Append(new string(' ', 5));
                 builder.AppendFormat("{0}", item.TruckNo);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:HH:mm}", item.StartTime);
+                builder.AppendFormat("{0:#,0.00}", item.StartNumber);
                 builder.Append(new string(' ', 10));
-                builder.AppendFormat("{0:HH:mm}", item.EndTime);
+                builder.AppendFormat("{0:#,0.00}", item.EndNumber);
                 builder.Append(new string(' ', 30));
                 builder.AppendFormat("{0:#,0.00}\n", item.Volume);
             }
 
-            for (int i = 0; i < 2 - model.RefuelItems.Count; i++)
+            for (int i = 0; i < 2 - model.InvoiceItems.Count; i++)
                 builder.AppendLine();
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0}\n", model.CustomerName);
@@ -194,7 +194,7 @@ namespace Megatech.NAFSC.WPFApp
             return builder.ToString().Split(new char[] { '\r', '\n' });
         }
 
-        private string[] BuildTextPrintPA(FlightViewModel model)
+        private string[] BuildTextPrintPA(InvoiceViewModel model)
         {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < 1; i++)
@@ -220,19 +220,19 @@ namespace Megatech.NAFSC.WPFApp
 
             for (int i = 0; i <1; i++)
                 builder.AppendLine();
-            foreach (var item in model.RefuelItems)
+            foreach (var item in model.InvoiceItems)
             {
                 builder.Append(new string(' ', 5));
                 builder.AppendFormat("{0}", item.TruckNo);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:HH:mm}", item.StartTime);
+                builder.AppendFormat("{0:#,0.00}", item.StartNumber);
                 builder.Append(new string(' ', 10));
-                builder.AppendFormat("{0:HH:mm}", item.EndTime);
+                builder.AppendFormat("{0:#,0.00}", item.EndNumber);
                 builder.Append(new string(' ', 30));
                 builder.AppendFormat("{0:#,0.00}\n", item.Volume);
             }
 
-            for (int i = 0; i < 3 - model.RefuelItems.Count; i++)
+            for (int i = 0; i < 3 - model.InvoiceItems.Count; i++)
                 builder.AppendLine();
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0}", model.AircraftType);
@@ -258,8 +258,8 @@ namespace Megatech.NAFSC.WPFApp
             builder.AppendFormat("{0:#,0.00}", model.Gallon);
             return builder.ToString().Split(new char[] { '\r', '\n' });
         }
-        private FlightViewModel model;
-        public void SetDataSource(FlightViewModel model)
+        private InvoiceViewModel model;
+        public void SetDataSource(InvoiceViewModel model)
         {
             this.model = model;
             if (model.Vendor == Vendor.PA)

@@ -64,6 +64,18 @@ namespace Megatech.NAFSC.WPFApp.Helpers
             }
         }
 
+        internal string PostInvoice(InvoiceViewModel invoice)
+        {
+            var url = "api/invoices";
+
+            string data = JsonConvert.SerializeObject(invoice);
+            HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var t = Task.Run(() => PostData(url, content));
+            t.Wait();
+
+            return t.Result;
+        }
+
         internal string PostRefuel(RefuelViewModel model)
         {
             var url = "api/refuels";
@@ -109,7 +121,7 @@ namespace Megatech.NAFSC.WPFApp.Helpers
         }
         internal ICollection<RefuelViewModel> GetRefuels(string truckNo)
         {
-            var url = "api/refuels?truckNo="+truckNo;
+            var url = "api/refuels?sDate="+truckNo;
 
             var t = Task.Run(() => GetData(url));
             t.Wait();

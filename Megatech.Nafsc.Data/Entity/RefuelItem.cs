@@ -35,9 +35,11 @@ namespace FMS.Data
         public DateTime? EndTime { get; set; }
 
         public int? DriverId { get; set; }
+        [ForeignKey("DriverId")]
         public User Driver { get; set; }
 
         public int? OperatorId { get; set; }
+        [ForeignKey("OperatorId")]
         public User Operator { get; set; }
 
 

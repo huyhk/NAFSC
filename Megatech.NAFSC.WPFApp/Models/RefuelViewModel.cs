@@ -28,7 +28,12 @@ namespace Megatech.FMS.WebAPI.Models
         public string RouteName { get; set; }
         public string TruckNo { get; set; }
         public int TruckId { get; set; }
-        public decimal RealAmount { get; set; }
+        private decimal _realAmount;
+        public decimal RealAmount
+        {
+            get;
+            set;
+        }
 
         public int? DriverId { get; set; }
 
@@ -61,12 +66,11 @@ namespace Megatech.FMS.WebAPI.Models
 
         public decimal TaxRate { get; set; }
 
+        
         public decimal Weight
         {
-            get
-            {
-                return Math.Round(Volume * Density,4);
-            }
+            get { return Volume * Density; }
+            
         }
 
         public decimal Volume
@@ -100,12 +104,12 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get { return Status == REFUEL_ITEM_STATUS.DONE; }
         }
-
-
-        public string InvoiceNumber { get; set; }
-        public decimal Split { get; set; }
+        
         public decimal Extract { get; set; }
 
+        public string DriverName { get; set; }
+
+        public string OperatorName { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

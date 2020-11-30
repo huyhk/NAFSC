@@ -52,25 +52,7 @@ namespace Megatech.NAFSC.WPFApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            PrintDialog dlg = new PrintDialog();
-            FlowDocument doc = new FlowDocument(new Paragraph(new Run(model.FlightCode)));
-            doc.Name = "NAFSC";
-            IDocumentPaginatorSource idp = doc;
-            dlg.PrintDocument(idp.DocumentPaginator, "First Print");
-            */
-            if (isChanged)
-            {
-                if (MessageBox.Show(FindResource("data_change_confirm").ToString(), FindResource("data_change_title").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                    return;
-                else SaveChanges();
-            }
-
-            PrintPreview prw = new PrintPreview();
-
-            prw.SetDataSource(new FlightViewModel((RefuelViewModel)ucDetail.DataContext));
-            prw.ShowDialog();
-
+           
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -97,11 +79,28 @@ namespace Megatech.NAFSC.WPFApp
             btnSave.Visibility = Visibility.Visible;
         }
 
+        private DataRepository db = DataRepository.GetInstance();
         private void btnInvoice_Click(object sender, RoutedEventArgs e)
         {
-            InvoiceWindow inv = new InvoiceWindow();
-            inv.ShowDialog();
+            if (isChanged)
+            {
+                if (MessageBox.Show(FindResource("data_change_confirm").ToString(), FindResource("data_change_title").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;
+                else SaveChanges();
+            }
 
+            InvoiceWindow wnd = new InvoiceWindow();
+            if (wnd.ShowDialog().Value)
+            {
+                var option = wnd.Model;
+                var model = (RefuelViewModel)ucDetail.DataContext;
+                InvoiceViewModel invoice = new InvoiceViewModel(model, option);
+                var inv = db.PostInvoice(invoice);
+
+                PrintPreview preview = new PrintPreview();
+                preview.SetDataSource(invoice);
+                preview.ShowDialog();
+            }
         }
     }
 }

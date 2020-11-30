@@ -74,5 +74,9 @@ namespace Megatech.FMS.WebAPI.Models
         public int? DriverId { get; set; }
 
         public int? OperatorId { get; set; }
+
+        public string DriverName { get; set; }
+
+        public string OperatorName { get; set; }
     }
 }

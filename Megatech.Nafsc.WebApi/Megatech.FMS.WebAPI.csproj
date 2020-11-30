@@ -256,6 +256,7 @@
     <Compile Include="Controllers\ChangeLogsController.cs" />
     <Compile Include="Controllers\FlightsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\RefuelsController.cs" />
     <Compile Include="Controllers\ShiftController.cs" />
     <Compile Include="Controllers\TabletsController.cs" />

@@ -1,25 +1,39 @@
-﻿using System;
+﻿using Megatech.NAFSC.WPFApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Megatech.FMS.WebAPI.Models
 {
-    public class FlightViewModel
+    public class InvoiceViewModel
     {
-        public FlightViewModel()
+        public InvoiceViewModel()
         {
-            RefuelItems = new List<RefuelViewModel>();
+            InvoiceItems = new List<InvoiceItemModel>();
             Currency = Models.Currency.VND.ToString();
             Vendor = Vendor.SKYPEC;
         }
-        public FlightViewModel(RefuelViewModel model)
+        public InvoiceViewModel(RefuelViewModel model, InvoiceOption option):this()
         {
-            RefuelItems = new List<RefuelViewModel> { model };
-            foreach (var item in model.Others)
+            if (option !=null && option.Split)
             {
-                RefuelItems.Add(item);
+                var amount = model.RealAmount;
+                model.RealAmount -= option.SplitAmount;
+                InvoiceViewModel child = new InvoiceViewModel(model, null);
+                child.InvoiceNumber = option.InvoiceNumber2;                
+                model.RealAmount = option.SplitAmount;
+                InvoiceNumber = option.InvoiceNumber;
+                ChildInvoice = child;
             }
+            InvoiceItems.Add(new InvoiceItemModel(model));
+                        
+            //foreach (var item in model.Others)
+            //{
+            //    InvoiceItemModel invoiceItem = new InvoiceItemModel(item);
+            //    InvoiceItems.Add(invoiceItem);
+            //}
+           
             FillFlightData(model);
 
 
@@ -44,9 +58,9 @@ namespace Megatech.FMS.WebAPI.Models
             TaxRate = item.TaxRate;
         }
 
-        public FlightViewModel(IList<RefuelViewModel> items)
+        public InvoiceViewModel(IList<RefuelViewModel> items)
         {
-            RefuelItems = items;
+            InvoiceItems = InvoiceItemModel.CreateList(items);
             if (items.Count > 0)
             {
                 FillFlightData(items[0]);
@@ -74,9 +88,17 @@ namespace Megatech.FMS.WebAPI.Models
 
         public string QualityNo { get; set; }
 
-        public int MyProperty { get; set; }
+        public string OperatorName { get; set; }
 
-        public IList<RefuelViewModel> RefuelItems { get; set; }
+        public string InvoiceNumber { get; set; }
+
+        public int? ParentId { get; set; }
+        public virtual InvoiceViewModel ParentInvoice { get; set; }
+
+        public int? ChildId { get; set; }
+        public virtual InvoiceViewModel ChildInvoice { get; set; }
+
+        public IList<InvoiceItemModel> InvoiceItems { get; set; }
 
         //Gallons
 
@@ -84,7 +106,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return RefuelItems.Sum(r => r.RealAmount);
+                return InvoiceItems.Sum(r => r.RealAmount);
             }
         }
         //Littres
@@ -92,7 +114,7 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Volume {
             get
             {
-                return RefuelItems.Sum(r => r.Volume);
+                return InvoiceItems.Sum(r => r.Volume);
             }
         }
 
@@ -101,7 +123,7 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Weight {
             get
             {
-                return RefuelItems.Sum(r => r.Weight);
+                return InvoiceItems.Sum(r => r.Weight);
             }
         }
 
@@ -109,7 +131,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return RefuelItems.Sum(r => r.Gallon);
+                return InvoiceItems.Sum(r => r.Gallon);
             }
         }
 
@@ -118,7 +140,7 @@ namespace Megatech.FMS.WebAPI.Models
             {
                 try
                 {
-                    return RefuelItems.Sum(r =>r.Weight) / RefuelItems.Sum(r => r.Volume);
+                    return InvoiceItems.Sum(r =>r.Weight) / InvoiceItems.Sum(r => r.Volume);
                 }
                 catch
                 {
@@ -133,7 +155,7 @@ namespace Megatech.FMS.WebAPI.Models
             {
                 try
                 {
-                    return RefuelItems.Sum(r => r.Temperature * r.RealAmount) / RefuelItems.Sum(r => r.RealAmount);
+                    return InvoiceItems.Sum(r => r.Temperature * r.RealAmount) / InvoiceItems.Sum(r => r.RealAmount);
                 }
                 catch
                 {
@@ -156,7 +178,6 @@ namespace Megatech.FMS.WebAPI.Models
             }
         }
         
-
         public decimal TaxRate { get; set; }
         public decimal Tax
         {
@@ -182,5 +203,46 @@ namespace Megatech.FMS.WebAPI.Models
 
         public DateTime StartTime { get; private set; }
         public DateTime EndTime { get; private set; }
+    }
+
+    public class InvoiceItemModel 
+    {
+        public InvoiceItemModel()
+        { }
+        public InvoiceItemModel(RefuelViewModel item)
+        {
+            this.RealAmount = item.RealAmount;
+            this.Volume = item.Volume;
+            this.Weight= item.Weight;
+            this.Gallon = item.Gallon;
+            this.Density = item.Density;
+            this.Temperature = item.Temperature;
+            this.StartNumber= item.StartNumber;
+            this.EndNumber = item.EndNumber;
+            this.TruckNo = item.TruckNo;
+        }
+
+
+        public decimal RealAmount { get; set; }
+        public decimal Volume { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Gallon { get; set; }
+        public decimal Density { get; set; }
+        public decimal Temperature { get; set; }
+
+        public string TruckNo { get; set; }
+
+        public decimal StartNumber { get; set; }
+        public decimal EndNumber { get; set; }
+
+        internal static IList<InvoiceItemModel> CreateList(IList<RefuelViewModel> items)
+        {
+            var list = new List<InvoiceItemModel>();
+            foreach (var item in items)
+            {
+                list.Add(new InvoiceItemModel(item));
+            }
+            return list;
+        }
     }
 }

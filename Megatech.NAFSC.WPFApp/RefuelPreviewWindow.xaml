@@ -21,8 +21,8 @@
                 <DockPanel Height="48">
                     <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Padding="20,0" Content="Tạo Hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>
-                        <Button Padding="20,0" Content="Hủy Hóa đơn" Click="Button_Click" HorizontalAlignment="Right"></Button>
+                        <Button Padding="20,0" Content="Hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>
+                        
                     </StackPanel>
                 </DockPanel>
             </ToolBar>
