@@ -111,8 +111,8 @@ namespace Megatech.NAFSC.WPFApp
                     
                 ((RefuelViewModel)this.DataContext).StartTime = DateTime.Now;
 
-                btnBack.IsEnabled = false;
-                allowClose = false;
+                //btnBack.IsEnabled = false;
+                //allowClose = false;
             }
             else
             {
@@ -180,7 +180,7 @@ namespace Megatech.NAFSC.WPFApp
         {
             if (!allowClose)
             {
-                MessageBox.Show(FindResource("not_allow_closing").ToString(), FindResource("not_allow_closing_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (MessageBox.Show(FindResource("not_allow_closing").ToString(), FindResource("not_allow_closing_title").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 e.Cancel = true;
             }
             else

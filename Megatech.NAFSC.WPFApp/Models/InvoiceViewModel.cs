@@ -1,4 +1,5 @@
-﻿using Megatech.NAFSC.WPFApp.Models;
+﻿
+using Megatech.NAFSC.WPFApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace Megatech.FMS.WebAPI.Models
     {
         public InvoiceViewModel()
         {
-            InvoiceItems = new List<InvoiceItemModel>();
-            Currency = Models.Currency.VND.ToString();
+            Items = new List<InvoiceItemModel>();
+            Currency = Models.Currency.VND;
             Vendor = Vendor.SKYPEC;
         }
         public InvoiceViewModel(RefuelViewModel model, InvoiceOption option):this()
@@ -20,14 +21,15 @@ namespace Megatech.FMS.WebAPI.Models
             {
                 var amount = model.RealAmount;
                 model.RealAmount -= option.SplitAmount;
-                InvoiceViewModel child = new InvoiceViewModel(model, null);
-                child.InvoiceNumber = option.InvoiceNumber2;                
+                InvoiceViewModel child = new InvoiceViewModel(model, new InvoiceOption { InvoiceNumber = option.InvoiceNumber2});
+                //child.InvoiceNumber = option.InvoiceNumber2;                
                 model.RealAmount = option.SplitAmount;
-                InvoiceNumber = option.InvoiceNumber;
+                
                 ChildInvoice = child;
                 
             }
-            InvoiceItems.Add(new InvoiceItemModel(model));
+            InvoiceNumber = option.InvoiceNumber;
+            Items.Add(new InvoiceItemModel(model));
 
             RefuelItemId = model.Id;
             //foreach (var item in model.Others)
@@ -54,7 +56,7 @@ namespace Megatech.FMS.WebAPI.Models
             CustomerId = item.AirlineId;
             CustomerName = item.Airline.InvoiceName + " " + item.Airline.Name;
             ProductName = item.Airline.ProductName;
-            Currency = item.Airline.Currency.ToString();
+            Currency = item.Airline.Currency;
             Vendor = item.Airline.Vendor;
             StartTime = item.StartTime;
             EndTime = item.EndTime;
@@ -64,7 +66,7 @@ namespace Megatech.FMS.WebAPI.Models
 
         public InvoiceViewModel(IList<RefuelViewModel> items)
         {
-            InvoiceItems = InvoiceItemModel.CreateList(items);
+            Items = InvoiceItemModel.CreateList(items);
             if (items.Count > 0)
             {
                 FillFlightData(items[0]);
@@ -104,7 +106,7 @@ namespace Megatech.FMS.WebAPI.Models
         public int? ChildId { get; set; }
         public virtual InvoiceViewModel ChildInvoice { get; set; }
 
-        public IList<InvoiceItemModel> InvoiceItems { get; set; }
+        public IList<InvoiceItemModel> Items { get; set; }
 
         //Gallons
 
@@ -112,41 +114,41 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return InvoiceItems.Sum(r => r.RealAmount);
+                return Items.Sum(r => r.RealAmount);
             }
         }
         //Littres
 
-        public decimal Volume {
+        public decimal? Volume {
             get
             {
-                return InvoiceItems.Sum(r => r.Volume);
+                return Items.Sum(r => r.Volume);
             }
         }
 
         //kg
 
-        public decimal Weight {
+        public decimal? Weight {
             get
             {
-                return InvoiceItems.Sum(r => r.Weight);
+                return Items.Sum(r => r.Weight);
             }
         }
 
-        public decimal Gallon
+        public decimal? Gallon
         {
             get
             {
-                return InvoiceItems.Sum(r => r.Gallon);
+                return Items.Sum(r => r.Gallon);
             }
         }
 
-        public decimal Density {
+        public decimal? Density {
             get
             {
                 try
                 {
-                    return InvoiceItems.Sum(r =>r.Weight) / InvoiceItems.Sum(r => r.Volume);
+                    return Items.Sum(r=>r.Weight) / Items.Sum(r => r.Volume);
                 }
                 catch
                 {
@@ -161,7 +163,7 @@ namespace Megatech.FMS.WebAPI.Models
             {
                 try
                 {
-                    return InvoiceItems.Sum(r => r.Temperature * r.RealAmount) / InvoiceItems.Sum(r => r.RealAmount);
+                    return Items.Sum(r => r.Temperature * r.RealAmount) / Items.Sum(r => r.RealAmount);
                 }
                 catch
                 {
@@ -175,12 +177,12 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Price { get; set; }
 
 
-        public string Currency { get; set; }
+        public Currency Currency { get; set; }
         public Vendor Vendor { get; set; }
 
         public decimal Subtotal {
             get {
-                return Math.Round(Price * RealAmount, Currency == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Price * RealAmount, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
         
@@ -189,7 +191,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return Math.Round(Subtotal * TaxRate, Currency == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Subtotal * TaxRate, Currency.ToString() == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -203,12 +205,13 @@ namespace Megatech.FMS.WebAPI.Models
         public string InWords {
 
         get {
-                return VNS.Utils.NumberConvert.NumberToSentence(TotalAmount, false, this.Currency);
+                return VNS.Utils.NumberConvert.NumberToSentence(TotalAmount, false, this.Currency.ToString());
             }
         }
 
-        public DateTime StartTime { get; private set; }
-        public DateTime EndTime { get; private set; }
+        public DateTime StartTime { get;  set; }
+        public DateTime EndTime { get; set; }
+
     }
 
     public class InvoiceItemModel 
@@ -230,9 +233,9 @@ namespace Megatech.FMS.WebAPI.Models
 
 
         public decimal RealAmount { get; set; }
-        public decimal Volume { get; set; }
-        public decimal Weight { get; set; }
-        public decimal Gallon { get; set; }
+        public decimal? Volume { get; set; }
+        public decimal? Weight { get; set; }
+        public decimal? Gallon { get; set; }
         public decimal Density { get; set; }
         public decimal Temperature { get; set; }
 

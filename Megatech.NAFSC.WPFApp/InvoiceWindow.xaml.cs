@@ -24,6 +24,11 @@ namespace Megatech.NAFSC.WPFApp
         {
             InitializeComponent();
         }
+        public InvoiceWindow(decimal maxSplit) : this()
+        {
+            _maxSplit = maxSplit;
+        }
+        private decimal _maxSplit;
         public InvoiceOption Model { get; set; }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -52,6 +57,11 @@ namespace Megatech.NAFSC.WPFApp
                 {
                     isValid = false;
                     msg = "Nhập số lượng cần tách";
+                }
+                else if (Model.SplitAmount>= _maxSplit)
+                {
+                    isValid = false;
+                    msg = "Số lượng cần tách phải nhỏ hơn " + _maxSplit.ToString("#,##0");
                 }
                 else if (string.IsNullOrEmpty(Model.InvoiceNumber2))
                 {

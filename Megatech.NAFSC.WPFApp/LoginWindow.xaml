@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:ctl="clr-namespace:Megatech.NAFSC.WPFApp.Controls"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="Đăng nhập" Height="300" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
@@ -21,10 +22,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Label x:Name="label_Copy" Content="Tên đăng nhập" Grid.Column="0" Margin="5"/>
-        <TextBox x:Name="txtUserName" Grid.Column="1" Margin="5" InputScope="">
+        <ctl:TouchEnabledTextBox x:Name="txtUserName" Grid.Column="1" Margin="5" InputScope="">
            
                 
-        </TextBox>
+        </ctl:TouchEnabledTextBox>
         <Label x:Name="label" Content="Mật khẩu" Grid.Row="1" Margin="5"/>
         <PasswordBox x:Name="txtPassword" Grid.Row="1" Grid.Column="1" Margin="5" InputScope="Password" />
         <Button  x:Name="btnLogin"  Click="btnLogin_Click" Grid.Row="2" Grid.Column="1" Margin="5" Padding="10">

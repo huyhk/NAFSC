@@ -87,9 +87,9 @@
     <Compile Include="Entity\User.cs" />
     <Compile Include="Entity\UserLog.cs" />
     <Compile Include="Entity\Vehicle.cs" />
-    <Compile Include="Migrations\202011300221215_invoice.cs" />
-    <Compile Include="Migrations\202011300221215_invoice.designer.cs">
-      <DependentUpon>202011300221215_invoice.cs</DependentUpon>
+    <Compile Include="Migrations\202012011259547_init.cs" />
+    <Compile Include="Migrations\202012011259547_init.designer.cs">
+      <DependentUpon>202012011259547_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -103,8 +103,8 @@
     <Content Include="Scripts\QCNoHistory.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202011300221215_invoice.resx">
-      <DependentUpon>202011300221215_invoice.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202012011259547_init.resx">
+      <DependentUpon>202012011259547_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

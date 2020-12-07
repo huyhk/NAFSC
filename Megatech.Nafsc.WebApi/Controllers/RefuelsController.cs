@@ -30,7 +30,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         [Authorize]
 
         // GET: api/Refuels
-        public IEnumerable<RefuelViewModel> GetRefuels(string sdate = "", int o = 1, REFUEL_ITEM_TYPE type = REFUEL_ITEM_TYPE.REFUEL, TIME_RANGE range=TIME_RANGE.TODAY)
+        public IEnumerable<RefuelViewModel> GetRefuels(string sdate = "", int p = 1, int ps=99)
         {
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
 
@@ -77,17 +77,17 @@ namespace Megatech.FMS.WebAPI.Controllers
             db.Configuration.ProxyCreationEnabled = false;
             var query = db.RefuelItems.Include(r => r.Flight.Airline).Include(r => r.Truck).Include(r=>r.Driver).Include(r=>r.Operator);
             query = query
-                    .Where(r => r.Flight.RefuelScheduledTime >= start)
-                    .Where(r => r.Flight.RefuelScheduledTime <= end)
-                .Where(r => r.RefuelItemType == type);
-            if (airportId != 0)
-                query = query.Where(r => r.Flight.AirportId == airportId);
-/*
-            if (o == 1)
-                query = query.Where(r => r.Truck.Code == truckNo);
-            else
-                query = query.Where(r => r.Truck.Code != truckNo);
-*/
+                    .Where(r => r.Flight.RefuelScheduledTime.Value >= start)
+                    .Where(r => r.Flight.RefuelScheduledTime.Value <= end);
+              //  .Where(r => r.RefuelItemType == type);
+            //if (airportId != 0)
+            //    query = query.Where(r => r.Flight.AirportId == airportId);
+            /*
+                        if (o == 1)
+                            query = query.Where(r => r.Truck.Code == truckNo);
+                        else
+                            query = query.Where(r => r.Truck.Code != truckNo);
+            */
             var list = query.OrderBy(r=>r.Flight.RefuelScheduledTime)
                 .Select(r => new RefuelViewModel
                 {
@@ -117,20 +117,24 @@ namespace Megatech.FMS.WebAPI.Controllers
                     ManualTemperature = r.ManualTemperature,
                     Temperature = r.Temperature,
                     Price = r.Price,
-                    QualityNo = r.QCNo??qcNo,
+                    QualityNo = r.QCNo ?? qcNo,
                     TaxRate = r.TaxRate,
                     TruckNo = r.Truck.Code,
                     Gallon = r.Gallon,
                     AirlineId = r.Flight.AirlineId ?? 0,
-                    Airline = new AirlineViewModel { Name = r.Flight.Airline.Name, InvoiceName = r.Flight.Airline.InvoiceName},
+                    Airline = new AirlineViewModel { Name = r.Flight.Airline.Name, InvoiceName = r.Flight.Airline.InvoiceName },
                     RefuelItemType = r.RefuelItemType,
                     DriverId = r.DriverId,
                     OperatorId = r.OperatorId,
-                    DriverName = r.Driver == null? "": r.Driver.FullName,
+                    DriverName = r.Driver == null ? "" : r.Driver.FullName,
                     OperatorName = r.Operator == null ? "" : r.Operator.FullName,
+                    Printed = r.Printed,
+                    Extract = r.Extract,
+                    Volume = r.Volume,
+                    Weight = r.Weight
 
 
-                }).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);
+                }).Skip((p-1)*ps).Take(ps).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);
 
             var flights = list.Select(item => item.FlightId).ToArray();
             
@@ -155,7 +159,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         public IHttpActionResult GetRefuel(int id)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            var refuel = db.RefuelItems.Select(r => new RefuelViewModel
+            var refuel = db.RefuelItems.Include(r=>r.Flight).Select(r => new RefuelViewModel
             {
                 FlightStatus = r.Flight.Status,
                 FlightId = r.FlightId,
@@ -191,7 +195,10 @@ namespace Megatech.FMS.WebAPI.Controllers
                 DriverId = r.DriverId,
                 OperatorId = r.OperatorId,
                 Printed = r.Printed,
-                InvoiceId = r.InvoiceId ?? 0
+                InvoiceId = r.InvoiceId ?? 0,
+                Extract = r.Extract,
+                Volume = r.Volume,
+                Weight = r.Weight, 
 
 
             }).FirstOrDefault(r => r.Id == id);
@@ -229,6 +236,7 @@ namespace Megatech.FMS.WebAPI.Controllers
 
                            }).FirstOrDefault();
 
+            if (airline != null) refuel.AirlineId = airline.Id;
             refuel.Airline = airline;
             //if (refuel.FlightStatus == FlightStatus.REFUELED)
             //{
@@ -264,7 +272,14 @@ namespace Megatech.FMS.WebAPI.Controllers
                        TruckNo = r.Truck.Code,
                        Gallon = r.Gallon,
                        AirlineId = r.Flight.AirlineId ?? 0,
-                       RefuelItemType = r.RefuelItemType
+                       RefuelItemType = r.RefuelItemType,
+                       Printed = r.Printed,
+                       InvoiceId = r.InvoiceId ?? 0,
+                       Extract = r.Extract,
+                       Volume = r.Volume,
+                       Weight = r.Weight,
+                       DriverId = r.DriverId,
+                       OperatorId = r.OperatorId,
 
 
                    }).ToList();
@@ -398,7 +413,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 else
                     model.EndTime = null;
 
-                model.ManualTemperature = refuel.ManualTemperature;
+                model.ManualTemperature = refuel.Temperature;
                 model.Density = refuel.Density;
                 model.Price = refuel.Price;
                 model.QCNo = refuel.QualityNo??qcNo;
@@ -409,6 +424,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 model.Gallon = refuel.Gallon;
                 model.Weight = refuel.Weight;
                 model.Volume = refuel.Volume;
+                model.Volume15 = refuel.Volume;
                 model.Extract = refuel.Extract;
                 model.DateUpdated = DateTime.Now;
                 model.UserUpdatedId = userId;
@@ -495,7 +511,12 @@ namespace Megatech.FMS.WebAPI.Controllers
                 Gallon = r.Gallon,
                 AirlineId = r.Flight.AirlineId ?? 0,
                 
-                RefuelItemType = r.RefuelItemType
+                RefuelItemType = r.RefuelItemType,
+                Extract = r.Extract,
+                Volume = r.Volume,
+                Weight = r.Weight, 
+                DriverId = r.DriverId,
+                OperatorId = r.OperatorId
 
 
             }).FirstOrDefault(r => r.Id == model.Id);
@@ -562,7 +583,12 @@ namespace Megatech.FMS.WebAPI.Controllers
                    TruckNo = r.Truck.Code,
                    Gallon = r.Gallon,
                    AirlineId = r.Flight.AirlineId ?? 0,
-                   RefuelItemType = r.RefuelItemType
+                   RefuelItemType = r.RefuelItemType,
+                   Extract = r.Extract,
+                   Volume = r.Volume,
+                   Weight = r.Weight,
+                   DriverId = r.DriverId,
+                   OperatorId = r.OperatorId
 
 
                }).ToList();
@@ -571,7 +597,7 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             return Ok(newItem);
         }
-
+        
         // DELETE: api/Refuels/5
         [ResponseType(typeof(Refuel))]
         public IHttpActionResult DeleteRefuel(int id)

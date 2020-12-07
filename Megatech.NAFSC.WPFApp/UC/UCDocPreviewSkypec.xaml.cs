@@ -29,7 +29,7 @@ namespace Megatech.NAFSC.WPFApp.UC
         public void SetDataSource(InvoiceViewModel model)
         {
             DataContext = model;
-            lvItems.ItemsSource = model.InvoiceItems;
+            lvItems.ItemsSource = model.Items;
         }
     }
 }

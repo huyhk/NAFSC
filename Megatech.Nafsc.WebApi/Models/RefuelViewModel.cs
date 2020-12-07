@@ -53,10 +53,10 @@ namespace Megatech.FMS.WebAPI.Models
 
         public decimal TaxRate { get; set; }
 
-        public decimal Weight { get; set; }
+        public decimal? Weight { get; set; }
 
-        public decimal Volume { get; set; }
-        public decimal Extract { get; set; }
+        public decimal? Volume { get; set; }
+        public decimal? Extract { get; set; }
         public int AirlineId { get; set; }
         public AirlineViewModel Airline { get; set; }
 
@@ -65,7 +65,7 @@ namespace Megatech.FMS.WebAPI.Models
         public List<RefuelViewModel> Others { get; set; }
 
         public FlightStatus FlightStatus { get; set; }
-        public decimal Gallon { get;  set; }
+        public decimal? Gallon { get;  set; }
 
         public REFUEL_ITEM_TYPE RefuelItemType { get; set; }
 

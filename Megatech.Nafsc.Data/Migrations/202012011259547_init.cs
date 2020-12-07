@@ -5,7 +5,7 @@
     using System.Data.Entity.Infrastructure.Annotations;
     using System.Data.Entity.Migrations;
     
-    public partial class invoice : DbMigration
+    public partial class init : DbMigration
     {
         public override void Up()
         {
@@ -33,8 +33,13 @@
                         ProductName = c.String(),
                         Price = c.Decimal(nullable: false, precision: 18, scale: 2),
                         TaxRate = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        RefuelTime = c.DateTime(),
+                        StartTime = c.DateTime(),
+                        EndTime = c.DateTime(),
                         SubTotal = c.Decimal(nullable: false, precision: 18, scale: 2),
                         Tax = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Vendor = c.Int(nullable: false),
+                        Currency = c.Int(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
                         DateUpdated = c.DateTime(nullable: false),
                         UserCreatedId = c.Int(),
@@ -42,7 +47,6 @@
                         IsDeleted = c.Boolean(nullable: false),
                         DateDeleted = c.DateTime(),
                         UserDeletedId = c.Int(),
-                        
                     },
                 annotations: new Dictionary<string, object>
                 {
@@ -50,7 +54,9 @@
                 })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Invoices", t => t.ChildId)
+                .ForeignKey("dbo.Flights", t => t.FlightId, cascadeDelete: true)
                 .ForeignKey("dbo.Invoices", t => t.ParentId)
+                .Index(t => t.FlightId)
                 .Index(t => t.ParentId)
                 .Index(t => t.ChildId);
             
@@ -135,13 +141,15 @@
                 })
                 .PrimaryKey(t => t.Id);
             
-            AddColumn("dbo.Airlines", "FlightCodePattern", c => c.Int(nullable: false));
             AddColumn("dbo.Flights", "ValvePit", c => c.Int(nullable: false));
             AddColumn("dbo.Flights", "OilCompany", c => c.Int(nullable: false));
             AddColumn("dbo.RefuelItems", "Volume", c => c.Decimal(nullable: false, precision: 18, scale: 2));
             AddColumn("dbo.RefuelItems", "Volume15", c => c.Decimal(nullable: false, precision: 18, scale: 2));
             AddColumn("dbo.RefuelItems", "Weight", c => c.Decimal(nullable: false, precision: 18, scale: 2));
             AddColumn("dbo.RefuelItems", "Extract", c => c.Decimal(nullable: false, precision: 18, scale: 2));
+            AddColumn("dbo.RefuelItems", "InvoiceId", c => c.Int());
+            AddColumn("dbo.ProductPrices", "OilCompany", c => c.Int(nullable: false));
+            AddColumn("dbo.ProductPrices", "Unit", c => c.Int(nullable: false));
             AddColumn("dbo.ProductPrices", "AgencyId", c => c.Int(nullable: false));
             AddColumn("dbo.ProductPrices", "AirportId", c => c.Int());
             CreateIndex("dbo.ProductPrices", "AgencyId");
@@ -159,20 +167,24 @@
             DropForeignKey("dbo.ProductPrices", "AgencyId", "dbo.Agencies");
             DropForeignKey("dbo.Invoices", "ParentId", "dbo.Invoices");
             DropForeignKey("dbo.InvoiceItems", "InvoiceId", "dbo.Invoices");
-            DropForeignKey("dbo.Invoices", "ChildInvoice_Id", "dbo.Invoices");
+            DropForeignKey("dbo.Invoices", "FlightId", "dbo.Flights");
+            DropForeignKey("dbo.Invoices", "ChildId", "dbo.Invoices");
             DropIndex("dbo.ProductPrices", new[] { "AgencyId" });
             DropIndex("dbo.InvoiceItems", new[] { "InvoiceId" });
-            DropIndex("dbo.Invoices", new[] { "ChildInvoice_Id" });
+            DropIndex("dbo.Invoices", new[] { "ChildId" });
             DropIndex("dbo.Invoices", new[] { "ParentId" });
+            DropIndex("dbo.Invoices", new[] { "FlightId" });
             DropColumn("dbo.ProductPrices", "AirportId");
             DropColumn("dbo.ProductPrices", "AgencyId");
+            DropColumn("dbo.ProductPrices", "Unit");
+            DropColumn("dbo.ProductPrices", "OilCompany");
+            DropColumn("dbo.RefuelItems", "InvoiceId");
             DropColumn("dbo.RefuelItems", "Extract");
             DropColumn("dbo.RefuelItems", "Weight");
             DropColumn("dbo.RefuelItems", "Volume15");
             DropColumn("dbo.RefuelItems", "Volume");
             DropColumn("dbo.Flights", "OilCompany");
             DropColumn("dbo.Flights", "ValvePit");
-            DropColumn("dbo.Airlines", "FlightCodePattern");
             DropTable("dbo.QCNoHistories",
                 removedAnnotations: new Dictionary<string, object>
                 {

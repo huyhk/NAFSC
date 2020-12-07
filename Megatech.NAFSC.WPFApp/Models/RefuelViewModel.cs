@@ -1,5 +1,6 @@
 ﻿using FMS.Data;
 using Megatech.NAFSC.WPFApp.Global;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,11 +29,13 @@ namespace Megatech.FMS.WebAPI.Models
         public string RouteName { get; set; }
         public string TruckNo { get; set; }
         public int TruckId { get; set; }
-        private decimal _realAmount;
+        [DoNotNotify]
         public decimal RealAmount
         {
             get;
             set;
+               
+            
         }
 
         public int? DriverId { get; set; }
@@ -69,7 +72,7 @@ namespace Megatech.FMS.WebAPI.Models
         
         public decimal Weight
         {
-            get { return Volume * Density; }
+            get { return (decimal)Volume * Density; }
             
         }
 
@@ -77,7 +80,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return RealAmount - Extract;// Math.Round(AppSetting.GALLON_TO_LITTRE * RealAmount, 4);
+                return RealAmount - (Extract??0);// Math.Round(AppSetting.GALLON_TO_LITTRE * RealAmount, 4);
             }
         }
 
@@ -90,7 +93,7 @@ namespace Megatech.FMS.WebAPI.Models
         public List<RefuelViewModel> Others { get; set; }
 
         public FlightStatus FlightStatus { get; set; }
-        public decimal Gallon
+        public decimal? Gallon
         {
             get
             {
@@ -105,17 +108,20 @@ namespace Megatech.FMS.WebAPI.Models
             get { return Status == REFUEL_ITEM_STATUS.DONE; }
         }
         
-        public decimal Extract { get; set; }
+        public decimal? Extract { get; set; }
+
+        public bool HasExtract { get { return Extract > 0; } }
 
         public string DriverName { get; set; }
 
         public string OperatorName { get; set; }
 
-
+        [DoNotNotify]
         public int InvoiceId { get; set; }
-
+        [DoNotNotify]
         public bool Printed { get; set; }
 
+       
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

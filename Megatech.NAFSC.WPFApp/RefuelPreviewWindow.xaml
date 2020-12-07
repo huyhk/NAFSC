@@ -19,6 +19,7 @@
 
 
                 <DockPanel Height="48">
+                    <Button Padding="20,0" Content="Trở lại" Click="btnBack_Click" Name="btnBack" IsEnabled="true" Margin="0,0,5,0" ></Button>
                     <Button Padding="20,0" Content="Lưu" Click="btnSave_Click" Name="btnSave" IsEnabled="False" ></Button>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button Padding="20,0" Content="Tạo hóa đơn" Name="btnInvoice" Click="btnInvoice_Click" HorizontalAlignment="Right"></Button>

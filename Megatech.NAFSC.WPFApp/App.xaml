@@ -8,10 +8,11 @@
         <clr:String x:Key="app_name">FMS Delivery</clr:String>
         <clr:String x:Key="login_error_msg">Không thể đăng nhập, vui lòng kiểm tra thông tin</clr:String>
         <clr:String x:Key="login_error_title">Lỗi đăng nhập</clr:String>
-        <clr:String x:Key="flight_code">Mã chuyến bay</clr:String>
+        <clr:String x:Key="flight_code">Mã chuyến bay</clr:String>        
         <clr:String x:Key="airline">Hãng bay</clr:String>
+        <clr:String x:Key="aircraft_type">Loại tàu bay</clr:String>
         <clr:String x:Key="aircraft_code">Số hiệu tàu bay</clr:String>
-        <clr:String x:Key="parking_lot">Bãi đỗ / Hố valve</clr:String>
+        <clr:String x:Key="parking_lot">Bãi đỗ / Hố van</clr:String>
         <clr:String x:Key="route_name">Đường bay</clr:String>
         <clr:String x:Key="arrival_time">Giờ hạ cánh</clr:String>
         <clr:String x:Key="departure_time">Giờ cất cánh</clr:String>
@@ -44,7 +45,7 @@
         <clr:String x:Key="login">Đăng nhập</clr:String>
         <clr:String x:Key="exit_confirmation_msg">Bạn thực sự muốn thoát khỏi chương trình?</clr:String>
         <clr:String x:Key="exit_confirmation_title">Thoát</clr:String>
-        <clr:String x:Key="data_change_confirm">Dữ liệu đã có thay đổi, bạn có muốn lưu trước khi in?</clr:String>
+        <clr:String x:Key="data_change_confirm">Dữ liệu đã có thay đổi, bạn có muốn lưu lại?</clr:String>
         <clr:String x:Key="data_change_title">Dữ liệu thay đổi</clr:String>
         <clr:String x:Key="refuel">Tra nạp</clr:String>
         <clr:String x:Key="device_error_msg">Không kết nối được thiết bị đo, vui lòng kiểm tra lại</clr:String>
@@ -66,6 +67,10 @@
 
         <clr:String x:Key="cancel_invoice_confirm">Bạn có chắc chắn hủy hóa đơn?</clr:String>
         <clr:String x:Key="confirm">Xác nhận</clr:String>
+
+        <clr:String x:Key="extract">Số lượng hút</clr:String>
+
+        <clr:String x:Key="invoice_number">Số hóa đơn</clr:String>
 
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
             <Setter Property="FontSize" Value="14"/>

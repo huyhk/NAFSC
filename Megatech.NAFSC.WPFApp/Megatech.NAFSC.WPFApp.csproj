@@ -16,13 +16,13 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
+    <PublishUrl>ftp://nafscapi.megatech.com.vn/files/</PublishUrl>
+    <Install>false</Install>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -30,9 +30,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://nafscapi.megatech.com.vn/files/</InstallUrl>
     <UpdateUrl>http://localhost/Megatech.NAFSC.WPFApp/</UpdateUrl>
-    <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>2</ApplicationRevision>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -86,21 +88,17 @@
       <HintPath>..\packages\THEFilteredComboBox.1.0.0\lib\net35\FilteredComboBox.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Osklib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d2505f532da25346, processorArchitecture=MSIL">
-      <HintPath>..\packages\Osklib.1.6.0\lib\net45\Osklib.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\VNS\Downloads\osklib-master\Osklib.Wpf\bin\Release\net45\Osklib.dll</HintPath>
     </Reference>
     <Reference Include="Osklib.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d2505f532da25346, processorArchitecture=MSIL">
-      <HintPath>..\packages\Osklib.Wpf.1.6.0\lib\net45\Osklib.Wpf.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\VNS\Downloads\osklib-master\Osklib.Wpf\bin\Release\net45\Osklib.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged, Version=2.6.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.6.1\lib\net452\PropertyChanged.dll</HintPath>
@@ -128,26 +126,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.1\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.4.0.1\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -163,11 +141,16 @@
       <DependentUpon>EMRTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="Global\AppSetting.cs" />
+    <Compile Include="Global\Extensions.cs" />
+    <Compile Include="Global\Keyboard.cs" />
     <Compile Include="Global\TouchTextBox.cs" />
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ErmHelper.cs" />
     <Compile Include="Helpers\InternetHelper.cs" />
     <Compile Include="Helpers\NumberConvert.cs" />
+    <Compile Include="InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InvoiceWindow.xaml.cs">
       <DependentUpon>InvoiceWindow.xaml</DependentUpon>
     </Compile>
@@ -175,7 +158,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AirlineViewModel.cs" />
     <Compile Include="Models\InvoiceViewModel.cs" />
-    <Compile Include="Models\InvoiceWindowViewModel.cs" />
+    <Compile Include="Models\InvoiceOptionModel.cs" />
     <Compile Include="Models\PermissionViewModel.cs" />
     <Compile Include="Models\RefuelViewModel.cs" />
     <Compile Include="Models\ShiftViewModel.cs" />
@@ -209,6 +192,9 @@
     <Compile Include="UC\UCDocPreviewSkypec.xaml.cs">
       <DependentUpon>UCDocPreviewSkypec.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UC\UCDocPriview.xaml.cs">
+      <DependentUpon>UCDocPriview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UC\UCEMRMeter.xaml.cs">
       <DependentUpon>UCEMRMeter.xaml</DependentUpon>
     </Compile>
@@ -219,6 +205,10 @@
       <DependentUpon>UCRefuelList.xaml</DependentUpon>
     </Compile>
     <Page Include="EMRTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -278,6 +268,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UCDocPreviewSkypec.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UCDocPriview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -350,6 +344,8 @@
     <Resource Include="Images\map.png" />
     <Resource Include="Images\operator.png" />
     <Resource Include="Images\driver.png" />
+    <Resource Include="Images\printer.png" />
+    <Resource Include="Images\tanker.ico" />
     <Content Include="Nafsc.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

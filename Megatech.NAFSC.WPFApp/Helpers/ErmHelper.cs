@@ -58,7 +58,8 @@ namespace Megatech.NAFSC.WPFApp.Helpers
         }
         public bool IsError { get; set; }
 
-      
+        byte[] data = new byte[48];
+
         private void Serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             var port = (SerialPortStream)sender;
@@ -71,22 +72,27 @@ namespace Megatech.NAFSC.WPFApp.Helpers
             Log("Read Data");
             if (serial.CanRead)
             {
+                
+                var l = 0;
                 while (serial.BytesToRead > 0)
                 {
                     var b = new byte[serial.BytesToRead];
                     serial.Read(b, 0, serial.BytesToRead);
 
-                    ProcessData(b);
+                    b.CopyTo(data, l);
+                    l += b.Length;                   
 
                 }
-
-                if (serial.BytesToRead <= 0)
-                {
-                    waiting = false;
-
-                    ProcessQueue();
-                }
+                if (data[l-1]== 0x7e)
+                    ProcessData(data);
             }
+            if (serial.BytesToRead <= 0)
+            {
+                waiting = false;
+
+                ProcessQueue();
+            }
+
         }
 
         private void ProcessData(byte[] b)
@@ -114,6 +120,7 @@ namespace Megatech.NAFSC.WPFApp.Helpers
                 else if (code.SequenceEqual(EMRCommand.RATE.ResponseCode))
                     _data.Rate = ToDouble(b);
             }
+            data = new byte[48];
         }
 
         private double ToDouble(byte[] resp)

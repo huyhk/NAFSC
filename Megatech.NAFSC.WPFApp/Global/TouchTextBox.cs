@@ -14,13 +14,17 @@ namespace Megatech.NAFSC.WPFApp.Controls
     {
         public TouchEnabledTextBox()
         {
-            this.GotTouchCapture += TouchEnabledTextBox_GotTouchCapture;
+            //this.GotTouchCapture += TouchEnabledTextBox_GotTouchCapture;
             this.GotFocus += TouchEnabledTextBox_GotFocus;
-            this.GotKeyboardFocus += TouchEnabledTextBox_GotKeyboardFocus;
-            this.GotMouseCapture += TouchEnabledTextBox_GotMouseCapture;
+            //this.GotKeyboardFocus += TouchEnabledTextBox_GotKeyboardFocus;
+            //this.GotMouseCapture += TouchEnabledTextBox_GotMouseCapture;
+            this.LostFocus += TouchEnabledTextBox_LostFocus;
         }
 
-       
+        private void TouchEnabledTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            HideKeyboard();
+        }
 
         private void TouchEnabledTextBox_GotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -42,8 +46,12 @@ namespace Megatech.NAFSC.WPFApp.Controls
             if (!IsReadOnly)
                 OnScreenKeyboard.Show();
         }
+        private void HideKeyboard()
+        {
 
-        
+            OnScreenKeyboard.Close();
+        }
+
         private void TouchEnabledTextBox_GotTouchCapture(
            object sender,
            System.Windows.Input.TouchEventArgs e)

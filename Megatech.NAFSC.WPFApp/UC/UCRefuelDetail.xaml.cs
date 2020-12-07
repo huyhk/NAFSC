@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Megatech.NAFSC.WPFApp.Global;
 
 namespace Megatech.NAFSC.WPFApp.UC
 {
@@ -49,8 +50,8 @@ namespace Megatech.NAFSC.WPFApp.UC
 
         private void TextBox_GotKeyboardFocus(Object sender, KeyboardFocusChangedEventArgs e)
         {
-            TextBox tb = (TextBox)sender;
-            tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
+            //TextBox tb = (TextBox)sender;
+            //tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
         }
 
         internal void SetReadOnly(bool printed)
@@ -59,6 +60,21 @@ namespace Megatech.NAFSC.WPFApp.UC
             {
                 item.IsReadOnly = printed;
             }
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            Window wnd = Window.GetWindow(txt);
+            var inputScope = txt.InputScope ?? new InputScope { Names = { new InputScopeName(InputScopeNameValue.Default) } };
+            
+            
+                var name = (InputScopeName)inputScope.Names[0];
+                if (name.NameValue.HasFlag(InputScopeNameValue.Number))
+                    txt.Text = wnd.GetInput<decimal>(inputScope, txt.Text, txt.Tag.ToString()).ToString();
+                else
+                    txt.Text = wnd.GetInput<string>(inputScope, txt.Text,txt.Tag.ToString()).ToString();
+            
         }
     }
 }

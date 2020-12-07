@@ -1,4 +1,5 @@
 ﻿using Megatech.FMS.WebAPI.Models;
+using Megatech.NAFSC.WPFApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -59,12 +60,22 @@ namespace Megatech.NAFSC.WPFApp
         {
             try
             {
-                textToPrint = BuildTextPrint(this.model);
-                printFont = new Font("Arial", 9);
-                PrintDocument pd = new PrintDocument();
-                pd.PrintPage += new PrintPageEventHandler
-                   (this.pd_PrintPage);
-                pd.Print();
+                textToPrint = BuildTextPrint(tabCtl.SelectedIndex == 0 ? model : model.ChildInvoice);
+                if (textToPrint != null)
+                {
+                    printFont = new Font("Arial", 9);
+                    PrintDocument pd = new PrintDocument();
+                    pd.PrintPage += new PrintPageEventHandler
+                       (this.pd_PrintPage);
+
+                    pd.Print();
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(FindResource("printer_error_msg").ToString(), FindResource("printer_error").ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -105,10 +116,14 @@ namespace Megatech.NAFSC.WPFApp
 
         private string[] BuildTextPrint(InvoiceViewModel model)
         {
-            if (model.Vendor == Vendor.SKYPEC)
-                return BuildTextPrintSkypec(model);
-            else
-                return BuildTextPrintPA(model);
+            if (model != null)
+            {
+                if (model.Vendor == Vendor.SKYPEC)
+                    return BuildTextPrintSkypec(model);
+                else
+                    return BuildTextPrintPA(model);
+            }
+            else return null;
         }
 
         private string[] BuildTextPrintSkypec(InvoiceViewModel model)
@@ -134,19 +149,19 @@ namespace Megatech.NAFSC.WPFApp
             builder.AppendFormat("{0}\n", model.ProductName);
             for (int i = 0; i < 1; i++)
                 builder.AppendLine();
-            foreach (var item in model.InvoiceItems)
+            foreach (var item in model.Items)
             {
                 builder.Append(new string(' ', 5));
                 builder.AppendFormat("{0}", item.TruckNo);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:#,0.00}", item.StartNumber);
+                builder.AppendFormat("{0:#,0}", item.StartNumber);
                 builder.Append(new string(' ', 10));
-                builder.AppendFormat("{0:#,0.00}", item.EndNumber);
+                builder.AppendFormat("{0:#,0}", item.EndNumber);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:#,0.00}\n", item.Volume);
+                builder.AppendFormat("{0:#,0}\n", item.Volume);
             }
 
-            for (int i = 0; i < 2 - model.InvoiceItems.Count; i++)
+            for (int i = 0; i < 2 - model.Items.Count; i++)
                 builder.AppendLine();
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0}\n", model.CustomerName);
@@ -168,26 +183,26 @@ namespace Megatech.NAFSC.WPFApp
             builder.AppendFormat("{0:#,0.0000}\n", model.Density);
 
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.00}", model.Volume);
+            builder.AppendFormat("{0:#,0}", model.Volume);
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.0000}\n", model.Weight);
+            builder.AppendFormat("{0:#,0.00}\n", model.Weight);
 
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0:#,0.00}", model.Gallon);
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.0000}\n", model.Price);
+            builder.AppendFormat(model.Currency == Currency.USD ? "{0:#,0.00}\n" : "{0:#,0}\n", model.Price);
 
             builder.Append(new string(' ', 50));
-            builder.AppendFormat("{0:#,0.00}\n", model.Subtotal);
+            builder.AppendFormat(model.Currency == Currency.USD?"{0:#,0.00}\n": "{0:#,0}\n", model.Subtotal);
 
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.00}", model.TaxRate);
+            builder.AppendFormat("{0:P0}", model.TaxRate);
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.0000}\n", model.Tax);
+            builder.AppendFormat(model.Currency == Currency.USD ? "{0:#,0.00}\n" : "{0:#,0}\n", model.Tax);
 
 
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.00}\n", model.TotalAmount);
+            builder.AppendFormat(model.Currency == Currency.USD ? "{0:#,0.00}\n" : "{0:#,0}\n", model.TotalAmount);
 
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0}\n", model.InWords);
@@ -220,19 +235,19 @@ namespace Megatech.NAFSC.WPFApp
 
             for (int i = 0; i <1; i++)
                 builder.AppendLine();
-            foreach (var item in model.InvoiceItems)
+            foreach (var item in model.Items)
             {
                 builder.Append(new string(' ', 5));
                 builder.AppendFormat("{0}", item.TruckNo);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:#,0.00}", item.StartNumber);
+                builder.AppendFormat("{0:#,0}", item.StartNumber);
                 builder.Append(new string(' ', 10));
-                builder.AppendFormat("{0:#,0.00}", item.EndNumber);
+                builder.AppendFormat("{0:#,0}", item.EndNumber);
                 builder.Append(new string(' ', 30));
-                builder.AppendFormat("{0:#,0.00}\n", item.Volume);
+                builder.AppendFormat("{0:#,0}\n", item.Volume);
             }
 
-            for (int i = 0; i < 3 - model.InvoiceItems.Count; i++)
+            for (int i = 0; i < 3 - model.Items.Count; i++)
                 builder.AppendLine();
             builder.Append(new string(' ', 45));
             builder.AppendFormat("{0}", model.AircraftType);
@@ -250,32 +265,36 @@ namespace Megatech.NAFSC.WPFApp
             builder.AppendFormat("{0:#,0.0000}\n", model.Density);
 
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.00}", model.Volume);
+            builder.AppendFormat("{0:#,0}", model.Volume);
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.0000}\n", model.Weight);
+            builder.AppendFormat("{0:#,0.00}\n", model.Weight);
 
             builder.Append(new string(' ', 45));
-            builder.AppendFormat("{0:#,0.00}", model.Gallon);
+            builder.AppendFormat("{0:#,0.00}\n", model.Gallon);
+            for (int i = 0; i < 7; i++)
+                builder.AppendLine();
+            builder.Append(new string(' ', 15));
+            builder.AppendFormat("{0}", model.OperatorName);
             return builder.ToString().Split(new char[] { '\r', '\n' });
         }
         private InvoiceViewModel model;
-        public void SetDataSource(InvoiceViewModel model)
+        private DataRepository db = DataRepository.GetInstance();
+        public void SetDataSource(int invoiceId)
         {
-            this.model = model;
-            if (model.Vendor == Vendor.PA)
+            var label = FindResource("invoice_number").ToString();
+            model = db.GetInvoice(invoiceId);
+            ucPreview.SetDataSource(model);
+            (tabCtl.Items[0] as TabItem).Header = label + ": " + model.InvoiceNumber;
+            if (model.ChildInvoice != null)
             {
-                docPreview = docPA.docPreview;
-                docSkypec.Visibility = Visibility.Collapsed;
-                docPA.SetDataSource(model);
+            
+                ucPreview2.SetDataSource(model.ChildInvoice);
+                (tabCtl.Items[1] as TabItem).Header = label +": "+model.ChildInvoice.InvoiceNumber;
             }
             else
-                
-            {
-                docPreview = docSkypec.docPreview;
-                docPA.Visibility = Visibility.Collapsed;
-                docSkypec.SetDataSource(model);
-            }
-            
+                (tabCtl.Items[1] as TabItem).Visibility = Visibility.Collapsed;
+
+
         }
         private void HideUIElement(FlowDocument doc)
         {

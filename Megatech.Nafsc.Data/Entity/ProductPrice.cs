@@ -27,7 +27,7 @@ namespace FMS.Data
 
         public Unit Unit { get; set; }
 
-        public int AgencyId { get; set; }
+        public int? AgencyId { get; set; }
         public Agency Agency  { get; set; }
 
         public int? AirportId { get; set; }

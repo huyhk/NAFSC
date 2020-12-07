@@ -25,14 +25,15 @@ namespace Megatech.NAFSC.WPFApp
         {
             InitializeComponent();
 
-            
+            txtUserName.Focus();
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             ApiHelper helper = new ApiHelper();
+            btnLogin.IsEnabled = false;
             var login = helper.Login(txtUserName.Text, txtPassword.Password);
-
+            btnLogin.IsEnabled = true;
             if (login != null)
             {
                                 

@@ -9,7 +9,7 @@ namespace FMS.Data
         public IList<Aircraft> Aircrafts { get; set; }
         public IList<Flight> Flights { get; set; }
 
-        public int FlightCodePattern { get; set; }
+        //public int FlightCodePattern { get; set; }
 
         
         

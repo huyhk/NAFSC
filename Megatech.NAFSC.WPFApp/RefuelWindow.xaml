@@ -75,7 +75,7 @@
                 </ToolBar.Resources>
 
                 <DockPanel Height="48">
-                    <Button Padding="20,0" Content="{StaticResource btn_back}"  Name="btnBack"  Click="Button_Click" IsEnabled="False" ></Button>
+                    <Button Padding="20,0" Content="{StaticResource btn_back}"  Name="btnBack"  Click="Button_Click" IsEnabled="true" ></Button>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <StackPanel Orientation="Vertical" Margin="10,2">
                             <TextBlock Text="{StaticResource driver}"></TextBlock>

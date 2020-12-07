@@ -60,7 +60,7 @@ namespace FMS.Data
         public decimal Density { get; set; }
 
         public int FlightId { get; set; }
-
+        [ForeignKey("FlightId")]
         public Flight Flight { get; set; }
 
         public decimal Price { get; set; }
@@ -80,24 +80,24 @@ namespace FMS.Data
         public REFUEL_ITEM_TYPE RefuelItemType { get; set; }
 
         
-        public decimal Volume {
+        public decimal? Volume {
             get;
             set;
         }
 
-        public decimal Volume15
+        public decimal? Volume15
         {
             get;
             set;
         }
-        public decimal Weight
+        public decimal? Weight
         {
             get;set;
         }
 
-        public decimal Gallon { get; set; }
+        public decimal? Gallon { get; set; }
         
-        public decimal Extract { get; set; }
+        public decimal? Extract { get; set; }
 
 
 
@@ -105,7 +105,7 @@ namespace FMS.Data
         {
             get
             {
-                return this.Weight * this.Price;
+                return (decimal)this.Weight * this.Price;
             }
         }
         public decimal VATAmount

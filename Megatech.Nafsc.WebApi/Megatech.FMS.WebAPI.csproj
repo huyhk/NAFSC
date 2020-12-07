@@ -266,6 +266,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011300630427_customRole.cs" />
+    <Compile Include="Migrations\202011300630427_customRole.designer.cs">
+      <DependentUpon>202011300630427_customRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AirlineViewModel.cs" />
@@ -363,6 +368,11 @@
       <Project>{f9b9d567-c9d3-46ca-936f-8d5aa023d8fc}</Project>
       <Name>Megatech.Nafsc.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202011300630427_customRole.resx">
+      <DependentUpon>202011300630427_customRole.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

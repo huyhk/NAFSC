@@ -12,5 +12,6 @@ namespace Megatech.NAFSC.WPFApp.Models
         public string InvoiceNumber2 { get; set; }
         public bool Split { get; set; }
         public decimal SplitAmount { get; set; }
+        public decimal MaxSplit { get; set; }
     }
 }

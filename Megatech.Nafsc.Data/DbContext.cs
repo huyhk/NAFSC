@@ -79,6 +79,7 @@ namespace FMS.Data
             //.WithOptionalPrincipal();
 
             modelBuilder.Filter("IsNotDeleted", (IBaseEntity entity) => entity.IsDeleted, false);
+            //modelBuilder.DisableFilterGlobally("IsNotDeleted");
 
             //modelBuilder.Filter("Branch", (Airport entity) => entity.Branch, BRANCHES.MB);
             //modelBuilder.DisableFilterGlobally("Branch");

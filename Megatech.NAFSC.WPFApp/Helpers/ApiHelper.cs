@@ -80,12 +80,29 @@ namespace Megatech.NAFSC.WPFApp.Helpers
         {
             var url = "api/invoices/cancel";
 
-            string data = JsonConvert.SerializeObject(new InvoiceViewModel { Id = id });
+            string data = id.ToString();// JsonConvert.SerializeObject(new InvoiceViewModel { Id = id });
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var t = Task.Run(() => PostData(url, content));
             t.Wait();
 
             return t.Result;
+        }
+
+        internal InvoiceViewModel GetInvoice(int id)
+        {
+            var url = "api/invoices/" + id.ToString();
+
+            var t = Task.Run(() => GetData(url));
+            t.Wait();
+
+            try
+            {
+                return JsonConvert.DeserializeObject<InvoiceViewModel>(t.Result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         internal string PostRefuel(RefuelViewModel model)

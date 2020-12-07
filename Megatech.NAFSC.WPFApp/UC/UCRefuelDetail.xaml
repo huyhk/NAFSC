@@ -11,11 +11,22 @@
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
         <cv:DecimalPercentageConverter x:Key="DecimalPercentageConverter"/>
-        <Style TargetType="TextBox">
-            <EventSetter Event="GotKeyboardFocus" Handler="TextBox_GotKeyboardFocus"></EventSetter>
+        <Style TargetType="TextBlock">
+
             <Setter Property="TextAlignment" Value="Center"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
-            <Setter Property="Padding" Value="2,3"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="FontSize" Value="16"></Setter>
+
+        </Style>
+
+        <Style TargetType="TextBox">
+            
+            <Setter Property="TextAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="FontSize" Value="16"></Setter>
+
             <Setter Property="IsReadOnly" Value="True"></Setter>
             <Setter Property="Background" Value="#fff"></Setter>
         </Style>
@@ -23,6 +34,9 @@
             <Setter Property="IsReadOnly"  Value="False"></Setter>
             <Setter Property="Background" Value="#ffe"></Setter>
             <Setter Property="FontWeight"    Value="Bold"></Setter>
+            
+            <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"></EventSetter>
+
         </Style>
     </UserControl.Resources>
     <UserControl.DataContext>
@@ -63,10 +77,10 @@
         <TextBox Text="{Binding FlightCode}" Grid.Column="1" Grid.Row="1" IsReadOnly="True"></TextBox>
         <Label Content="{StaticResource route_name}" Grid.Column="2" Grid.Row="1"></Label>
         <TextBox Text="{Binding RouteName}" Grid.Column="3" Grid.Row="1" IsReadOnly="True"></TextBox>
-        <Label Content="Loại tàu bay" Grid.Column="0" Grid.Row="2"></Label>
-        <TextBox Text="{Binding AircraftType}" Grid.Column="1" Grid.Row="2" IsReadOnly="True"></TextBox>
+        <Label Content="{StaticResource aircraft_type}" Grid.Column="0" Grid.Row="2"></Label>
+        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftType}" Tag="{StaticResource aircraft_type}" Grid.Column="1" Grid.Row="2" IsReadOnly="True"></TextBox>
         <Label Content="Số hiệu tàu bay" Grid.Column="2" Grid.Row="2"></Label>
-        <TextBox Text="{Binding AircraftCode}" Grid.Column="3" Grid.Row="2" ></TextBox>
+        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftCode}" Tag="{StaticResource aircraft_code}" Grid.Column="3" Grid.Row="2" ></TextBox>
         <Label Content="Giờ cất cánh" Grid.Column="0" Grid.Row="3"></Label>
         <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"></TextBox>
         <Label Content="Giờ hạ cánh" Grid.Column="2" Grid.Row="3"></Label>
@@ -78,23 +92,23 @@
         <Label Content="Sản lượng dự kiến" Grid.Column="0" Grid.Row="5"></Label>
         <TextBox Text="{Binding EstimateAmount}" Grid.Column="1" Grid.Row="5" IsReadOnly="True"></TextBox>
         <Label Content="Sản lượng thực tế" Grid.Column="2" Grid.Row="5"></Label>
-        <TextBox Text="{Binding RealAmount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
+        <TextBox Text="{Binding RealAmount, StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
         <Label Content="Đồng hồ bắt đầu" Grid.Column="0" Grid.Row="6"></Label>
-        <TextBox Text="{Binding StartNumber}" Grid.Column="1" Grid.Row="6" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding StartNumber, StringFormat={}{0:#,0}}" Grid.Column="1" Grid.Row="6" IsReadOnly="True"></TextBox>
         <Label Content="Đồng hồ kết thúc" Grid.Column="2" Grid.Row="6"></Label>
-        <TextBox Text="{Binding EndNumber}" Grid.Column="3" Grid.Row="6" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding EndNumber, StringFormat={}{0:#,0}}" Grid.Column="3" Grid.Row="6" IsReadOnly="True"></TextBox>
         <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="7"></Label>
         <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="7"></TextBox>
         <Label Content="Thuế suất VAT%" Grid.Column="2" Grid.Row="7"></Label>
-        <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" Grid.Column="3" Grid.Row="7"></TextBox>
+        <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P0}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" InputScope="Number" Tag="{StaticResource tax_rate}" Grid.Column="3" Grid.Row="7" Style="{StaticResource Editable}"></TextBox>
         <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
-        <ctl:TouchEnabledTextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}" Grid.Column="1" Grid.Row="8" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>
+        <TextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" InputScope="Number" Tag="{StaticResource temperature}"  Grid.Column="1" Grid.Row="8"  FontSize="16" FontWeight="Bold"></TextBox>
         <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
-        <ctl:TouchEnabledTextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}"  Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="8" InputScope="CurrencyAmount" FontSize="16" FontWeight="Bold"></ctl:TouchEnabledTextBox>        
+        <TextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" Tag="{StaticResource density}"  InputScope="Number"  Grid.Column="3" Grid.Row="8"  FontSize="16" FontWeight="Bold" Margin="0,0,0,1" VerticalAlignment="Bottom"></TextBox>        
         <Label Content="Khối lượng"  Grid.Column="0" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Weight, Mode=OneTime, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}"  Grid.Column="1" Grid.Row="9" FontSize="16"></TextBox>
+        <TextBox Text="{Binding Weight, Mode=OneTime, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,##0.00}}"      Grid.Column="1" Grid.Row="9" FontSize="16"></TextBox>
         <Label Content="Hút nhiên liệu"  Grid.Column="2" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Extract, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.00}}" Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="9" FontSize="16"></TextBox>
+        <TextBox Text="{Binding Extract, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Tag="{StaticResource extract}" InputScope="Number" Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="9" FontSize="16"></TextBox>
         <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="4" >
             <ListView.DataContext>
                 <data:RefuelViewModel/>

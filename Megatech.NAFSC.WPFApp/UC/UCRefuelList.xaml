@@ -13,7 +13,7 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="Image">
-            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="Margin" Value="2"></Setter>
         </Style>
         <Style TargetType="TextBlock">
             
@@ -67,11 +67,13 @@
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -80,7 +82,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Column="0" Text="{Binding Status, Converter={StaticResource StatusConverter}}"></TextBlock>
-                    <TextBlock Text="{Binding TruckNo}" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsDone}" ></TextBlock>
+                    <TextBlock Text="{Binding TruckNo}" Grid.Column="0" Grid.Row="1" Visibility="{Binding IsDone, Converter={StaticResource VisibilityConverter} }" ></TextBlock>
                     <TextBlock  Text="{Binding FlightCode}" Grid.Column="1" Grid.Row="0" Style="{StaticResource TitleText}"></TextBlock>
                     <TextBlock Text="{Binding RouteName}" Grid.Column="1" Grid.Row="1" ></TextBlock>
                     <TextBlock Text="{Binding AircraftType}" Grid.Column="2" Grid.Row="0" ></TextBlock>
@@ -117,6 +119,12 @@
                         <TextBlock Text="{Binding OperatorName}" ></TextBlock>
                     </StackPanel>
                     
+                    <Image  Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp;component/Images/printer.png" Width="20" Height="20" Visibility="{Binding Printed, Converter={StaticResource VisibilityConverter}}"></Image>
+
+                    <StackPanel Grid.Column="7" Grid.RowSpan="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasExtract, Converter={StaticResource VisibilityConverter}}">
+                        <TextBlock Text="{StaticResource extract}" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding Extract, StringFormat={}{0:0,0}}" HorizontalAlignment="Center" ></TextBlock>
+                    </StackPanel>
 
                 </Grid>
 

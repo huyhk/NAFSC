@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
         mc:Ignorable="d"
-        Title="{StaticResource select_user}" Height="300" Width="300" WindowStartupLocation="CenterOwner">
+        Title="{StaticResource select_user}" Height="300" Width="400" WindowStartupLocation="CenterOwner">
     <Grid Margin="10" >
         <Grid.Resources >
             <Style TargetType="ComboBox" >
@@ -20,8 +20,8 @@
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition ></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -34,8 +34,8 @@
                   SelectedValue="{Binding DriverId,  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                   Name="cboDriver" Grid.Row="0" Grid.Column="1"             
                   SelectedValuePath="Id" DisplayMemberPath="Name"
-                  IsTextSearchEnabled="True"
-                  IsEditable="True" 
+                  FontSize="20"
+                   
                   StaysOpenOnEdit="True">
             <ComboBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -50,11 +50,10 @@
                   Name="cboOperator" Grid.Row="1" Grid.Column="1" 
                   HorizontalAlignment="Stretch" 
                   SelectedValuePath="Id" DisplayMemberPath="Name" 
-                  IsTextSearchEnabled="True"
-                  IsEditable="True" 
+                  FontSize="20"
                   StaysOpenOnEdit="True">            
         </ComboBox>
-        
-        <Button Name="btnOK" Click="btnOK_Click" Grid.Row="2" Grid.Column="1" Content="{StaticResource btn_ok}"></Button>
+
+        <Button Name="btnOK" FontSize="20" Padding="10" Click="btnOK_Click" Grid.Row="2" Grid.Column="1" Content="{StaticResource btn_ok}"></Button>
     </Grid>
 </Window>

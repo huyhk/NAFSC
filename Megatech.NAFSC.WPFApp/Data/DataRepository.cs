@@ -51,11 +51,11 @@ namespace Megatech.NAFSC.WPFApp.Data
             return _repo;
         }
 
-        public RefuelItem PostRefuel(RefuelViewModel model)
+        public RefuelViewModel PostRefuel(RefuelViewModel model)
         {
             ApiHelper client = new ApiHelper();
             var response =  client.PostRefuel(model);
-            var respItem = JsonConvert.DeserializeObject<RefuelItem>(response);
+            var respItem = JsonConvert.DeserializeObject<RefuelViewModel>(response);
             return respItem;
 
         }
@@ -78,6 +78,13 @@ namespace Megatech.NAFSC.WPFApp.Data
         {
             ApiHelper client = new ApiHelper();
             var response = client.CancelInvoice(id);
+            
+        }
+
+        internal InvoiceViewModel GetInvoice(int id)
+        {
+            ApiHelper client = new ApiHelper();
+            return client.GetInvoice(id);
             
         }
     }
