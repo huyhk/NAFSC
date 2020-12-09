@@ -20,6 +20,10 @@ namespace FMS.Data
 
         public DateTime StartTime { get; set; }
 
+        public DateTime? EndTime { get; set; }
+
+        public DateTime? RefuelTime { get; set; }
+
         public decimal Amount { get; set; }
 
         public decimal Temperature { get; set; }
@@ -32,7 +36,7 @@ namespace FMS.Data
 
         public bool Printed { get; set; }
 
-        public DateTime? EndTime { get; set; }
+        
 
         public int? DriverId { get; set; }
         [ForeignKey("DriverId")]

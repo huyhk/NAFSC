@@ -101,11 +101,10 @@ namespace Megatech.FMS.WebAPI.Controllers
                     ParkingLot = r.Flight.Parking,
                     ValvePit = r.Flight.ValvePit,
                     RouteName = r.Flight.RouteName,
-
                     Status = r.Status,
                     ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                     DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.EndTime : r.Flight.RefuelScheduledTime,
+                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.Flight.RefuelTime : r.Flight.RefuelScheduledTime,
                     RealAmount = r.Amount,
                     StartTime = r.StartTime,
                     EndTime = r.EndTime ?? DateTime.MinValue,

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using Megatech.NAFSC.WPFApp.Model;
 using Megatech.NAFSC.WPFApp.Helpers;
+using System.Threading;
 
 namespace Megatech.NAFSC.WPFApp.Global
 {
@@ -30,6 +31,31 @@ namespace Megatech.NAFSC.WPFApp.Global
         public static string API_BASE_URL = ConfigurationManager.AppSettings["API_BASE_URL"];
 
         public static decimal GALLON_TO_LITTRE = decimal.Parse(ConfigurationManager.AppSettings["GALLON_TO_LITTRE"]);
+
+        public static bool CheckInternet()
+        {
+            int retries = 0;
+            while (!InternetHelper.IsConnectedToInternet() && retries < 3)
+            {
+
+                RunCommand("rasdial Advantech Advantech forid");
+
+                Thread.Sleep(1000 * 1);
+                retries++;
+            }
+            return InternetHelper.IsConnectedToInternet();
+        }
+
+        private static void RunCommand(string cmd)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C " + cmd;
+            process.StartInfo = startInfo;
+            process.Start();
+        }
 
         public AppSetting()
         { }

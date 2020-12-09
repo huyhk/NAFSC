@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
         xmlns:ctl="clr-namespace:Megatech.NAFSC.WPFApp.Controls"
+        
         mc:Ignorable="d"
         Title="InputDialog" Height="300" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="10">

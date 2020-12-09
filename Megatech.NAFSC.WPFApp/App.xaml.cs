@@ -1,4 +1,6 @@
 ﻿using FMS.Data;
+using Megatech.NAFSC.WPFApp.Data;
+using Megatech.NAFSC.WPFApp.Global;
 using Megatech.NAFSC.WPFApp.Helpers;
 using System;
 using System.Collections.Generic;
@@ -32,18 +34,9 @@ namespace Megatech.NAFSC.WPFApp
         }
 
         private void CheckInternet()
-        {
-            int retries = 0;
-            while (!InternetHelper.IsConnectedToInternet() && retries < 3)
-            {
-                
-                RunCommand("rasdial Advantech Advantech forid");
-                
-                Thread.Sleep(1000 * 1);
-                retries++;
-            }
+        {          
 
-            if (!InternetHelper.IsConnectedToInternet())
+            if (!AppSetting.CheckInternet())
                 MessageBox.Show(FindResource("no_internet_msg").ToString(), FindResource("no_internet_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
@@ -59,7 +52,7 @@ namespace Megatech.NAFSC.WPFApp
         }
         private void InitDatabase()
         {
-            using (DataContext db = new DataContext())
+            using (LocalDbContext db = new LocalDbContext())
             {
                 
             }

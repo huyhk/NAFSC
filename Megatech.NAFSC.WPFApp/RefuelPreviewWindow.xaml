@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:TermControls="clr-namespace:TermControls;assembly=TermControls"
         xmlns:UC="clr-namespace:Megatech.NAFSC.WPFApp.UC" x:Class="Megatech.NAFSC.WPFApp.RefuelPreviewWindow"
         mc:Ignorable="d"
         Title="Thông tin chuyến tra nạp" Height="500" Width="600" WindowStartupLocation="CenterScreen" WindowState="Maximized">
@@ -35,7 +36,8 @@
             </Grid.ColumnDefinitions>
 
             <UC:UCRefuelDetail x:Name="ucDetail"  Grid.ColumnSpan="2"/>
-
+            
         </Grid>
+        
     </DockPanel>
 </Window>
