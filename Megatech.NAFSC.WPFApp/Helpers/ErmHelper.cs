@@ -68,31 +68,36 @@ namespace Megatech.NAFSC.WPFApp.Helpers
 
         private void ReadData()
         {
-            busy = false;
-            Log("Read Data");
-            if (serial.CanRead)
+            try
             {
-                
-                var l = 0;
-                while (serial.BytesToRead > 0)
+                busy = false;
+                Log("Read Data");
+                if (serial.CanRead)
                 {
-                    var b = new byte[serial.BytesToRead];
-                    serial.Read(b, 0, serial.BytesToRead);
 
-                    b.CopyTo(data, l);
-                    l += b.Length;                   
+                    var l = 0;
+                    while (serial.BytesToRead > 0)
+                    {
+                        var b = new byte[serial.BytesToRead];
+                        serial.Read(b, 0, serial.BytesToRead);
 
+                        b.CopyTo(data, l);
+                        l += b.Length;
+
+                    }
+                    if (data[l - 1] == 0x7e)
+                        ProcessData(data);
                 }
-                if (data[l-1]== 0x7e)
-                    ProcessData(data);
+                if (serial.BytesToRead <= 0)
+                {
+                    waiting = false;
+
+                    ProcessQueue();
+                }
             }
-            if (serial.BytesToRead <= 0)
+            catch (Exception ex)
             {
-                waiting = false;
-
-                ProcessQueue();
             }
-
         }
 
         private void ProcessData(byte[] b)

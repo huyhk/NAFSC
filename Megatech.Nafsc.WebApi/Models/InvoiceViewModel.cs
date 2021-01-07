@@ -37,6 +37,8 @@ namespace Megatech.FMS.WebAPI.Models
 
         public int? RefuelItemId { get; set; }
 
+        public int FlightId { get; set; }
+
         public string FlightCode { get; set; }
 
         public string AircraftCode { get; set; }

@@ -1,5 +1,6 @@
 ﻿using FMS.Data;
 using Megatech.NAFSC.WPFApp.Global;
+using Newtonsoft.Json;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -72,7 +73,10 @@ namespace Megatech.FMS.WebAPI.Models
         
         public decimal Weight
         {
-            get { return (decimal)Volume * Density; }
+            get
+            {
+                return Math.Round(Volume * Density, 0);
+            }
             
         }
 
@@ -97,7 +101,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return Volume / AppSetting.GALLON_TO_LITTRE;
+                return Math.Round(Volume / AppSetting.GALLON_TO_LITTRE,0);
             }
         }
 
@@ -121,7 +125,25 @@ namespace Megatech.FMS.WebAPI.Models
         [DoNotNotify]
         public bool Printed { get; set; }
 
-       
+        [DoNotNotify]
+        public Guid InvoiceGuid { get; set; }
+
+        [DoNotNotify]
+        public Guid LocalGuid { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+
+        public RefuelViewModel Copy()
+        {
+            var model =  JsonConvert.DeserializeObject<RefuelViewModel>(JsonConvert.SerializeObject(this));
+            model.Id = 0;
+            model.Status = REFUEL_ITEM_STATUS.NONE;
+            model.Printed = false;
+            model.LocalGuid = Guid.Empty;
+
+            return model;
+        }
     }
 }

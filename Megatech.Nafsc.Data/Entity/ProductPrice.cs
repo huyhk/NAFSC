@@ -25,12 +25,14 @@ namespace FMS.Data
         
         public OilCompany OilCompany { get; set; }
 
-        public Unit Unit { get; set; }
+        public Currency Currency { get; set; }
 
         public int? AgencyId { get; set; }
         public Agency Agency  { get; set; }
 
         public int? AirportId { get; set; }
+
+        public Unit Unit { get; set; }
 
     }
     public enum OilCompany
@@ -38,9 +40,16 @@ namespace FMS.Data
         SKYPEC,
         PA
     }
-    public enum Unit
+    public enum Currency
     {
         USD,
         VND
     }
+
+    public enum Unit
+    {
+        KG,
+        GALLON
+    }
+
 }

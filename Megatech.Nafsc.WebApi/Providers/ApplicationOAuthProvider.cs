@@ -105,7 +105,7 @@ namespace Megatech.FMS.WebAPI.Providers
 
                 { "userName", user.UserName },
                 { "userId", user.UserId.ToString()},
-                    { "permission", ((int)dbUser.Permission).ToString()}
+                { "permission", ((int)dbUser.Permission).ToString()}
 
             };
                 return new AuthenticationProperties(data);

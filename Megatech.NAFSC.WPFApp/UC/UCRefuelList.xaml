@@ -59,9 +59,10 @@
             </Style>
         </ListView.ItemContainerStyle>
 
-
+        
 
         <ListView.ItemTemplate >
+            
             <DataTemplate >
                 <Grid >
 

@@ -78,7 +78,9 @@ namespace FMS.Data
 
         public OilCompany Vendor { get; set; }
 
-        public Unit Currency { get; set; }
+        public Currency Currency { get; set; }
+
+        public Unit  Unit { get; set; }
     }
 
     public class InvoiceItem:BaseEntity

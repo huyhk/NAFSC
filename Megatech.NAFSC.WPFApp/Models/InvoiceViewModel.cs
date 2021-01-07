@@ -57,6 +57,7 @@ namespace Megatech.FMS.WebAPI.Models
             CustomerName = item.Airline.InvoiceName + " " + item.Airline.Name;
             ProductName = item.Airline.ProductName;
             Currency = item.Airline.Currency;
+            Unit = item.Airline.Unit;
             Vendor = item.Airline.Vendor;
             StartTime = item.StartTime;
             EndTime = item.EndTime;
@@ -176,13 +177,13 @@ namespace Megatech.FMS.WebAPI.Models
 
         public decimal Price { get; set; }
 
-
+        public Unit Unit { get; set; }
         public Currency Currency { get; set; }
         public Vendor Vendor { get; set; }
 
         public decimal Subtotal {
             get {
-                return Math.Round(Price * RealAmount, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Price * (decimal)(Unit == Unit.GALLON?Gallon: Weight), Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
         
@@ -191,7 +192,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return Math.Round(Subtotal * TaxRate, Currency.ToString() == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Subtotal * TaxRate, Currency== Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -211,6 +212,7 @@ namespace Megatech.FMS.WebAPI.Models
 
         public DateTime StartTime { get;  set; }
         public DateTime EndTime { get; set; }
+        public Guid LocalGuid { get; set; }
 
     }
 
@@ -243,6 +245,8 @@ namespace Megatech.FMS.WebAPI.Models
 
         public decimal StartNumber { get; set; }
         public decimal EndNumber { get; set; }
+
+        
 
         internal static IList<InvoiceItemModel> CreateList(IList<RefuelViewModel> items)
         {

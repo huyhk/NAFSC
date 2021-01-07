@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FMS.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Currency Currency { get; set; }
 
+        public  Unit Unit { get; set; }
+
         public Vendor Vendor { get; set; }
 
         public string ProductName { get; set; }
@@ -46,8 +49,13 @@ namespace Megatech.FMS.WebAPI.Models
     public enum Currency
     {
 
-        VND,
-        USD
+        USD,
+        VND
+    }
 
+    public enum Unit
+    {
+        KG,
+        GALLON
     }
 }

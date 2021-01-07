@@ -24,11 +24,11 @@ namespace Megatech.FMS.WebAPI.Controllers
             var today = DateTime.Today;
             //select general price
             var gprice = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
-            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, Unit = Unit.VND };
+            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, Currency = global::FMS.Data.Currency.VND };
            
             var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Include(p=>p.Product).OrderByDescending(p=>p.StartDate);
             var list = from a in db.Airlines
-                       let  p = prices.Where(p=>p.CustomerId == a.Id).FirstOrDefault()
+                       let  p = prices.Where(p => p.CustomerId == a.Id).FirstOrDefault()
                        //join p in prices
                        //on a.Id equals p.CustomerId into hasPrice
                        //from hs in hasPrice.DefaultIfEmpty()
@@ -36,7 +36,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                        {
                            Id = a.Id,
                            Name = a.Name,
-                           Code =a.Code,
+                           Code = a.Code,
                            TaxCode = a.TaxCode,
                            Address = a.Address,
                            Price = p ==null? gprice.Price: p.Price,
@@ -44,7 +44,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                            InvoiceAddress = a.InvoiceAddress,
                            InvoiceName = a.InvoiceName,
                            InvoiceTaxCode = a.InvoiceTaxCode ,
-                           Currency = p == null? Currency.VND:(Currency)p.Unit,
+                           Currency = p == null? Models.Currency.VND:(Models.Currency)p.Currency,
                            Vendor = p == null ? Vendor.SKYPEC: (Vendor)p.OilCompany
 
                        };

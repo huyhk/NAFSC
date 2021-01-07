@@ -150,9 +150,11 @@
     <Compile Include="Converters\StatusConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Data\DataRepository.cs" />
+    <Compile Include="Data\LocalAirline.cs" />
     <Compile Include="Data\LocalDbContext.cs" />
     <Compile Include="Data\LocalInvoice.cs" />
     <Compile Include="Data\LocalRefuel.cs" />
+    <Compile Include="Data\LocalUser.cs" />
     <Compile Include="EMRTest.xaml.cs">
       <DependentUpon>EMRTest.xaml</DependentUpon>
     </Compile>
@@ -181,6 +183,7 @@
     <Compile Include="Models\ShiftViewModel.cs" />
     <Compile Include="Models\TruckViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Model\LoginContext.cs" />
     <Compile Include="Model\LoginModel.cs" />
     <Compile Include="PrintPreview.xaml.cs">
       <DependentUpon>PrintPreview.xaml</DependentUpon>
@@ -363,13 +366,6 @@
     <Resource Include="Images\driver.png" />
     <Resource Include="Images\printer.png" />
     <Resource Include="Images\tanker.ico" />
-    <Content Include="Nafsc.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Nafsc_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Nafsc.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -383,7 +379,15 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Nafsc.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Nafsc_log.ldf">
+      <DependentUpon>Nafsc.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Megatech.Nafsc.Data\Megatech.Nafsc.Data.csproj">
       <Project>{f9b9d567-c9d3-46ca-936f-8d5aa023d8fc}</Project>

@@ -246,7 +246,7 @@
                             </TableCell>
                             <TableCell>
                                 <Paragraph >
-                                    <Run Text="{Binding Weight, Mode=OneTime, StringFormat={}{0:#,0.00}}"></Run>
+                                    <Run Text="{Binding Weight, Mode=OneTime, StringFormat={}{0:#,0}}"></Run>
                                 </Paragraph>
                             </TableCell>
                         </TableRow>
@@ -260,7 +260,7 @@
                             </TableCell>
                             <TableCell>
                                 <Paragraph >
-                                    <Run Text="{Binding Gallon, Mode=OneTime, StringFormat={}{0:#,0.00}}"></Run>
+                                    <Run Text="{Binding Gallon, Mode=OneTime, StringFormat={}{0:#,0}}"></Run>
                                 </Paragraph>
                             </TableCell>
 

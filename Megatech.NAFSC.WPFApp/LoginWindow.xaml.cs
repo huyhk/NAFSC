@@ -1,5 +1,6 @@
 ﻿using Megatech.NAFSC.WPFApp.Global;
 using Megatech.NAFSC.WPFApp.Helpers;
+using Megatech.NAFSC.WPFApp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +31,9 @@ namespace Megatech.NAFSC.WPFApp
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            ApiHelper helper = new ApiHelper();
+            //ApiHelper helper = new ApiHelper();
             btnLogin.IsEnabled = false;
-            var login = helper.Login(txtUserName.Text, txtPassword.Password);
+            var login = new LoginContext().Login(txtUserName.Text, txtPassword.Password);
             btnLogin.IsEnabled = true;
             if (login != null)
             {

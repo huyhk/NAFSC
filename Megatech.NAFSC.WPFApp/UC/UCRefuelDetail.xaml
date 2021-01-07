@@ -8,7 +8,7 @@
              xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
              xmlns:cv="clr-namespace:Megatech.NAFSC.WPFApp"   
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500">
+             d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <cv:DecimalPercentageConverter x:Key="DecimalPercentageConverter"/>
         <Style TargetType="TextBlock">
@@ -123,10 +123,21 @@
                 
                 <GridView >
 
-                    <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="100"   />
+                    <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="180"   />
                     <GridViewColumn Header="Đồng hồ trước"  Width="120" DisplayMemberBinding="{Binding StartNumber, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
                     <GridViewColumn Header="Đồng hồ sau" Width="120" DisplayMemberBinding="{Binding EndNumber, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
-                    <GridViewColumn Header="Lít thực tế" Width="200" DisplayMemberBinding="{Binding Volume, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
+                    <GridViewColumn Header="Lít thực tế" Width="120" DisplayMemberBinding="{Binding Volume, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
+                    <GridViewColumn Header="Giờ bắt đầu" Width="120" DisplayMemberBinding="{Binding StartTime, Mode=OneTime, StringFormat={}{0:HH:mm}}" />
+                    <GridViewColumn Header="Giờ kết thúc" Width="120" DisplayMemberBinding="{Binding EndTime, Mode=OneTime, StringFormat={}{0:HH:mm}}" />
+
+                    <GridViewColumn Header="Hóa đơn">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Path=Printed}">
+                                </CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
 
                 </GridView>
             </ListView.View>

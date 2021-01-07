@@ -104,7 +104,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Status = r.Status,
                     ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                     DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.Flight.RefuelTime : r.Flight.RefuelScheduledTime,
+                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
                     RealAmount = r.Amount,
                     StartTime = r.StartTime,
                     EndTime = r.EndTime ?? DateTime.MinValue,
@@ -173,7 +173,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 Status = r.Status,
                 ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                 DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                RefuelTime = r.Flight.RefuelTime,
+                RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE? r.RefuelTime : r.Flight.RefuelScheduledTime,
                 RealAmount = r.Amount,
                 StartTime = r.StartTime,
                 EndTime = r.EndTime ?? DateTime.MinValue,
@@ -230,7 +230,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                                InvoiceAddress = a.InvoiceAddress,
                                InvoiceName = a.InvoiceName,
                                InvoiceTaxCode = a.InvoiceTaxCode,                               
-                               Currency = (Currency)p.Unit,
+                               Currency = (Currency)p.Currency,
                                Vendor = (Vendor)p.OilCompany
 
                            }).FirstOrDefault();
@@ -255,7 +255,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                        Status = r.Status,
                        ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                        DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                       RefuelTime = r.Flight.RefuelTime ?? DateTime.MinValue,
+                       RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
                        RealAmount = r.Amount,
                        StartTime = r.StartTime,
                        EndTime = r.EndTime ?? DateTime.MinValue,
@@ -360,8 +360,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                         RefuelScheduledTime = DateTime.Today.Add(refuel.RefuelTime.Value.TimeOfDay),
                         EstimateAmount = refuel.EstimateAmount,
                         RefuelTime = refuel.RefuelTime,
-                        StartTime = refuel.RefuelTime.Value,
-                        EndTime = refuel.RefuelTime.Value,
+                        StartTime = refuel.StartTime,
+                        EndTime = refuel.EndTime,
                         AirportId = user.AirportId,
                         CreatedLocation = FLIGHT_CREATED_LOCATION.APP,
                         UserCreatedId = user.Id
@@ -430,6 +430,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 model.RefuelItemType = refuel.RefuelItemType;
                 model.OperatorId = refuel.OperatorId;
                 model.DriverId = refuel.DriverId;
+                if (model.Status == REFUEL_ITEM_STATUS.DONE)
+                    model.RefuelTime = refuel.RefuelTime;
 
             }
             db.SaveChanges();
@@ -444,15 +446,15 @@ namespace Megatech.FMS.WebAPI.Controllers
                     flight.Status = FlightStatus.REFUELED;
                 else if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
                     flight.Status = FlightStatus.REFUELING;
-                if (flight.Status == FlightStatus.REFUELED || flight.Status == FlightStatus.REFUELING)
-                {
-                    if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
-                    {
-                        flight.StartTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Min(r => r.StartTime);
-                        flight.EndTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Max(r => r.EndTime).Value;
-                        flight.RefuelTime = flight.EndTime;
-                    }
-                }
+                //if (flight.Status == FlightStatus.REFUELED || flight.Status == FlightStatus.REFUELING)
+                //{
+                //    if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
+                //    {
+                //        flight.StartTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Min(r => r.StartTime);
+                //        flight.EndTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Max(r => r.EndTime).Value;
+                //        flight.RefuelTime = flight.EndTime;
+                //    }
+                //}
                 if (refuel.AirlineId > 0)
                     flight.AirlineId = refuel.AirlineId;
                 flight.AircraftCode = refuel.AircraftCode;
@@ -492,7 +494,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 Status = r.Status,
                 ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                 DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                RefuelTime = r.Flight.RefuelTime,
+                RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
                 RealAmount = r.Amount,
                 StartTime = r.StartTime,
                 EndTime = r.EndTime ?? DateTime.MinValue,
@@ -508,8 +510,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 Price = r.Price,
                 TruckNo = r.Truck.Code,
                 Gallon = r.Gallon,
-                AirlineId = r.Flight.AirlineId ?? 0,
-                
+                AirlineId = r.Flight.AirlineId ?? 0,                
                 RefuelItemType = r.RefuelItemType,
                 Extract = r.Extract,
                 Volume = r.Volume,
@@ -566,7 +567,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                    Status = r.Status,
                    ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                    DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                   RefuelTime = r.Flight.RefuelTime ?? DateTime.MinValue,
+                   RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
                    RealAmount = r.Amount,
                    StartTime = r.StartTime,
                    EndTime = r.EndTime ?? DateTime.MinValue,

@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace Megatech.NAFSC.WPFApp.Data
 {
-    public class LocalRefuel:BaseLocalEntity
-    {             
-       
+    public class LocalUser:BaseLocalEntity
+    {
 
-        public string Date { get; set; }
-
-        public Guid InvoiceGuid { get; set; }
-
+        
     }
 }

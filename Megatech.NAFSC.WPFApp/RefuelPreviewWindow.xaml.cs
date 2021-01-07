@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using FMS.Data;
+using Megatech.NAFSC.WPFApp.Global;
 
 namespace Megatech.NAFSC.WPFApp
 {
@@ -109,6 +111,7 @@ namespace Megatech.NAFSC.WPFApp
                 else SaveChanges();
             }
             int invoiceId = model.InvoiceId;
+            Guid invoiceGuid = model.InvoiceGuid;
             if (!model.Printed) {               
             
                 InvoiceWindow wnd = new InvoiceWindow(model.Volume);
@@ -124,18 +127,22 @@ namespace Megatech.NAFSC.WPFApp
                     {
                         model.Printed = true;
                         invoiceId = inv.Id;
+                        invoiceGuid = inv.LocalGuid;
                         model.InvoiceId = inv.Id;
+                        
                     }
                    
                 }
             }
-            if (invoiceId > 0)
+            if (invoiceId > 0 || invoiceGuid != Guid.Empty)
             {
                 SetEnable();
                 PrintPreview preview = new PrintPreview();
-                preview.SetDataSource(invoiceId);
+
+                preview.SetDataSource(invoiceId, invoiceGuid);
                 preview.ShowDialog();
             }
+            
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -150,6 +157,41 @@ namespace Megatech.NAFSC.WPFApp
                     e.Cancel = true;
             }
             base.OnClosing(e);
+        }
+
+        private void btnNewRefuel_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(FindResource("new_refuel_msg").ToString(), FindResource("confirm").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                var newModel = model.Copy();
+
+                if (newModel != null)
+                {
+                    SelectUserWindow su = new SelectUserWindow();
+                    su.ShowDialog();
+                    if (su.DialogResult.Value)
+                    {
+                        newModel.OperatorId = su.OperatorId;
+                        newModel.DriverId = su.DriverId;
+                        
+                        newModel.Status = REFUEL_ITEM_STATUS.PROCESSING;
+                        var respItem = db.PostRefuel(newModel);
+                        if (respItem != null)
+                        {
+                            newModel.Id = respItem.Id;
+                            RefuelWindow refuelwd = new RefuelWindow(newModel);
+                            Window wnd = Window.GetWindow(this);
+
+                            refuelwd.ShowDialog();
+                            if (wnd is MainWindow)
+                            {
+                                (wnd as MainWindow).LoadData();
+                            }
+                        }
+                    }
+                    Close();
+                }
+            }
         }
     }
 }

@@ -72,6 +72,8 @@
 
         <clr:String x:Key="invoice_number">Số hóa đơn</clr:String>
 
+        <clr:String x:Key="new_refuel_msg">Bạn muốn tra nạp thêm cho chuyến bay này?</clr:String>
+
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Padding" Value="10,0"/>

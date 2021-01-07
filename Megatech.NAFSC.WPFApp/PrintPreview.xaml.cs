@@ -279,10 +279,13 @@ namespace Megatech.NAFSC.WPFApp
         }
         private InvoiceViewModel model;
         private DataRepository db = DataRepository.GetInstance();
-        public void SetDataSource(int invoiceId)
+        public void SetDataSource(int invoiceId, Guid invoiceGuid)
         {
             var label = FindResource("invoice_number").ToString();
-            model = db.GetInvoice(invoiceId);
+            if (invoiceId > 0)
+                model = db.GetInvoice(invoiceId);
+            else
+                model = db.GetInvoice(invoiceGuid);
             ucPreview.SetDataSource(model);
             (tabCtl.Items[0] as TabItem).Header = label + ": " + model.InvoiceNumber;
             if (model.ChildInvoice != null)
@@ -303,8 +306,6 @@ namespace Megatech.NAFSC.WPFApp
                 HideUIElement(item);
             }
             
-                
-
             
         }
 

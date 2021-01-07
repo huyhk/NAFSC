@@ -1,4 +1,5 @@
-﻿using FMS.Data;
+﻿using AutoUpdaterDotNET;
+using FMS.Data;
 using Megatech.NAFSC.WPFApp.Data;
 using Megatech.NAFSC.WPFApp.Global;
 using Megatech.NAFSC.WPFApp.Helpers;
@@ -30,6 +31,7 @@ namespace Megatech.NAFSC.WPFApp
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            AutoUpdater.Start(ConfigurationManager.AppSettings["updater_url"]);
             CheckInternet();
         }
 

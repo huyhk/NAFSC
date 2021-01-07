@@ -32,10 +32,10 @@ namespace Megatech.NAFSC.WPFApp.Global
 
         public static decimal GALLON_TO_LITTRE = decimal.Parse(ConfigurationManager.AppSettings["GALLON_TO_LITTRE"]);
 
-        public static bool CheckInternet()
+        public static bool CheckInternet(bool autoConnect = true)
         {
             int retries = 0;
-            while (!InternetHelper.IsConnectedToInternet() && retries < 3)
+            while (!InternetHelper.IsConnectedToInternet() && retries < 3 && autoConnect)
             {
 
                 RunCommand("rasdial Advantech Advantech forid");
@@ -45,6 +45,8 @@ namespace Megatech.NAFSC.WPFApp.Global
             }
             return InternetHelper.IsConnectedToInternet();
         }
+
+
 
         private static void RunCommand(string cmd)
         {

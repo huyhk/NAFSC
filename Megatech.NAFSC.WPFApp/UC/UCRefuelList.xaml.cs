@@ -29,7 +29,7 @@ namespace Megatech.NAFSC.WPFApp.UC
         {
             InitializeComponent();
         }
-        
+
         public void SetDataSource(IEnumerable dataSource)
         {
             lvRefuelList.ItemsSource = dataSource;
@@ -61,18 +61,12 @@ namespace Megatech.NAFSC.WPFApp.UC
         protected void ListView_ItemClicked(object sender, EventArgs args)
         {
             var item = (ListViewItem)sender;
-            
+            RefuelViewModel model = (RefuelViewModel)item.DataContext;
 
-           
-                
-                RefuelViewModel model = (RefuelViewModel)item.DataContext;
-
-            
-
-                if (model != null)
+            if (model != null)
+            {
+                if (model.Status != REFUEL_ITEM_STATUS.DONE)
                 {
-                    if (model.Status != REFUEL_ITEM_STATUS.DONE)
-                    {
                     SelectUserWindow su = new SelectUserWindow();
                     su.ShowDialog();
                     if (su.DialogResult.Value)
@@ -91,18 +85,18 @@ namespace Megatech.NAFSC.WPFApp.UC
                             (wnd as MainWindow).LoadData();
                         }
                     }
-                    
-                    }
-                    else
-                    {
-                        RefuelPreviewWindow refuelwd = new RefuelPreviewWindow((RefuelViewModel)item.DataContext);
-
-                        refuelwd.ShowDialog();
-                    }
 
                 }
-            
-            
+                else
+                {
+                    RefuelPreviewWindow refuelwd = new RefuelPreviewWindow((RefuelViewModel)item.DataContext);
+
+                    refuelwd.ShowDialog();
+                }
+
+            }
+
+
         }
     }
 }
