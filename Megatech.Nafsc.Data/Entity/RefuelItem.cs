@@ -68,6 +68,8 @@ namespace FMS.Data
         public Flight Flight { get; set; }
 
         public decimal Price { get; set; }
+        public Currency Currency { get; set; }
+        public Unit Unit { get; set; }
 
         public string QCNo { get; set; }
 
@@ -131,7 +133,7 @@ namespace FMS.Data
         public string InvoiceNumber { get; set; }
 
         public int? InvoiceId { get; set; }
-
+        
     }
 
     public enum REFUEL_ITEM_STATUS

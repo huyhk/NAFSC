@@ -39,7 +39,7 @@ namespace Megatech.FMS.WebAPI
                 TokenEndpointPath = new PathString("/Token"),
                 Provider = new ApplicationOAuthProvider(PublicClientId),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
-                AccessTokenExpireTimeSpan = TimeSpan.MaxValue,
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(30),
                 // In production mode set AllowInsecureHttp = false
                 AllowInsecureHttp = true
             };

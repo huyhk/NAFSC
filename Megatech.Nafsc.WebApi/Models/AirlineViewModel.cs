@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FMS.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Vendor Vendor { get; set; }
 
+        public Unit Unit { get; set; }
+
         public string ProductName { get; set; }
 
         public string InvoiceName { get; set; }
@@ -42,11 +45,5 @@ namespace Megatech.FMS.WebAPI.Models
         PA
 
     }
-    public enum Currency
-    {
-
-        VND,
-        USD
-
-    }
+    
 }

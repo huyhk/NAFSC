@@ -62,6 +62,7 @@ namespace Megatech.NAFSC.WPFApp.Data
         public ICollection<AirlineViewModel> GetAirlines()
         {
             GetRemoteAirlines();
+
             var localList = _db.Airlines.ToList();
             var list = new List<AirlineViewModel>();
             foreach (var item in localList)
@@ -70,7 +71,7 @@ namespace Megatech.NAFSC.WPFApp.Data
             }
 
 
-            return list;
+            return list.OrderBy(a=>a.Name).ToList();
 
         }
 

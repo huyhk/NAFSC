@@ -50,6 +50,8 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Density { get; set; }
 
         public decimal Price { get; set; }
+        public Currency Currency { get; set; }
+        public Unit Unit { get; set; }
 
         public decimal TaxRate { get; set; }
 
@@ -82,5 +84,6 @@ namespace Megatech.FMS.WebAPI.Models
         public bool Printed { get; set; }
 
         public int InvoiceId { get; set; }
+       
     }
 }

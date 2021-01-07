@@ -44,8 +44,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                            InvoiceAddress = a.InvoiceAddress,
                            InvoiceName = a.InvoiceName,
                            InvoiceTaxCode = a.InvoiceTaxCode ,
-                           Currency = p == null? Models.Currency.VND:(Models.Currency)p.Currency,
-                           Vendor = p == null ? Vendor.SKYPEC: (Vendor)p.OilCompany
+                           Currency = p == null? Currency.VND: p.Currency,
+                           Vendor = p == null ? Vendor.SKYPEC: (Vendor)p.OilCompany,
+                           Unit = p==null? Unit.KG: p.Unit
 
                        };
             return list;

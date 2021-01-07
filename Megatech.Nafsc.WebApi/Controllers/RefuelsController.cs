@@ -116,6 +116,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                     ManualTemperature = r.ManualTemperature,
                     Temperature = r.Temperature,
                     Price = r.Price,
+                    Currency = r.Currency,
+                    Unit = r.Unit,
                     QualityNo = r.QCNo ?? qcNo,
                     TaxRate = r.TaxRate,
                     TruckNo = r.Truck.Code,
@@ -187,6 +189,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 QualityNo = r.QCNo,
                 TaxRate = r.TaxRate,
                 Price = r.Price,
+                Currency = r.Currency,
+                Unit = r.Unit,
                 TruckNo = r.Truck.Code,
                 Gallon = r.Gallon,
                 AirlineId = r.Flight.AirlineId ?? 0,
@@ -230,8 +234,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                                InvoiceAddress = a.InvoiceAddress,
                                InvoiceName = a.InvoiceName,
                                InvoiceTaxCode = a.InvoiceTaxCode,                               
-                               Currency = (Currency)p.Currency,
-                               Vendor = (Vendor)p.OilCompany
+                               Currency = p.Currency,
+                               Vendor = (Vendor)p.OilCompany,
+                               Unit = p.Unit
 
                            }).FirstOrDefault();
 
@@ -279,6 +284,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                        Weight = r.Weight,
                        DriverId = r.DriverId,
                        OperatorId = r.OperatorId,
+                       Currency = r.Currency,
+                       Unit = r.Unit,
+                       Price = r.Price
 
 
                    }).ToList();
@@ -398,7 +406,12 @@ namespace Megatech.FMS.WebAPI.Controllers
                 //}
                 //else
                 //    model.TruckId = refuel.TruckId;
-                
+
+                if (refuel.PrintStatus == ITEM_PRINT_STATUS.SUCCESS )
+                {
+                    
+                }
+
                 model.Amount = refuel.RealAmount;
                 model.Temperature = refuel.Temperature;
                 model.Status = refuel.Status;
@@ -415,6 +428,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 model.ManualTemperature = refuel.Temperature;
                 model.Density = refuel.Density;
                 model.Price = refuel.Price;
+                model.Unit = refuel.Unit;
+                model.Currency = refuel.Currency;
                 model.QCNo = refuel.QualityNo??qcNo;
                 model.TaxRate = refuel.TaxRate;
                 model.Status = refuel.Status;
@@ -516,7 +531,10 @@ namespace Megatech.FMS.WebAPI.Controllers
                 Volume = r.Volume,
                 Weight = r.Weight, 
                 DriverId = r.DriverId,
-                OperatorId = r.OperatorId
+                OperatorId = r.OperatorId,
+                Currency = r.Currency,
+                Unit = r.Unit,
+                
 
 
             }).FirstOrDefault(r => r.Id == model.Id);
@@ -588,7 +606,10 @@ namespace Megatech.FMS.WebAPI.Controllers
                    Volume = r.Volume,
                    Weight = r.Weight,
                    DriverId = r.DriverId,
-                   OperatorId = r.OperatorId
+                   OperatorId = r.OperatorId,
+                   Currency = r.Currency,
+                   Unit = r.Unit,
+                   Price = r.Price
 
 
                }).ToList();

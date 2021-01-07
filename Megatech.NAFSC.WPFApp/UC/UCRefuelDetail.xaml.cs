@@ -60,21 +60,36 @@ namespace Megatech.NAFSC.WPFApp.UC
             {
                 item.IsReadOnly = printed;
             }
+
+            foreach (var item in this.grid.Children.OfType<TextBox>())
+            {
+                item.IsReadOnly = printed;
+            }
+            foreach (var item in this.grid.Children.OfType<ComboBox>())
+            {
+                item.IsEditable = !printed;
+                item.IsHitTestVisible = !printed;
+            }
+
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
+
             TextBox txt = (TextBox)sender;
-            Window wnd = Window.GetWindow(txt);
-            var inputScope = txt.InputScope ?? new InputScope { Names = { new InputScopeName(InputScopeNameValue.Default) } };
-            
-            
+            if (!txt.IsReadOnly)
+            {
+                Window wnd = Window.GetWindow(txt);
+                var inputScope = txt.InputScope ?? new InputScope { Names = { new InputScopeName(InputScopeNameValue.Default) } };
+
+
                 var name = (InputScopeName)inputScope.Names[0];
                 if (name.NameValue.HasFlag(InputScopeNameValue.Number))
                     txt.Text = wnd.GetInput<decimal>(inputScope, txt.Text, txt.Tag.ToString()).ToString();
                 else
-                    txt.Text = wnd.GetInput<string>(inputScope, txt.Text,txt.Tag.ToString()).ToString();
-            
+                    txt.Text = wnd.GetInput<string>(inputScope, txt.Text, txt.Tag.ToString()).ToString();
+
+            }
         }
     }
 }

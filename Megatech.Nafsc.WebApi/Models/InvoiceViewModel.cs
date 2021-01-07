@@ -1,4 +1,5 @@
 ﻿
+using FMS.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +25,9 @@ namespace Megatech.FMS.WebAPI.Models
             Price = item.Price;
             CustomerName = item.Airline.InvoiceName + " " + item.Airline.Name;
             ProductName = item.Airline.ProductName;
-            Currency = item.Airline.Currency.ToString();
+            Currency = item.Airline.Currency;
             Vendor = item.Airline.Vendor;
+            Unit = item.Airline.Unit;
             StartTime = item.StartTime;
             EndTime = item.EndTime;
             QualityNo = item.QualityNo;
@@ -143,14 +145,15 @@ namespace Megatech.FMS.WebAPI.Models
         public decimal Price { get; set; }
 
 
-        public string Currency { get; set; }
+        public Currency Currency { get; set; }
         public Vendor Vendor { get; set; }
+        public Unit Unit { get; set; }
 
         public decimal Subtotal
         {
             get
             {
-                return Math.Round(Price * RealAmount, Currency == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Price * RealAmount, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -159,7 +162,7 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get
             {
-                return Math.Round(Subtotal * TaxRate, Currency == "USD" ? 2 : 0, MidpointRounding.AwayFromZero);
+                return Math.Round(Subtotal * TaxRate, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
             }
         }
 

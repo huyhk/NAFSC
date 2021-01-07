@@ -39,7 +39,7 @@ namespace FMS.Data
     {
         SKYPEC,
         PA
-    }
+     }
     public enum Currency
     {
         USD,
