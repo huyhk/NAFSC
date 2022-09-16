@@ -1,0 +1,65 @@
+﻿@model VCMS.MVC4.Data.Article
+@using System.Data.Entity;
+@{
+
+    ViewBag.Title = Model.ArticleName;
+    ViewBag.Keywords = Model.SEOKeywords;
+    ViewBag.Description = Model.SEODescription;
+    ViewBag.DateCreate = Model.DateCreated;
+    ViewBag.DateUpdate = Model.DateUpdated;
+
+    var articleType = Model.ArticleType;
+    articleType.LanguageId = SiteConfig.LanguageId;
+    if (Model.ImageUrl != null)
+    {
+        ViewBag.Image = "//" + Request.Url.Host.ToString() + Model.ImageUrl + "?width=600&height=315&mode=pad";
+    }
+    ViewBag.Short = Html.Raw(VNS.Web.Helpers.HTMLHelper.ReadBlock(VNS.Web.Helpers.HTMLHelper.GetInnerText(!string.IsNullOrWhiteSpace(Model.ShortDescription) ? Model.ShortDescription : Model.Description), 50));
+    var otherCount = 6;
+    var breadcrumb = new BreadcrumbModel
+    {
+        Items = new List<BreadcrumbItem>{
+        new BreadcrumbItem{Text = articleType.Name, Url = Url.Action("Index", "ArticleType", new{ code = articleType.UrlFriendly }) },
+        }
+    };
+    if (Model.CurrentCategory != null)
+    {
+        var cat = Model.Categories.FirstOrDefault(c => c.ArticleTypeId == 2);
+        if (cat != null)
+        {
+            foreach (var item in Category.BuildTreeReverse(cat.Id))
+            {
+                breadcrumb.Items.Add(new BreadcrumbItem { Text = item.CategoryName, Url = Url.Action("Detail", "Category", new { id = item.Id, code = Model.ArticleType.UrlFriendly, title = Unichar.UnicodeStrings.UrlString(item.UrlFriendly) }) });
+            }
+        }
+    }
+    breadcrumb.Items.Add(new BreadcrumbItem { Text = Model.ArticleName, IsLast = true });
+    ViewBag.Breadcrumb = breadcrumb;
+
+    string viewName = null;
+    if (articleType != null)
+    {
+        if (ViewEngines.Engines.FindView(ViewContext.Controller.ControllerContext, articleType.Code + "/Detail", null).View != null)
+        {
+            viewName = articleType.Code + "/Detail";
+            if (Model.FullWidth && ViewEngines.Engines.FindView(ViewContext.Controller.ControllerContext, articleType.Code + "/DetailFullWidth", null).View != null)
+            {
+                Layout = "~/Templates/" + SiteConfig.SiteCode + "/Views/Shared/_LayoutFull.cshtml";
+                viewName = articleType.Code + "/DetailFullWidth";
+            }
+        }
+    }
+
+    if (viewName != null)
+    {
+        @Html.Partial(viewName, Model)
+    }
+    else
+    {
+        
+        <div class="other">
+            @Html.Action("Other", new { id = Model.Id, typeid = Model.ArticleTypeId, count = otherCount })
+        </div>
+    }
+
+}

@@ -1,0 +1,27 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        xmlns:Wpf="clr-namespace:WebEye.Controls.Wpf;assembly=WebEye.Controls.Wpf.WebCameraControl" x:Class="Megatech.NAFSC.WPFApp.ImageCaptureWindow"
+        mc:Ignorable="d"
+        Title="ImageCaptureWindow" Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top">
+            <Button Content="Chụp hình" Name="btnCapture" Click="btnCapture_Click"></Button>
+            <StackPanel x:Name="pnlTemplate" Visibility="Visible" Margin="15,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right"/>
+            <Button Content="Chấp nhận" x:Name="btnOK" Click="btnOK_Click"/>
+        </ToolBar>
+        <Grid DockPanel.Dock="Bottom">
+
+            <Wpf:WebCameraControl Margin="0" VerticalAlignment="Center" x:Name="webCamControl">
+                
+            </Wpf:WebCameraControl>
+            <Image x:Name="preview"/>
+            <Image x:Name="viewer" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        </Grid>
+    </DockPanel>
+    
+</Window>

@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60D0AB35-6B43-4E47-A057-7B9F6E68A5C6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Megatech.NAFSC.WPFApp</RootNamespace>
+    <AssemblyName>Megatech.NAFSC.WPFApp</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>http://localhost/Megatech.NAFSC.WPFApp/</UpdateUrl>
+    <WebPage>publish.htm</WebPage>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>9167E1C71C02DE6EC681562BF14AB64E89E83E75</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Megatech.NAFSC.WPFApp_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\tanker.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <StartupObject>Megatech.NAFSC.WPFApp.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseWindow.cs" />
+    <Compile Include="Converters\PercentageConverter.cs" />
+    <Compile Include="Converters\StatusConverter.cs" />
+    <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Data\DataRepository.cs" />
+    <Compile Include="Data\LocalAirline.cs" />
+    <Compile Include="Data\LocalDbContext.cs" />
+    <Compile Include="Data\LocalInvoice.cs" />
+    <Compile Include="Data\LocalRefuel.cs" />
+    <Compile Include="Data\LocalUser.cs" />
+    <Compile Include="EMRTest.xaml.cs">
+      <DependentUpon>EMRTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Global\AppSetting.cs" />
+    <Compile Include="Global\Extensions.cs" />
+    <Compile Include="Global\Keyboard.cs" />
+    <Compile Include="Global\TouchTextBox.cs" />
+    <Compile Include="Helpers\ApiHelper.cs" />
+    <Compile Include="Helpers\ErmHelper.cs" />
+    <Compile Include="Helpers\InternetHelper.cs" />
+    <Compile Include="Helpers\NumberConvert.cs" />
+    <Compile Include="Helpers\PrintHelper.cs" />
+    <Compile Include="ImageCaptureWindow.xaml.cs">
+      <DependentUpon>ImageCaptureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceWindow.xaml.cs">
+      <DependentUpon>InvoiceWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountBindingModels.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AirlineViewModel.cs" />
+    <Compile Include="Data\BaseLocalEntity.cs" />
+    <Compile Include="Models\AirportModel.cs" />
+    <Compile Include="Models\InvoiceViewModel.cs" />
+    <Compile Include="Models\InvoiceOptionModel.cs" />
+    <Compile Include="Models\PermissionViewModel.cs" />
+    <Compile Include="Models\RefuelViewModel.cs" />
+    <Compile Include="Models\ShiftViewModel.cs" />
+    <Compile Include="Models\TruckViewModel.cs" />
+    <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Model\LoginContext.cs" />
+    <Compile Include="Model\LoginModel.cs" />
+    <Compile Include="SkypecPrintPreview.xaml.cs">
+      <DependentUpon>SkypecPrintPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrintPreview.xaml.cs">
+      <DependentUpon>PrintPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReceiptWindow.xaml.cs">
+      <DependentUpon>ReceiptWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Refuel.xaml.cs">
+      <DependentUpon>Refuel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RefuelPreviewWindow.xaml.cs">
+      <DependentUpon>RefuelPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RefuelWindow.xaml.cs">
+      <DependentUpon>RefuelWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResultWindow.xaml.cs">
+      <DependentUpon>ResultWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelectUserWindow.xaml.cs">
+      <DependentUpon>SelectUserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingWindow.xaml.cs">
+      <DependentUpon>SettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TestComboWindow.xaml.cs">
+      <DependentUpon>TestComboWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCDocPreviewPA.xaml.cs">
+      <DependentUpon>UCDocPreviewPA.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCDocPreviewSkypecNoPrice.xaml.cs">
+      <DependentUpon>UCDocPreviewSkypecNoPrice.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCDocPreviewSkypec.xaml.cs">
+      <DependentUpon>UCDocPreviewSkypec.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCDocPriview.xaml.cs">
+      <DependentUpon>UCDocPriview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCEMRMeter.xaml.cs">
+      <DependentUpon>UCEMRMeter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCRefuelDetail.xaml.cs">
+      <DependentUpon>UCRefuelDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UCRefuelList.xaml.cs">
+      <DependentUpon>UCRefuelList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Content Include="airports.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="App.config">
+      <TransformOnBuild>true</TransformOnBuild>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+    </None>
+    <None Include="Megatech.NAFSC.WPFApp_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Security.mdf" />
+    <Content Include="Security_log.ldf">
+      <DependentUpon>Security.mdf</DependentUpon>
+    </Content>
+    <Content Include="Nafsc.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Nafsc_log.ldf">
+      <DependentUpon>Nafsc.mdf</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Megatech.Nafsc.Data\Megatech.Nafsc.Data.csproj">
+      <Project>{f9b9d567-c9d3-46ca-936f-8d5aa023d8fc}</Project>
+      <Name>Megatech.Nafsc.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\UwpDesktop-Updated.10.0.17763.132\analyzers\dotnet\UwpDesktopAnalyzer.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.4.2.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PropertyChanged.Fody.2.6.1\build\PropertyChanged.Fody.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Autoupdater.NET.Official.1.6.4\lib\net45\AutoUpdater.NET.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.MsDelta.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\EntityFramework.DynamicFilters.3.2.0\lib\net40\EntityFramework.DynamicFilters.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\THEFilteredComboBox.1.0.0\lib\net35\FilteredComboBox.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.Nafsc.Data\bin\Debug\Megatech.Nafsc.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Mdb.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Pdb.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Rocks.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\mscorlib.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Osklib.1.6.0\lib\net45\Osklib.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Osklib.Wpf.1.6.0\lib\net45\Osklib.Wpf.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\PropertyChanged.Fody.2.6.1\lib\net452\PropertyChanged.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\RawPrint.0.5.0\lib\net40\RawPrint.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\SerialPortStream.2.2.2\lib\net45\RJCP.SerialPortStream.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.ComponentModel.DataAnnotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Configuration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Printing.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.Core.4.0.0\lib\net46\System.Reactive.Core.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.Interfaces.4.0.0\lib\net46\System.Reactive.Interfaces.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.Linq.4.0.0\lib\net46\System.Reactive.Linq.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.PlatformServices.4.0.0\lib\net46\System.Reactive.PlatformServices.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\System.Reactive.Windows.Threading.4.0.0\lib\net46\System.Reactive.Windows.Threading.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Runtime.Serialization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Windows.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Windows.Forms.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\WPFTouchKeyboard.1.0.1\lib\TermControls.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\WebEye.Controls.Wpf.WebCameraControl.1.0.3\lib\net40\WebEye.Controls.Wpf.WebCameraControl.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\WindowsBase.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\WPFTabTip.1.2.2\lib\net45\WPFTabTip.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Extended.Wpf.Toolkit.4.0.2\lib\net40\Xceed.Wpf.Toolkit.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Z.EntityFramework.Extensions.5.1.19\lib\net45\Z.EntityFramework.Extensions.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Z.EntityFramework.Plus.EF6.5.1.19\lib\net45\Z.EntityFramework.Plus.EF6.dll" />
+    <ReferencePath Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\packages\Z.Expressions.Eval.4.0.32\lib\net45\Z.Expressions.Eval.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\EMRTest.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\ImageCaptureWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\InputDialog.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\InvoiceWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\LoginWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\MainWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\SkypecPrintPreview.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\PrintPreview.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\ReceiptWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\Refuel.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\RefuelPreviewWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\RefuelWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\ResultWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\SelectUserWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\SettingWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\TestComboWindow.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCDocPreviewPA.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCDocPreviewSkypecNoPrice.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCDocPreviewSkypec.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCDocPriview.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCEMRMeter.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCRefuelDetail.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\UC\UCRefuelList.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\App.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\Megatech.NAFSC.WPFApp_Content.g.cs" />
+    <Compile Include="C:\Users\Huy\OneDrive\Megatech.NAFSC.App\Megatech.NAFSC.WPFApp\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>

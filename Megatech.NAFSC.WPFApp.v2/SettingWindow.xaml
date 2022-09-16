@@ -1,0 +1,29 @@
+﻿<Window x:Class="Megatech.NAFSC.WPFApp.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        mc:Ignorable="d"
+        Title="{StaticResource setting_title}" Height="500" Width="600" WindowStartupLocation="CenterScreen">
+    
+    <Grid Margin="10,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Content="{StaticResource com_port}" Grid.Row="0" Grid.Column="0"></Label>
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="cboPort"></ComboBox>
+        <Label Content="{StaticResource truck_no}" Grid.Row="0" Grid.Column="2"></Label>
+        <ComboBox Grid.Row="0" Grid.Column="3" Name="cboTruck" DisplayMemberPath="TruckNo" SelectedValuePath="TruckNo"></ComboBox>
+        <Button Content="{StaticResource btn_save}" Grid.Row="2" Grid.Column="3" Margin="10,20" Padding="10" Click="Button_Click"></Button>
+    </Grid>
+</Window>

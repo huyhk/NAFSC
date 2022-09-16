@@ -39,6 +39,7 @@ namespace FMS.Data
         public DbSet<Truck> Trucks { get; set; }
 
         public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceItem> InvoiceItems { get; set; }
 
         //public DbSet<TruckAssign> TruckAssigns { get; set; }
 
@@ -145,12 +146,16 @@ namespace FMS.Data
                     cs.ToTable("UserAirport");
                 });
 
-          
+            modelBuilder.Entity<Invoice>().Property(e => e.Density).HasPrecision(18, 4);
+
+            modelBuilder.Entity<InvoiceItem>().Property(e => e.Density).HasPrecision(18, 4);
 
             modelBuilder.Entity<Invoice>()
                     .HasOptional(c => c.ChildInvoice)
                     .WithMany()
                     .HasForeignKey(c => c.ChildId);
+
+            
 
             modelBuilder.Entity<Invoice>()
                   .HasOptional(c => c.ParentInvoice)

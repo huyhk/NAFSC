@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<item>
+    <version>2.0.0.0</version>
+    <url>http://nafscapi.megatech.copm.vn/updates/AutoUpdaterTest.zip</url>
+    <changelog>https://github.com/ravibpatel/AutoUpdater.NET/releases</changelog>
+    <mandatory>false</mandatory>
+</item>

@@ -1,0 +1,62 @@
+﻿<Window x:Class="Megatech.NAFSC.WPFApp.ResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp"
+        mc:Ignorable="d"
+        Title="{StaticResource input_result}" Height="300" Width="500" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}"  x:Key="Editable">
+            <Setter Property="IsReadOnly"  Value="False"></Setter>
+            <Setter Property="Background" Value="#ffe"></Setter>
+            <Setter Property="FontWeight"    Value="Bold"></Setter>
+
+            <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"></EventSetter>
+
+            <Setter Property="IsReadOnly" Value="{Binding IsReadOnly}"></Setter>
+
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*">
+
+            </RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+
+
+        </Grid.RowDefinitions>
+        <Label Content="{StaticResource start_meter}"></Label>
+        <TextBox Grid.Column="1" x:Name="txtStart" TextChanged="txt_TextChanged" InputScope="Number" Style="{StaticResource Editable}" Tag="{StaticResource start_meter}"></TextBox>
+        <Label Content="{StaticResource end_meter}" Grid.Row="1"></Label>
+        <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtEnd" TextChanged="txt_TextChanged" InputScope="Number" Style="{StaticResource Editable}"  Tag="{StaticResource end_meter}"></TextBox>
+        <Label Content="{StaticResource volume}" Grid.Row="2"></Label>
+        <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" x:Name="txtVolume"></TextBox>
+        <Label Content="{StaticResource temperature}" Grid.Row="3"></Label>
+        <TextBox Grid.Column="1" Grid.Row="3"  x:Name="txtTemp" InputScope="Number" Style="{StaticResource Editable}"  Tag="{StaticResource temperature}"></TextBox>
+        <Label Content="{StaticResource density}" Grid.Row="4"></Label>
+        <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtDensity" InputScope="Number" Style="{StaticResource Editable}"  Tag="{StaticResource density}"></TextBox>
+        <Button Content="{StaticResource btn_save}" Grid.Row="5" x:Name="btnSave" Click="btnSave_Click"></Button>
+        <Button Content="{StaticResource btn_back}" Grid.Row="5" Grid.Column="1" x:Name="btnBack" Click="btnBack_Click" ></Button>
+    </Grid>
+</Window>

@@ -20,6 +20,10 @@ namespace FMS.Data
 
         public int CustomerId { get; set; }
 
+        public Airline Customer { get; set; }
+
+        public string CustomerCode { get; set; }
+
         public string CustomerName { get; set; }
 
         public string TaxCode { get; set; }
@@ -33,6 +37,8 @@ namespace FMS.Data
         public decimal Gallon { get; set; }
 
         public decimal Temperature { get; set; }
+
+        
 
         public decimal Density { get; set; }
 
@@ -81,12 +87,25 @@ namespace FMS.Data
         public Currency Currency { get; set; }
 
         public Unit  Unit { get; set; }
+
+
+        public int? ExportedResult { get; set; }
+        public bool Exported { get { return (ExportedResult??-1) == 0; } }
+
+        public DateTime? DateExported { get; set; }
+
+        public string ExportError { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public Guid? UniqueId { get; set; } = Guid.NewGuid();
     }
 
     public class InvoiceItem:BaseEntity
     {
 
         public int InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
         public decimal RealAmount { get; set; }
         public decimal Volume { get; set; }
         public decimal Weight { get; set; }

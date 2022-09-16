@@ -16,6 +16,7 @@ namespace Megatech.FMS.WebAPI.Models
         public int Id { get; set; }
         public int FlightId { get; set; }
         public string  FlightCode { get; set; }
+        public FlightType FlightType { get; set; }
         public decimal EstimateAmount { get; set; }
         public string AircraftCode { get; set; }
         public string AircraftType { get; set; }
@@ -53,6 +54,8 @@ namespace Megatech.FMS.WebAPI.Models
         public Currency Currency { get; set; }
         public Unit Unit { get; set; }
 
+        public Vendor Vendor { get; set; }
+
         public decimal TaxRate { get; set; }
 
         public decimal? Weight { get; set; }
@@ -84,6 +87,10 @@ namespace Megatech.FMS.WebAPI.Models
         public bool Printed { get; set; }
 
         public int InvoiceId { get; set; }
-       
+
+        public string InvoiceNumber{ get; set; }
+
+        public bool IsDeleted { get; set; }
+
     }
 }

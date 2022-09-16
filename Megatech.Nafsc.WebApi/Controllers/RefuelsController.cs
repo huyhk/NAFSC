@@ -13,6 +13,8 @@ using Megatech.FMS.WebAPI.Models;
 using System.Security.Claims;
 using EntityFramework.DynamicFilters;
 using System.Globalization;
+using Megatech.FMS.WebAPI.App_Start;
+using Newtonsoft.Json;
 
 namespace Megatech.FMS.WebAPI.Controllers
 {
@@ -30,7 +32,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         [Authorize]
 
         // GET: api/Refuels
-        public IEnumerable<RefuelViewModel> GetRefuels(string sdate = "", int p = 1, int ps=99)
+        public IEnumerable<RefuelViewModel> GetRefuels(string sdate = "", int p = 1, int ps=99, bool includeDeleted = false)
         {
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
 
@@ -74,6 +76,9 @@ namespace Megatech.FMS.WebAPI.Controllers
             //Get default QCNo
             var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
 
+            if (includeDeleted)
+                db.DisableFilter("IsNotDeleted");
+
             db.Configuration.ProxyCreationEnabled = false;
             var query = db.RefuelItems.Include(r => r.Flight.Airline).Include(r => r.Truck).Include(r=>r.Driver).Include(r=>r.Operator);
             query = query
@@ -94,6 +99,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     FlightStatus = r.Flight.Status,
                     FlightId = r.FlightId,
                     FlightCode = r.Flight.Code,
+                    FlightType = r.Flight.FlightType,
                     EstimateAmount = r.Flight.EstimateAmount,
                     Id = r.Id,
                     AircraftType = r.Flight.AircraftType,
@@ -104,7 +110,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Status = r.Status,
                     ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                     DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
+                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? (r.RefuelTime?? (r.Flight.OilCompany == OilCompany.PA? r.StartTime: r.EndTime)) : r.Flight.RefuelScheduledTime,
+                    //RefuelTime =  r.Flight.RefuelScheduledTime,
                     RealAmount = r.Amount,
                     StartTime = r.StartTime,
                     EndTime = r.EndTime ?? DateTime.MinValue,
@@ -132,7 +139,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Printed = r.Printed,
                     Extract = r.Extract,
                     Volume = r.Volume,
-                    Weight = r.Weight
+                    Weight = r.Weight, 
+                    IsDeleted = r.IsDeleted
 
 
                 }).Skip((p-1)*ps).Take(ps).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);
@@ -165,6 +173,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 FlightStatus = r.Flight.Status,
                 FlightId = r.FlightId,
                 FlightCode = r.Flight.Code,
+                FlightType = r.Flight.FlightType,
                 EstimateAmount = r.Flight.EstimateAmount,
                 Id = r.Id,
                 AircraftType = r.Flight.AircraftType,
@@ -199,6 +208,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 OperatorId = r.OperatorId,
                 Printed = r.Printed,
                 InvoiceId = r.InvoiceId ?? 0,
+                InvoiceNumber = r.Invoice ==null?"" : r.Invoice.InvoiceNumber,
                 Extract = r.Extract,
                 Volume = r.Volume,
                 Weight = r.Weight, 
@@ -211,37 +221,25 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
             var today = DateTime.Today;
 
+            if (refuel.Status == REFUEL_ITEM_STATUS.DONE)
+                today = refuel.RefuelTime.Value;
+
             var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
-            //select general price
-            var gprice = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
-            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" } };
 
-            var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Include(p => p.Product).OrderByDescending(p => p.StartDate);
-            var airline = (from a in db.Airlines.Where(a => a.Id == refuel.AirlineId)
-                           let p = prices.Where(p => p.CustomerId == a.Id).FirstOrDefault()
-                           //join p in prices
-                           //on a.Id equals p.CustomerId into hasPrice
-                           //from hs in hasPrice.DefaultIfEmpty()
-                           select new AirlineViewModel
-                           {
-                               Id = a.Id,
-                               Name = a.Name,
-                               Code = a.Code,
-                               TaxCode = a.TaxCode,
-                               Address = a.Address,
-                               Price = p == null ? gprice.Price : p.Price,
-                               ProductName = p == null ? gprice.Product.Name : p.Product.Name,
-                               InvoiceAddress = a.InvoiceAddress,
-                               InvoiceName = a.InvoiceName,
-                               InvoiceTaxCode = a.InvoiceTaxCode,                               
-                               Currency = p.Currency,
-                               Vendor = (Vendor)p.OilCompany,
-                               Unit = p.Unit
 
-                           }).FirstOrDefault();
 
-            if (airline != null) refuel.AirlineId = airline.Id;
-            refuel.Airline = airline;
+            var airline = GetAirline(refuel);
+            if (airline != null)
+            {
+                refuel.AirlineId = airline.Id;
+                refuel.Airline = airline;
+                if (refuel.Status != REFUEL_ITEM_STATUS.DONE)
+                    refuel.Price = airline.Price;
+                refuel.Currency = airline.Currency;
+                refuel.Unit = airline.Unit;
+                refuel.Vendor = airline.Vendor;
+            }
+
             //if (refuel.FlightStatus == FlightStatus.REFUELED)
             //{
             refuel.Others = db.RefuelItems.Where(r => r.FlightId == refuel.FlightId && r.Id != refuel.Id)
@@ -250,6 +248,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                        FlightStatus = refuel.FlightStatus,
                        FlightId = r.FlightId,
                        FlightCode = r.Flight.Code,
+                       FlightType = r.Flight.FlightType,
                        EstimateAmount = r.Flight.EstimateAmount,
                        Id = r.Id,
                        AircraftType = r.Flight.AircraftType,
@@ -279,6 +278,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                        RefuelItemType = r.RefuelItemType,
                        Printed = r.Printed,
                        InvoiceId = r.InvoiceId ?? 0,
+                       InvoiceNumber = r.Invoice ==null?"" :r.Invoice.InvoiceNumber,
                        Extract = r.Extract,
                        Volume = r.Volume,
                        Weight = r.Weight,
@@ -347,278 +347,321 @@ namespace Megatech.FMS.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            db.DisableFilter("IsNotDeleted");
-            if (refuel.Id == 0)
+            var transaction = db.Database.BeginTransaction();
+            Logger.AppendLog("REFUEL", "Start post " + refuel.FlightCode);
+            try
             {
-                if (refuel.FlightId == 0)
+                db.DisableFilter("IsNotDeleted");
+                if (refuel.Id == 0)
                 {
-                    //insert new flight
-                    Flight fl = new Flight
+                    if (refuel.FlightId == 0)
                     {
-                        Code = refuel.FlightCode,
-                        AircraftCode = refuel.AircraftCode,
-                        Parking = refuel.ParkingLot,
-                        ValvePit = refuel.ValvePit,
-                        RouteName = refuel.RouteName,
-                        AircraftType = refuel.AircraftType,
-                        ArrivalTime = DateTime.Today.Add( refuel.ArrivalTime.TimeOfDay),
-                        DepartuteTime = DateTime.Today.Add(refuel.DepartureTime.TimeOfDay),
-                        ArrivalScheduledTime = DateTime.Today.Add(refuel.ArrivalTime.TimeOfDay),
-                        DepartureScheduledTime = DateTime.Today.Add(refuel.DepartureTime.TimeOfDay),
-                        RefuelScheduledTime = DateTime.Today.Add(refuel.RefuelTime.Value.TimeOfDay),
-                        EstimateAmount = refuel.EstimateAmount,
-                        RefuelTime = refuel.RefuelTime,
-                        StartTime = refuel.StartTime,
-                        EndTime = refuel.EndTime,
-                        AirportId = user.AirportId,
-                        CreatedLocation = FLIGHT_CREATED_LOCATION.APP,
-                        UserCreatedId = user.Id
+                        //insert new flight
+                        Flight fl = new Flight
+                        {
+                            Code = refuel.FlightCode,
+                            AircraftCode = refuel.AircraftCode,
+                            Parking = refuel.ParkingLot,
+                            ValvePit = refuel.ValvePit,
+                            RouteName = refuel.RouteName,
+                            AircraftType = refuel.AircraftType,
+                            ArrivalTime = DateTime.Today.Add(refuel.ArrivalTime.TimeOfDay),
+                            DepartuteTime = DateTime.Today.Add(refuel.DepartureTime.TimeOfDay),
+                            ArrivalScheduledTime = DateTime.Today.Add(refuel.ArrivalTime.TimeOfDay),
+                            DepartureScheduledTime = DateTime.Today.Add(refuel.DepartureTime.TimeOfDay),
+                            RefuelScheduledTime = DateTime.Today.Add(refuel.RefuelTime.Value.TimeOfDay),
+                            EstimateAmount = refuel.EstimateAmount,
+                            RefuelTime = refuel.RefuelTime,
+                            StartTime = refuel.StartTime,
+                            EndTime = refuel.EndTime,
+                            AirportId = user.AirportId,
+                            CreatedLocation = FLIGHT_CREATED_LOCATION.APP,
+                            Status = FlightStatus.ASSIGNED,
+                            UserCreatedId = user.Id
 
+                        };
+                        db.Flights.Add(fl);
+                        db.SaveChanges();
+                        refuel.FlightId = fl.Id;
+                    }
+                }
+
+                var model = db.RefuelItems.Include(r => r.Flight).FirstOrDefault(r => r.Id == refuel.Id);
+                var qcNo = (db.QCNoHistory.OrderByDescending(q => q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
+                if (model == null)
+                {
+                    model = new RefuelItem
+                    {
+                        FlightId = refuel.FlightId,
+                        UserCreatedId = user.Id,
+                        CreatedLocation = ITEM_CREATED_LOCATION.APP
                     };
-                    db.Flights.Add(fl);
-                    db.SaveChanges();
-                    refuel.FlightId = fl.Id;
+
+                    db.RefuelItems.Add(model);
                 }
-            }
-
-            var model = db.RefuelItems.Include(r => r.Flight).FirstOrDefault(r => r.Id == refuel.Id);
-            var qcNo = (db.QCNoHistory.OrderByDescending(q=>q.StartDate).FirstOrDefault(q => q.StartDate <= DateTime.Now) ?? new QCNoHistory()).QCNo;
-            if (model == null)
-            {
-                model = new RefuelItem
+                if (model != null)
                 {
-                    FlightId = refuel.FlightId,
-                    UserCreatedId = user.Id,
-                    CreatedLocation = ITEM_CREATED_LOCATION.APP
-                };
+                    var truck = db.Trucks.OrderBy(t => t.IsDeleted).FirstOrDefault(t => t.Code == refuel.TruckNo);
+                    if (truck != null)
+                    {
+                        model.TruckId = truck.Id;
+                    }
 
-                db.RefuelItems.Add(model);
-            }
-            if (model != null)
-            {
-                //if (refuel.TruckId <= 0)
-                //{
-                var truck = db.Trucks.FirstOrDefault(t => t.Code == refuel.TruckNo);
-                if (truck != null)
-                {
-                    model.TruckId = truck.Id;
-                }
-                //}
-                //else
-                //    model.TruckId = refuel.TruckId;
-
-                if (refuel.PrintStatus == ITEM_PRINT_STATUS.SUCCESS )
-                {
-                    
-                }
-
-                model.Amount = refuel.RealAmount;
-                model.Temperature = refuel.Temperature;
-                model.Status = refuel.Status;
-                model.EndTime = refuel.EndTime;
-                model.StartTime = refuel.StartTime;
-                model.EndNumber = refuel.EndNumber;
-                model.StartNumber = refuel.StartNumber;
-                model.StartTime = refuel.StartTime;
-                if (refuel.EndTime > DateTime.MinValue)
+                    model.Amount = refuel.RealAmount;
+                    model.Temperature = refuel.Temperature;
+                    model.Status = refuel.Status;
                     model.EndTime = refuel.EndTime;
-                else
-                    model.EndTime = null;
+                    model.StartTime = refuel.StartTime;
+                    model.EndNumber = refuel.EndNumber;
+                    model.StartNumber = refuel.StartNumber;
+                    model.StartTime = refuel.StartTime;
+                    if (refuel.EndTime > DateTime.MinValue)
+                        model.EndTime = refuel.EndTime;
+                    else
+                        model.EndTime = null;
 
-                model.ManualTemperature = refuel.Temperature;
-                model.Density = refuel.Density;
-                model.Price = refuel.Price;
-                model.Unit = refuel.Unit;
-                model.Currency = refuel.Currency;
-                model.QCNo = refuel.QualityNo??qcNo;
-                model.TaxRate = refuel.TaxRate;
-                model.Status = refuel.Status;
-                model.DeviceStartTime = refuel.DeviceStartTime;
-                model.DeviceEndTime = refuel.DeviceEndTime;
-                model.Gallon = refuel.Gallon;
-                model.Weight = refuel.Weight;
-                model.Volume = refuel.Volume;
-                model.Volume15 = refuel.Volume;
-                model.Extract = refuel.Extract;
-                model.DateUpdated = DateTime.Now;
-                model.UserUpdatedId = userId;
-                model.RefuelItemType = refuel.RefuelItemType;
-                model.OperatorId = refuel.OperatorId;
-                model.DriverId = refuel.DriverId;
-                if (model.Status == REFUEL_ITEM_STATUS.DONE)
-                    model.RefuelTime = refuel.RefuelTime;
+                    model.ManualTemperature = refuel.Temperature;
+                    model.Density = refuel.Density;
+                    model.Price = refuel.Price;
+                    model.Unit = refuel.Unit;
+                    model.Currency = refuel.Currency;
 
+                    model.QCNo = refuel.QualityNo ?? qcNo;
+                    model.TaxRate = refuel.TaxRate;
+                    model.Status = refuel.Status;
+                    model.DeviceStartTime = refuel.DeviceStartTime;
+                    model.DeviceEndTime = refuel.DeviceEndTime;
+                    model.Gallon = refuel.Gallon;
+                    model.Weight = refuel.Weight;
+                    model.Volume = refuel.Volume;
+                    //model.Volume15 = refuel.Volume;
+                    model.Extract = refuel.Extract;
+                    model.DateUpdated = DateTime.Now;
+                    model.UserUpdatedId = userId;
+                    model.RefuelItemType = refuel.RefuelItemType;
+                    model.OperatorId = refuel.OperatorId;
+                    model.DriverId = refuel.DriverId;
+
+
+                    if (model.Status == REFUEL_ITEM_STATUS.DONE)
+                        model.RefuelTime = refuel.RefuelTime;
+
+                }
+                Logger.AppendLog("REFUEL", "Save changes " + refuel.FlightCode);
+                db.SaveChanges();
+
+
+                var flight = db.Flights.Include(f => f.RefuelItems).FirstOrDefault(f => f.Id == model.FlightId);
+                if (flight != null)
+                {
+                    flight.TotalAmount = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Sum(r => r.Amount);
+
+                    if (flight.RefuelItems.All(r => r.Status == REFUEL_ITEM_STATUS.DONE))
+                        flight.Status = FlightStatus.REFUELED;
+                    else if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE || r.Status == REFUEL_ITEM_STATUS.PROCESSING))
+                        flight.Status = FlightStatus.REFUELING;
+                    if (flight.Status == FlightStatus.REFUELED || flight.Status == FlightStatus.REFUELING)
+                    {
+                        if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
+                        {
+                            flight.StartTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Min(r => r.StartTime);
+                            flight.EndTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Max(r => r.EndTime).Value;
+                            flight.RefuelTime = flight.EndTime;
+                        }
+                    }
+                    if (refuel.AirlineId > 0)
+                        flight.AirlineId = refuel.AirlineId;
+                    flight.AircraftCode = refuel.AircraftCode;
+                    flight.AircraftType = refuel.AircraftType;
+                    flight.Parking = refuel.ParkingLot;
+                    flight.ValvePit = refuel.ValvePit;
+                    flight.RouteName = refuel.RouteName;
+                    flight.FlightType = refuel.FlightType;
+                    flight.DateUpdated = DateTime.Now;
+                    flight.UserUpdatedId = userId;
+
+                    //get current price
+                    if (refuel.Status == REFUEL_ITEM_STATUS.DONE)
+                    {
+                        var price = db.ProductPrices.OrderByDescending(p => p.StartDate)
+                            .Where(p => p.StartDate <= flight.RefuelTime)
+                            .Where(p => p.CustomerId == refuel.AirlineId)
+                            .Where(p => !p.IsDeleted)
+                            .FirstOrDefault();
+
+                        if (price != null)
+                        {
+                            flight.OilCompany = price.OilCompany;
+                            model.Price = price.Price;
+                            model.Unit = price.Unit;
+                            model.Currency = price.Currency;
+                        }
+                    }
+
+                    db.SaveChanges();
+                }
+
+                var newItem = db.RefuelItems.Select(r => new RefuelViewModel
+                {
+                    FlightStatus = flight.Status,
+                    FlightId = r.FlightId,
+                    FlightCode = r.Flight.Code,
+                    FlightType = r.Flight.FlightType,
+                    EstimateAmount = r.Flight.EstimateAmount,
+                    Id = r.Id,
+                    AircraftType = r.Flight.AircraftType,
+                    AircraftCode = r.Flight.AircraftCode,
+                    ParkingLot = r.Flight.Parking,
+                    ValvePit = r.Flight.ValvePit,
+                    RouteName = r.Flight.RouteName,
+                    Status = r.Status,
+                    ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
+                    DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
+                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
+                    RealAmount = r.Amount,
+                    StartTime = r.StartTime,
+                    EndTime = r.EndTime ?? DateTime.MinValue,
+                    StartNumber = r.StartNumber,
+                    EndNumber = r.EndNumber,
+                    DeviceEndTime = r.DeviceEndTime,
+                    DeviceStartTime = r.DeviceStartTime,
+                    Density = r.Density,
+                    ManualTemperature = r.ManualTemperature,
+                    Temperature = r.Temperature,
+                    QualityNo = r.QCNo ?? qcNo,
+                    TaxRate = r.TaxRate,
+                    Price = r.Price,
+                    TruckNo = r.Truck.Code,
+                    Gallon = r.Gallon,
+                    AirlineId = r.Flight.AirlineId ?? 0,
+                    RefuelItemType = r.RefuelItemType,
+                    Extract = r.Extract,
+                    Volume = r.Volume,
+                    Weight = r.Weight,
+                    DriverId = r.DriverId,
+                    OperatorId = r.OperatorId,
+                    Currency = r.Currency,
+                    Unit = r.Unit,
+                    InvoiceId = r.InvoiceId ?? 0,
+                    InvoiceNumber = r.Invoice == null ? "" : r.Invoice.InvoiceNumber
+
+
+                }).FirstOrDefault(r => r.Id == model.Id);
+
+                var airline = GetAirline(newItem);
+                if (airline != null)
+                {
+                    newItem.AirlineId = airline.Id;
+                    newItem.Airline = airline;
+                    //newItem.Price = airline.Price;
+                    newItem.Currency = airline.Currency;
+                    newItem.Unit = airline.Unit;
+                    newItem.Vendor = airline.Vendor;
+                }
+
+                //if (flight.Status == FlightStatus.REFUELED)
+                //{
+                newItem.Others = db.RefuelItems.Where(r => r.FlightId == flight.Id && r.Id != model.Id)
+                   .Select(r => new RefuelViewModel
+                   {
+                       FlightStatus = flight.Status,
+                       FlightId = r.FlightId,
+                       FlightCode = r.Flight.Code,
+                       FlightType = r.Flight.FlightType,
+                       EstimateAmount = r.Flight.EstimateAmount,
+                       Id = r.Id,
+                       AircraftType = r.Flight.AircraftType,
+                       AircraftCode = r.Flight.AircraftCode,
+                       ParkingLot = r.Flight.Parking,
+                       ValvePit = r.Flight.ValvePit,
+                       RouteName = r.Flight.RouteName,
+                       Status = r.Status,
+                       ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
+                       DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
+                       RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
+                       RealAmount = r.Amount,
+                       StartTime = r.StartTime,
+                       EndTime = r.EndTime ?? DateTime.MinValue,
+                       StartNumber = r.StartNumber,
+                       EndNumber = r.EndNumber,
+                       DeviceEndTime = r.DeviceEndTime,
+                       DeviceStartTime = r.DeviceStartTime,
+                       Density = r.Density,
+                       ManualTemperature = r.ManualTemperature,
+                       Temperature = r.Temperature,
+                       QualityNo = r.QCNo ?? qcNo,
+                       TaxRate = r.TaxRate,
+                       TruckNo = r.Truck.Code,
+                       Gallon = r.Gallon,
+                       AirlineId = r.Flight.AirlineId ?? 0,
+                       RefuelItemType = r.RefuelItemType,
+                       Extract = r.Extract,
+                       Volume = r.Volume,
+                       Weight = r.Weight,
+                       DriverId = r.DriverId,
+                       OperatorId = r.OperatorId,
+                       Currency = r.Currency,
+                       Unit = r.Unit,
+                       Price = r.Price,
+                       InvoiceId = r.InvoiceId ?? 0,
+                       InvoiceNumber = r.Invoice == null ? "" : r.Invoice.InvoiceNumber
+
+
+                   }).ToList();
+                //}
+                transaction.Commit();
+
+                return Ok(newItem);
             }
-            db.SaveChanges();
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Logging.Logger.LogException(ex,"refuel");
+                Logger.AppendLog("DATA", JsonConvert.SerializeObject(refuel),"data-error.json");
+                return InternalServerError();
+            }
+        }
+
+        private AirlineViewModel GetAirline(RefuelViewModel refuel)
+        {
+            var today = DateTime.Today;
+
+            if (refuel.Status == REFUEL_ITEM_STATUS.DONE)
+                today = refuel.RefuelTime.Value;
 
             
-            var flight = db.Flights.Include(f => f.RefuelItems).FirstOrDefault(f => f.Id == model.FlightId);
-            if (flight != null)
-            {
-                flight.TotalAmount = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Sum(r => r.Amount);
 
-                if (flight.RefuelItems.All(r => r.Status == REFUEL_ITEM_STATUS.DONE))
-                    flight.Status = FlightStatus.REFUELED;
-                else if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
-                    flight.Status = FlightStatus.REFUELING;
-                //if (flight.Status == FlightStatus.REFUELED || flight.Status == FlightStatus.REFUELING)
-                //{
-                //    if (flight.RefuelItems.Any(r => r.Status == REFUEL_ITEM_STATUS.DONE))
-                //    {
-                //        flight.StartTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Min(r => r.StartTime);
-                //        flight.EndTime = flight.RefuelItems.Where(r => r.Status == REFUEL_ITEM_STATUS.DONE).Max(r => r.EndTime).Value;
-                //        flight.RefuelTime = flight.EndTime;
-                //    }
-                //}
-                if (refuel.AirlineId > 0)
-                    flight.AirlineId = refuel.AirlineId;
-                flight.AircraftCode = refuel.AircraftCode;
-                flight.Parking = refuel.ParkingLot;
-                flight.ValvePit = refuel.ValvePit;
-                flight.DateUpdated = DateTime.Now;
-                flight.UserUpdatedId = userId;
-
-                //get current price
-
-                var price = db.ProductPrices.OrderByDescending(p => p.StartDate)
-                    .Where(p => p.StartDate <= flight.RefuelTime)
-                    .Where(p => p.CustomerId == refuel.AirlineId)
-                    .FirstOrDefault();
-
-                if (price != null)
-                {
-                    flight.OilCompany = price.OilCompany;
-                    model.Price = price.Price;
-                }
-                    
-                db.SaveChanges();
-            }
-
-            var newItem = db.RefuelItems.Select(r => new RefuelViewModel
-            {
-                FlightStatus = flight.Status,
-                FlightId = r.FlightId,
-                FlightCode = r.Flight.Code,
-                EstimateAmount = r.Flight.EstimateAmount,
-                Id = r.Id,
-                AircraftType = r.Flight.AircraftType,
-                AircraftCode = r.Flight.AircraftCode,
-                ParkingLot = r.Flight.Parking,
-                ValvePit = r.Flight.ValvePit,
-                RouteName = r.Flight.RouteName,
-                Status = r.Status,
-                ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
-                DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
-                RealAmount = r.Amount,
-                StartTime = r.StartTime,
-                EndTime = r.EndTime ?? DateTime.MinValue,
-                StartNumber = r.StartNumber,
-                EndNumber = r.EndNumber,
-                DeviceEndTime = r.DeviceEndTime,
-                DeviceStartTime = r.DeviceStartTime,
-                Density = r.Density,
-                ManualTemperature = r.ManualTemperature,
-                Temperature = r.Temperature,
-                QualityNo = r.QCNo??qcNo,
-                TaxRate = r.TaxRate,
-                Price = r.Price,
-                TruckNo = r.Truck.Code,
-                Gallon = r.Gallon,
-                AirlineId = r.Flight.AirlineId ?? 0,                
-                RefuelItemType = r.RefuelItemType,
-                Extract = r.Extract,
-                Volume = r.Volume,
-                Weight = r.Weight, 
-                DriverId = r.DriverId,
-                OperatorId = r.OperatorId,
-                Currency = r.Currency,
-                Unit = r.Unit,
-                
-
-
-            }).FirstOrDefault(r => r.Id == model.Id);
-
-            var today = DateTime.Today;
             //select general price
-            var gprice = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
+            var gprice = db.ProductPrices.Include(p => p.Product).Where(p => !p.IsDeleted).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
             if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" } };
 
-            var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Include(p => p.Product).OrderByDescending(p => p.StartDate);
-            var airline = (from a in db.Airlines.Where(a=>a.Id == newItem.AirlineId)
-                       let p = prices.Where(p => p.CustomerId == a.Id).FirstOrDefault()
-                       //join p in prices
-                       //on a.Id equals p.CustomerId into hasPrice
-                       //from hs in hasPrice.DefaultIfEmpty()
-                       select new AirlineViewModel
-                       {
-                           Id = a.Id,
-                           Name = a.Name,
-                           Code = a.Code,
-                           TaxCode = a.TaxCode,
-                           Address = a.Address,
-                           Price = p == null ? gprice.Price : p.Price,
-                           ProductName = p == null ? gprice.Product.Name : p.Product.Name,
-                           InvoiceAddress = a.InvoiceAddress,
-                           InvoiceName = a.InvoiceName,
-                           InvoiceTaxCode = a.InvoiceTaxCode
+            var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Where(p => !p.IsDeleted).Include(p => p.Product).OrderByDescending(p => p.StartDate);
+            var airlinequery = (from a in db.Airlines.Where(a => a.Id == refuel.AirlineId)
+                                let p = prices.Where(p => p.CustomerId == a.Id).FirstOrDefault()
+                                //join p in prices
+                                //on a.Id equals p.CustomerId into hasPrice
+                                //from hs in hasPrice.DefaultIfEmpty()
+                                select new AirlineViewModel
+                                {
+                                    Id = a.Id,
+                                    Name = a.Name,
+                                    Code = a.Code,
+                                    TaxCode = a.TaxCode,
+                                    Address = a.Address,
+                                    Price = p == null ? gprice.Price : p.Price,
+                                    ProductName = p == null ? gprice.Product.Name : p.Product.Name,
+                                    InvoiceAddress = a.InvoiceAddress,
+                                    InvoiceName = p == null ? "" : p.Agency.Name ,
+                                    InvoiceTaxCode = a.InvoiceTaxCode,
+                                    
+                                    Currency = p == null ? gprice.Currency : p.Currency,
+                                    Vendor = (Vendor)(p == null ? gprice.OilCompany : p.OilCompany),
+                                    Unit = p == null ? gprice.Unit : p.Unit
 
-                       }).FirstOrDefault();
-
-            newItem.Airline = airline;
-
-            //if (flight.Status == FlightStatus.REFUELED)
-            //{
-            newItem.Others = db.RefuelItems.Where(r => r.FlightId == flight.Id && r.Id != model.Id)
-               .Select(r => new RefuelViewModel
-               {
-                   FlightStatus = flight.Status,
-                   FlightId = r.FlightId,
-                   FlightCode = r.Flight.Code,
-                   EstimateAmount = r.Flight.EstimateAmount,
-                   Id = r.Id,
-                   AircraftType = r.Flight.AircraftType,
-                   AircraftCode = r.Flight.AircraftCode,
-                   ParkingLot = r.Flight.Parking,
-                   ValvePit = r.Flight.ValvePit,
-                   RouteName = r.Flight.RouteName,
-                   Status = r.Status,
-                   ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
-                   DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                   RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? r.RefuelTime : r.Flight.RefuelScheduledTime,
-                   RealAmount = r.Amount,
-                   StartTime = r.StartTime,
-                   EndTime = r.EndTime ?? DateTime.MinValue,
-                   StartNumber = r.StartNumber,
-                   EndNumber = r.EndNumber,
-                   DeviceEndTime = r.DeviceEndTime,
-                   DeviceStartTime = r.DeviceStartTime,
-                   Density = r.Density,
-                   ManualTemperature = r.ManualTemperature,
-                   Temperature = r.Temperature,
-                   QualityNo = r.QCNo??qcNo,
-                   TaxRate = r.TaxRate,
-                   TruckNo = r.Truck.Code,
-                   Gallon = r.Gallon,
-                   AirlineId = r.Flight.AirlineId ?? 0,
-                   RefuelItemType = r.RefuelItemType,
-                   Extract = r.Extract,
-                   Volume = r.Volume,
-                   Weight = r.Weight,
-                   DriverId = r.DriverId,
-                   OperatorId = r.OperatorId,
-                   Currency = r.Currency,
-                   Unit = r.Unit,
-                   Price = r.Price
-
-
-               }).ToList();
-            //}
-
-
-            return Ok(newItem);
+                                });
+            var airline = airlinequery.FirstOrDefault();
+            return airline;
         }
-        
         // DELETE: api/Refuels/5
         [ResponseType(typeof(Refuel))]
         public IHttpActionResult DeleteRefuel(int id)

@@ -19,9 +19,16 @@
             <Setter Property="FontSize" Value="16"></Setter>
 
         </Style>
+        <Style TargetType="Label">
+
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="FontSize" Value="16"></Setter>
+
+        </Style>
 
         <Style TargetType="TextBox">
-            
+
             <Setter Property="TextAlignment" Value="Center"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Padding" Value="5"></Setter>
@@ -29,13 +36,16 @@
 
             <Setter Property="IsReadOnly" Value="True"></Setter>
             <Setter Property="Background" Value="#fff"></Setter>
+            <Setter Property="Focusable" Value="False"></Setter>
+
         </Style>
         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}"  x:Key="Editable">
             <Setter Property="IsReadOnly"  Value="False"></Setter>
             <Setter Property="Background" Value="#ffe"></Setter>
             <Setter Property="FontWeight"    Value="Bold"></Setter>
-            
+
             <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"></EventSetter>
+            <EventSetter Event="PreviewMouseUp" Handler="TextBox_PreviewMouseUp"></EventSetter>
 
         </Style>
     </UserControl.Resources>
@@ -44,6 +54,9 @@
     </UserControl.DataContext>
     <Grid Name="grid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -63,53 +76,81 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Label Content="{StaticResource airline}" Grid.Column="0" Grid.Row="0"></Label>
-        <ComboBox SelectedValue="{Binding AirlineId}" Name="cboAirline" SelectedValuePath="Id" DisplayMemberPath="Name"   Grid.Column="1" Grid.Row="0"></ComboBox>
+        <ComboBox SelectedValue="{Binding AirlineId}" Name="cboAirline" SelectedValuePath="Id" DisplayMemberPath="Name" SelectionChanged ="cboAirline_Selected"  Grid.Column="1" Grid.Row="0"></ComboBox>
         <Label Content="{StaticResource parking_lot}" Grid.Column="2" Grid.Row="0"></Label>
-        <TextBox Grid.Column="3" Grid.Row="0" IsReadOnly="True">
+        <TextBox Grid.Column="3" Grid.Row="0"  Style="{StaticResource Editable}" Tag="{StaticResource parking_lot}" InputScope="Number">
             <TextBox.Text>
                 <MultiBinding StringFormat="{}{0}/{1}">
-                    <Binding Path="ParkingLot" Mode="OneWay" />
-                    <Binding Path="ValvePit" Mode="OneWay" />
+                    <Binding Path="ParkingLot" Mode="TwoWay" />
+                    <Binding Path="ValvePit" Mode="TwoWay" />
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
         <Label Content="{StaticResource flight_code}" Grid.Column="0" Grid.Row="1"></Label>
-        <TextBox Text="{Binding FlightCode}" Grid.Column="1" Grid.Row="1" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding FlightCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1" Style="{StaticResource Editable}"  Tag="{StaticResource flight_code}" ></TextBox>
         <Label Content="{StaticResource route_name}" Grid.Column="2" Grid.Row="1"></Label>
-        <TextBox Text="{Binding RouteName}" Grid.Column="3" Grid.Row="1" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding RouteName , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="1" IsReadOnly="False" Style="{StaticResource Editable}" Tag="{StaticResource route_name}"  ></TextBox>
         <Label Content="{StaticResource aircraft_type}" Grid.Column="0" Grid.Row="2"></Label>
-        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftType}" Tag="{StaticResource aircraft_type}" Grid.Column="1" Grid.Row="2" IsReadOnly="True"></TextBox>
+        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftType , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Tag="{StaticResource aircraft_type}" Grid.Column="1" Grid.Row="2" IsReadOnly="False"></TextBox>
         <Label Content="Số hiệu tàu bay" Grid.Column="2" Grid.Row="2"></Label>
-        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftCode}" Tag="{StaticResource aircraft_code}" Grid.Column="3" Grid.Row="2" ></TextBox>
+        <TextBox Style="{StaticResource Editable}" Text="{Binding AircraftCode , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Tag="{StaticResource aircraft_code}" Grid.Column="3" Grid.Row="2" ></TextBox>
         <Label Content="Giờ cất cánh" Grid.Column="0" Grid.Row="3"></Label>
-        <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm} , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="3" IsReadOnly="True"></TextBox>
         <Label Content="Giờ hạ cánh" Grid.Column="2" Grid.Row="3"></Label>
         <TextBox Text="{Binding ArrivalTime, StringFormat={}{0:HH:mm}}" Grid.Column="3" Grid.Row="3" IsReadOnly="True"></TextBox>
         <Label Content="Giờ bắt đầu tra nạp" Grid.Column="0" Grid.Row="4"></Label>
-        <TextBox Text="{Binding StartTime, StringFormat={}{0:HH:mm}}" Grid.Column="1" Grid.Row="4" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding StartTime, StringFormat={}{0:HH:mm} , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="4" Style="{StaticResource Editable}" InputScope="Time" Tag="{StaticResource start_time}"></TextBox>
         <Label Content="Giờ kết thúc" Grid.Column="2" Grid.Row="4"></Label>
-        <TextBox Text="{Binding EndTime, StringFormat={}{0:HH:mm}}" Grid.Column="3" Grid.Row="4" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding EndTime, StringFormat={}{0:HH:mm} , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="4" Style="{StaticResource Editable}" InputScope="Time" Tag="{StaticResource end_time}"></TextBox>
         <Label Content="Sản lượng dự kiến" Grid.Column="0" Grid.Row="5"></Label>
         <TextBox Text="{Binding EstimateAmount}" Grid.Column="1" Grid.Row="5" IsReadOnly="True"></TextBox>
         <Label Content="Sản lượng thực tế" Grid.Column="2" Grid.Row="5"></Label>
-        <TextBox Text="{Binding RealAmount, StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" InputScope="CurrencyAmount"></TextBox>
+        <TextBox Text="{Binding RealAmount, Mode=TwoWay, StringFormat={}{0:#,0}, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Editable}" Tag="{StaticResource real_amount}"   Grid.Column="3" Grid.Row="5" InputScope="Number"></TextBox>
         <Label Content="Đồng hồ bắt đầu" Grid.Column="0" Grid.Row="6"></Label>
-        <TextBox Text="{Binding StartNumber, StringFormat={}{0:#,0}}" Grid.Column="1" Grid.Row="6" IsReadOnly="True"></TextBox>
+        <TextBox Text="{Binding StartNumber, StringFormat={}{0:#,0}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="6" Style="{StaticResource Editable}" InputScope="Number" Tag="{StaticResource start_meter}"></TextBox>
         <Label Content="Đồng hồ kết thúc" Grid.Column="2" Grid.Row="6"></Label>
-        <TextBox Text="{Binding EndNumber, StringFormat={}{0:#,0}}" Grid.Column="3" Grid.Row="6" IsReadOnly="True"></TextBox>
-        <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="7"></Label>
-        <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="7"></TextBox>
+        <TextBox Text="{Binding EndNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged , StringFormat={}{0:#,0}}" Style="{StaticResource Editable}" Grid.Column="3" Grid.Row="6" InputScope="Number" Tag="{StaticResource end_meter}" ></TextBox>
+        <Label Content="Số phiếu hóa nghiệm" Grid.Column="0" Grid.Row="9" ></Label>
+        <TextBox Text="{Binding QualityNo , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Editable}" Tag="{StaticResource qc_no}"  Grid.Column="1" Grid.Row="9"></TextBox>
         <Label Content="Thuế suất VAT%" Grid.Column="2" Grid.Row="7"></Label>
         <TextBox  Text="{Binding TaxRate, StringFormat={}{0:P0}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalPercentageConverter}}" InputScope="Number" Tag="{StaticResource tax_rate}" Grid.Column="3" Grid.Row="7" Style="{StaticResource Editable}"></TextBox>
-        <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Temperature , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" InputScope="Number" Tag="{StaticResource temperature}"  Grid.Column="1" Grid.Row="8"  FontSize="16" FontWeight="Bold"></TextBox>
-        <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="8" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" Tag="{StaticResource density}"  InputScope="Number"  Grid.Column="3" Grid.Row="8"  FontSize="16" FontWeight="Bold" Margin="0,0,0,1" VerticalAlignment="Bottom"></TextBox>        
-        <Label Content="Khối lượng"  Grid.Column="0" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
-        <TextBox Text="{Binding Weight, Mode=OneTime, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,##0.00}}"      Grid.Column="1" Grid.Row="9" FontSize="16"></TextBox>
-        <Label Content="Hút nhiên liệu"  Grid.Column="2" Grid.Row="9" FontSize="16" FontWeight="Bold"></Label>
+        <Label Content="Nhiệt độ" Grid.Column="0" Grid.Row="8" ></Label>
+        <TextBox Text="{Binding Temperature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" InputScope="Number" Tag="{StaticResource temperature}"  Grid.Column="1" Grid.Row="8"  FontSize="16" FontWeight="Bold"></TextBox>
+        <Label Content="Tỷ trọng" Grid.Column="2" Grid.Row="8"  ></Label>
+        <TextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Style="{StaticResource Editable}" Tag="{StaticResource density}"  InputScope="Number"  Grid.Column="3" Grid.Row="8"  FontSize="16" FontWeight="Bold" Margin="0,0,0,1" VerticalAlignment="Stretch"></TextBox>
+        <Label Content="Hút nhiên liệu"  Grid.Column="2" Grid.Row="9"  ></Label>
         <TextBox Text="{Binding Extract, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Tag="{StaticResource extract}" InputScope="Number" Style="{StaticResource Editable}"  Grid.Column="3" Grid.Row="9" FontSize="16"></TextBox>
-        <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="4" >
+        <Label Content="Khối lượng"  Grid.Column="0" Grid.Row="10"></Label>
+        <TextBox Text="{Binding Weight, Mode=TwoWay,  StringFormat={}{0:#,##0}, UpdateSourceTrigger=PropertyChanged}" Tag="{StaticResource weight}" InputScope="Number" Style="{StaticResource Editable}"     Grid.Column="1" Grid.Row="10" FontSize="16"></TextBox>
+
+        <Label Content="Sản lượng (gal)"  Grid.Column="2" Grid.Row="10"></Label>
+        <TextBox Text="{Binding Gallon, Mode=TwoWay,  StringFormat={}{0:#,##0}, UpdateSourceTrigger=PropertyChanged}" Tag="{StaticResource gallon}" InputScope="Number" Style="{StaticResource Editable}"     Grid.Column="3" Grid.Row="10" FontSize="16"></TextBox>
+        <Label Content="Đơn giá"  Grid.Column="0" Grid.Row="7"  ></Label>
+        <TextBox Text="{Binding Price, StringFormat={}{0:#,##0.00}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Tag="{StaticResource extract}" InputScope="Number" Style="{StaticResource Editable}"  Grid.Column="1" Grid.Row="7" FontSize="16"></TextBox>
+        <Label Grid.Column="0" Grid.Row="11" Content="{StaticResource driver}">
+        </Label>
+        <ComboBox 
+                  Grid.Column="1"
+                Grid.Row="11"
+                  Name="cboDriver" 
+                  HorizontalAlignment="Stretch" 
+                  SelectedValuePath="Id" DisplayMemberPath="Name" 
+                  
+                  SelectedValue="{Binding DriverId, Mode=TwoWay}"
+                  StaysOpenOnEdit="True">
+        </ComboBox>
+
+        <Label Content="{StaticResource operator}" Grid.Row="11" Grid.Column="2"></Label>
+        <ComboBox 
+                   Grid.Row="11" Grid.Column="3"
+                  Name="cboOperator" 
+                  HorizontalAlignment="Stretch" 
+                  SelectedValuePath="Id" DisplayMemberPath="Name" 
+                  
+                  SelectedValue="{Binding OperatorId, Mode=TwoWay}"
+                  StaysOpenOnEdit="True">
+        </ComboBox>
+        <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="12" Grid.ColumnSpan="4"  SelectionChanged="lvItems_SelectionChanged">
             <ListView.DataContext>
                 <data:RefuelViewModel/>
             </ListView.DataContext>
@@ -118,10 +159,10 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            
+
             <ListView.View  >
-                
-                <GridView >
+
+                <GridView  >
 
                     <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="180"   />
                     <GridViewColumn Header="Đồng hồ trước"  Width="120" DisplayMemberBinding="{Binding StartNumber, Mode=OneTime, StringFormat={}{0:#,0.00}}" />
@@ -130,13 +171,8 @@
                     <GridViewColumn Header="Giờ bắt đầu" Width="120" DisplayMemberBinding="{Binding StartTime, Mode=OneTime, StringFormat={}{0:HH:mm}}" />
                     <GridViewColumn Header="Giờ kết thúc" Width="120" DisplayMemberBinding="{Binding EndTime, Mode=OneTime, StringFormat={}{0:HH:mm}}" />
 
-                    <GridViewColumn Header="Hóa đơn">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Path=Printed}">
-                                </CheckBox>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
+                    <GridViewColumn Header="Hóa đơn" DisplayMemberBinding="{Binding InvoiceNumber}">
+
                     </GridViewColumn>
 
                 </GridView>

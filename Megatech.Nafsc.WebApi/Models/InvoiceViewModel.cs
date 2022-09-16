@@ -24,6 +24,7 @@ namespace Megatech.FMS.WebAPI.Models
             RefuelTime = item.RefuelTime.Value;
             Price = item.Price;
             CustomerName = item.Airline.InvoiceName + " " + item.Airline.Name;
+            CustomerId = item.AirlineId;
             ProductName = item.Airline.ProductName;
             Currency = item.Airline.Currency;
             Vendor = item.Airline.Vendor;
@@ -51,6 +52,7 @@ namespace Megatech.FMS.WebAPI.Models
 
         public string RouteName { get; set; }
 
+        public int CustomerId { get; set; }
         public string CustomerName { get; set; }
 
         public string TaxCode { get; set; }
@@ -116,7 +118,7 @@ namespace Megatech.FMS.WebAPI.Models
             {
                 try
                 {
-                    return Items.Sum(r => (decimal)r.Weight) / Items.Sum(r => (decimal)r.Volume);
+                    return Items.Sum(r => (decimal)(r.Density * r.Volume)) / Items.Sum(r => (decimal)r.Volume);
                 }
                 catch
                 {
@@ -149,21 +151,18 @@ namespace Megatech.FMS.WebAPI.Models
         public Vendor Vendor { get; set; }
         public Unit Unit { get; set; }
 
+        public bool IsInternational { get; set; }
+
         public decimal Subtotal
         {
-            get
-            {
-                return Math.Round(Price * RealAmount, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
-            }
+            get;
+            set;
         }
 
         public decimal TaxRate { get; set; }
         public decimal Tax
         {
-            get
-            {
-                return Math.Round(Subtotal * TaxRate, Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
-            }
+            get;set;
         }
 
         public decimal TotalAmount
@@ -178,7 +177,8 @@ namespace Megatech.FMS.WebAPI.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get;  set; }
 
-        
+        //base64 image
+        public string ImageString { get; set; }
     }
 
     public class InvoiceItemModel

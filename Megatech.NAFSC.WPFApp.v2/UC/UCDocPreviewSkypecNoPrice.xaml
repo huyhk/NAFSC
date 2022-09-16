@@ -1,0 +1,265 @@
+﻿<UserControl x:Class="Megatech.NAFSC.WPFApp.UC.UCDocPreviewSkypecNoPrice"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp.UC"
+             xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
+             mc:Ignorable="d" 
+                       d:DesignHeight="780" d:DesignWidth="680" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+    <UserControl.DataContext>
+        <data:InvoiceViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style x:Key="International" TargetType="TableCell">
+            <Setter Property="Background" Value="#fff"></Setter>
+            <Setter Property="Foreground" Value="#fff"></Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <FlowDocumentPageViewer Name="Skypec">
+            <FlowDocument Name="docPreview">
+
+                <Paragraph>
+                    <Run Text="Công ty xăng dầu:  "></Run>
+                    <Run Text="{Binding Vendor, Mode=OneTime}"></Run>
+                </Paragraph>
+                
+                <Paragraph>
+                    <InlineUIContainer>
+                        <TextBlock Text="Ngày" Width="80"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding RefuelTime, StringFormat={}{0:dd}}"></Run>
+                    <InlineUIContainer>
+                        <TextBlock Text="tháng"  Width="60"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding RefuelTime, StringFormat={}{0:MM}}"></Run>
+                    <InlineUIContainer>
+                        <TextBlock Text="năm"  Width="60"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding RefuelTime, StringFormat={}{0:yyyy}}"></Run>
+                </Paragraph>
+
+                <Paragraph Margin="0,20,0,0">
+                    <InlineUIContainer>
+                        <TextBlock Text="Số phiếu hóa nghiệm"  Width="200"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding QualityNo, Mode=OneTime}"></Run>
+                </Paragraph>
+                <Paragraph Margin="0,10">
+                    <InlineUIContainer>
+                        <TextBlock Text="Giờ bắt đầu/Kết thúc"  Width="180"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding StartTime, Mode=OneTime, StringFormat={}{0:HH:mm}}"></Run>
+                    <InlineUIContainer>
+                        <TextBlock Text="Kết thúc"  Width="60"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding EndTime, Mode=OneTime, StringFormat ={}{0:HH:mm}}"></Run>
+                    <InlineUIContainer>
+                        <TextBlock Text="Tên hàng hóa"  Width="200"></TextBlock>
+                    </InlineUIContainer>
+                    <Run Text="{Binding ProductName}"></Run>
+                </Paragraph>
+
+                <BlockUIContainer>
+                    <ListView BorderThickness="0" Height="80" Name="lvItems" >
+                        <ListView.DataContext>
+                            <data:RefuelViewModel/>
+                        </ListView.DataContext>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View >
+                            <GridView >
+
+                                <GridViewColumn Header="Xe tra nạp"   DisplayMemberBinding="{Binding TruckNo}"  Width="100"   />
+                                <GridViewColumn Header="Đồng hồ trước"  Width="120" DisplayMemberBinding="{Binding StartNumber, Mode=OneTime, StringFormat={}{0:#,0}}" />
+                                <GridViewColumn Header="Đồng hồ sau" Width="120" DisplayMemberBinding="{Binding EndNumber, Mode=OneTime, StringFormat={}{0:#,0}}" />
+                                <GridViewColumn Header="Lít thực tế" Width="200" DisplayMemberBinding="{Binding Volume, Mode=OneTime, StringFormat={}{0:#,0}}" />
+
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </BlockUIContainer>
+                <Table>
+                    <Table.Columns>
+                        <TableColumn Width="200"></TableColumn>
+                        <TableColumn Width="Auto"></TableColumn>
+                        <TableColumn Width="100"></TableColumn>
+                        <TableColumn Width="Auto"></TableColumn>
+                    </Table.Columns>
+
+                    <TableRowGroup>
+                        <TableRow>
+                            <TableCell  >
+                                <Paragraph >
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Đơn vị mua hàng" Width="180"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell ColumnSpan="3">
+                                <Paragraph >
+                                    <Run Text="{Binding CustomerName}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph >
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Mã số thuế"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell ColumnSpan="3">
+                                <Paragraph >
+                                    <Run Text="{Binding TaxCode}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Địa chỉ"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell ColumnSpan="3">
+                                <Paragraph >
+                                    <Run Text="{Binding Address}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Loại máy bay"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding AircraftType}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Số hiệu máy bay"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding AircraftCode}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Số hiệu chuyến bay"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding FlightCode}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Tuyến bay"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding RouteName}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Nhiệt độ thực tế"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding Temperature, Mode=OneTime, StringFormat={}{0:#,0.00}}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Tỷ trọng thực tế"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding Density, Mode=OneTime, StringFormat={}{0:#,0.0000}}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Lít thực tế"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding Volume, Mode=OneTime, StringFormat={}{0:#,0}}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Số lượng (kg)"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding Weight, Mode=OneTime, StringFormat={}{0:#,0}}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <TextBlock Text="Số lượng (gallon)"></TextBlock>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </TableCell>
+                            <TableCell>
+                                <Paragraph >
+                                    <Run Text="{Binding Gallon, Mode=OneTime, StringFormat={}{0:#,0}}"></Run>
+                                </Paragraph>
+                            </TableCell>
+                            
+                        </TableRow>
+
+                        
+                        
+                    </TableRowGroup>
+                </Table>
+            </FlowDocument>
+
+        </FlowDocumentPageViewer >
+    </Grid>
+</UserControl>

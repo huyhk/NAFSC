@@ -130,10 +130,16 @@ namespace FMS.Data
             }
         }
         [NotMapped]
-        public string InvoiceNumber { get; set; }
+        public string InvoiceNumber
+        {
+            get { return this.Invoice == null ? "" : this.Invoice.InvoiceNumber; }
+            private set { }
+        }
 
         public int? InvoiceId { get; set; }
-        
+        [ForeignKey("InvoiceId")]
+        public Invoice Invoice { get; set; }
+
     }
 
     public enum REFUEL_ITEM_STATUS

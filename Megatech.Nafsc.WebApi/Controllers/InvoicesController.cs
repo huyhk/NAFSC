@@ -11,12 +11,27 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using EntityFramework.DynamicFilters;
 using System.Data.Entity;
+using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Web.Hosting;
+using Megatech.NAFSC.DataExport;
 
 namespace Megatech.FMS.WebAPI.Controllers
 {
     [RoutePrefix("api/invoices")]
     public class InvoicesController : ApiController
     {
+        public InvoicesController()
+        
+        {
+            HostingEnvironment.QueueBackgroundWorkItem(t =>
+            {
+                var exporter = new Exporter();
+                exporter.Export();
+            });
+
+        }
         private DataContext db = new DataContext();
 
         [Authorize]        
@@ -24,6 +39,12 @@ namespace Megatech.FMS.WebAPI.Controllers
         [ResponseType(typeof(InvoiceViewModel))]
         public IHttpActionResult PostInvoice(InvoiceViewModel model)
         {
+            Logging.Logger.SetPath(HostingEnvironment.MapPath("~/Logs"));
+            Logging.Logger.AppendLog("INVOICE", $"Invoice Number: {model.InvoiceNumber}", "invoices");
+            var folderPath = HostingEnvironment.MapPath("~/receipts");
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
 
             var userName = ClaimsPrincipal.Current.Identity.Name;
@@ -34,42 +55,117 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             if (!ModelState.IsValid)
             {
+                Logging.Logger.AppendLog("INVOICE-DATA", JsonConvert.SerializeObject(model), "invoice-data");
+                foreach (var item in ModelState.Values)
+                {
+
+                    Logging.Logger.AppendLog("INVOICE-ERROR", item.Errors.FirstOrDefault().ErrorMessage , "invoices");
+                }
+               
                 return BadRequest(ModelState);
             }
-            var refuel = db.RefuelItems.Include(r=>r.Flight).FirstOrDefault(r => r.Id == model.RefuelItemId);
-            var invoice = JsonConvert.DeserializeObject<Invoice>(JsonConvert.SerializeObject(model));
-
-            //var invoiceItem = JsonConvert.DeserializeObject<InvoiceItem>(JsonConvert.SerializeObject(model.Items[0]));
-            //invoice.AddItem(invoiceItem);
-            invoice.FlightId = refuel.FlightId;
-            invoice.CustomerId = refuel.Flight.AirlineId??0;
-            invoice.UserCreatedId = invoice.UserUpdatedId = user.Id;
-            var child = invoice.ChildInvoice;
-            if (child != null) {                
-                invoice.ChildInvoice = null;
-                child.ParentInvoice = invoice;
-                db.Invoices.Add(child);
-            }
-            else
-                db.Invoices.Add(invoice); 
-            db.DisableFilter("IsNotDeleted");
-            
-            db.SaveChanges();
-            if (child != null)
+            try
             {
 
-                invoice.ChildId = child.Id;
+                var refuel = db.RefuelItems.Include(r => r.Flight).FirstOrDefault(r => r.Id == model.RefuelItemId);
+                if (refuel == null)
+                    return BadRequest(ModelState);
+
+                var invoice = JsonConvert.DeserializeObject<Invoice>(JsonConvert.SerializeObject(model));
+                invoice.FlightId = refuel.FlightId;
+                invoice.CustomerId = refuel.Flight.AirlineId ?? 0;
+                invoice.UserCreatedId = invoice.UserUpdatedId = user.Id;
+                if (model.ImageString != null)
+                {
+                    var fileName = model.InvoiceNumber + ".jpg";
+                    SaveImage(model.ImageString, fileName, folderPath);
+                    invoice.ImagePath = fileName;
+                }
+                if (invoice.Price == 0)
+                {
+                    var price = db.ProductPrices.Include(p => p.Agency).Include(p => p.Customer).OrderByDescending(p => p.StartDate)
+                           .Where(p => p.StartDate <= refuel.RefuelTime)
+                           .Where(p => p.CustomerId == invoice.CustomerId)
+                           .FirstOrDefault();
+                    if (price == null)
+                        price = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= refuel.RefuelTime && p.EndDate >= refuel.RefuelTime && p.Customer == null);
+                    //var invoiceItem = JsonConvert.DeserializeObject<InvoiceItem>(JsonConvert.SerializeObject(model.Items[0]));
+                    //invoice.AddItem(invoiceItem);
+
+                    if (price != null)
+                    {
+                        refuel.Price = invoice.Price = price.Price;
+                        refuel.Currency = invoice.Currency = price.Currency;
+                        refuel.Unit = invoice.Unit = price.Unit;
+                        invoice.CustomerName = (price.Agency == null ? "" : price.Agency.Name + " - ") + price.Customer.Name;
+                    }
+                }
+                var child = invoice.ChildInvoice;
+                if (child != null)
+                {
+                    child.CustomerName = invoice.CustomerName;
+                    invoice.ChildInvoice = null;
+                    child.ParentInvoice = invoice;
+                    db.Invoices.Add(child);
+                    if (model.ChildInvoice.ImageString != null)
+                    {
+                        var fileName = model.ChildInvoice.InvoiceNumber + ".jpg";
+                        SaveImage(model.ChildInvoice.ImageString, fileName, folderPath);
+                        child.ImagePath = fileName;
+                    }
+                }
+                else
+                    db.Invoices.Add(invoice);
+                db.DisableFilter("IsNotDeleted");
+
+
+                db.SaveChanges();
+                Logging.Logger.AppendLog("INVOICE", $" Save OK Invoice Number: {model.InvoiceNumber}", "invoices");
+                if (child != null)
+                {
+
+                    invoice.ChildId = child.Id;
+                }
+                if (refuel != null)
+                {
+                    refuel.InvoiceId = invoice.Id;
+                    refuel.Printed = true;
+                    refuel.Price = invoice.Price;
+                    refuel.Currency = invoice.Currency;
+                    refuel.Unit = invoice.Unit;
+                }
+
+                db.SaveChanges();
+                if (model.Vendor == Vendor.SKYPEC)
+                {
+                    Export(invoice);
+                    if (child != null)
+                        Export(child);
+                }
+                db.SaveChanges();
+                invoice.Flight.RefuelItems = null;
+                return Ok(invoice);
             }
-            if (refuel != null)
+            catch (Exception ex)
             {
-                refuel.InvoiceId = invoice.Id;
-                refuel.Printed = true;                
+                Logging.Logger.AppendLog("INVOICE-ERROR", ex.Message, "invoices");
+                Logging.Logger.LogException(ex, "invoices-ex");
+                throw;
             }
-            db.SaveChanges();
-            invoice.Flight.RefuelItems = null;
-            return Ok(invoice);
         }
+        private void Export(Invoice invoice)
+        {
+            if (!string.IsNullOrEmpty(invoice.ImagePath))
+            {
+                var exporter = new Exporter();
+                var result = exporter.Export(invoice.Id);
+                invoice.ExportedResult = (int)result.Result ;
+                invoice.DateExported = DateTime.Now;
 
+                invoice.ExportError = result.Message.ToString();
+            }
+
+        }
         [HttpPost]
         [Authorize]
         [Route("cancel")]
@@ -95,6 +191,13 @@ namespace Megatech.FMS.WebAPI.Controllers
                 invoice.UserDeletedId = user.Id;
                 invoice.DateDeleted = DateTime.Now;
                 invoice.IsDeleted = true;
+                var child = db.Invoices.FirstOrDefault(inv => inv.Id == invoice.ChildId);
+                if (child != null)
+                {
+                    child.UserDeletedId = user.Id;
+                    child.DateDeleted = DateTime.Now;
+                    child.IsDeleted = true;
+                }
             }
             if (refuel != null)
             {
@@ -117,12 +220,14 @@ namespace Megatech.FMS.WebAPI.Controllers
                 .Include(inv => inv.ChildInvoice.Items)                
                 .FirstOrDefault(inv => inv.Id == id);
                       
+            
 
-            var resp = JsonConvert.DeserializeObject<InvoiceViewModel>(JsonConvert.SerializeObject(model));
+            var resp = JsonConvert.DeserializeObject<InvoiceViewModel>(JsonConvert.SerializeObject(model,new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
 
             resp.FlightCode = model.Flight.Code;
             resp.AircraftCode = model.Flight.AircraftCode;
             resp.AircraftType = model.Flight.AircraftType;
+            resp.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
             resp.RouteName = model.Flight.RouteName;
             resp.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
 
@@ -131,6 +236,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 resp.ChildInvoice.FlightCode = model.Flight.Code;
                 resp.ChildInvoice.AircraftCode = model.Flight.AircraftCode;
                 resp.ChildInvoice.AircraftType = model.Flight.AircraftType;
+                resp.ChildInvoice.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
                 resp.ChildInvoice.RouteName = model.Flight.RouteName;
                 resp.ChildInvoice.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
 
@@ -141,5 +247,30 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             return Ok(resp);
         }
+
+        private void SaveImage(string base64String, string fileName, string folderPath)
+        {
+            SaveImage(Convert.FromBase64String(base64String), fileName, folderPath);
+        }
+        private void SaveImage(byte[] bytes, string fileName, string folderPath)
+        {
+            //Logger.AppendLog("RECEIPT", "Save " + fileName, "receipt");
+            //var fs = new BinaryWriter(new FileStream(Path.Combine(folderPath, fileName), FileMode.Append, FileAccess.Write));
+            //fs.Write(bytes);
+            //fs.Close();
+            try
+            {
+                using (var ms = new MemoryStream(bytes))
+                {
+                    Image img = Image.FromStream(ms);
+                    img.Save(Path.Combine(folderPath, fileName), ImageFormat.Jpeg);
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+        }
+
     }
 }

@@ -42,7 +42,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                            Price = p ==null? gprice.Price: p.Price,
                            ProductName = p == null ? gprice.Product.Name: p.Product.Name,
                            InvoiceAddress = a.InvoiceAddress,
-                           InvoiceName = a.InvoiceName,
+                           InvoiceName = p == null ? "" : p.Agency.Name ,
                            InvoiceTaxCode = a.InvoiceTaxCode ,
                            Currency = p == null? Currency.VND: p.Currency,
                            Vendor = p == null ? Vendor.SKYPEC: (Vendor)p.OilCompany,

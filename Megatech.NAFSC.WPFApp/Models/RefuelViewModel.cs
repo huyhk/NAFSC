@@ -22,6 +22,7 @@ namespace Megatech.FMS.WebAPI.Models
         public int Id { get; set; }
         public int FlightId { get; set; }
         public string  FlightCode { get; set; }
+        public FlightType FlightType { get; set; }
         public decimal EstimateAmount { get; set; }
         public string AircraftCode { get; set; }
         public string AircraftType { get; set; }
@@ -30,7 +31,7 @@ namespace Megatech.FMS.WebAPI.Models
         public string RouteName { get; set; }
         public string TruckNo { get; set; }
         public int TruckId { get; set; }
-        [DoNotNotify]
+        
         public decimal RealAmount
         {
             get;
@@ -73,10 +74,8 @@ namespace Megatech.FMS.WebAPI.Models
         
         public decimal Weight
         {
-            get
-            {
-                return Math.Round(Volume * Density, 0);
-            }
+            get;
+            set;
             
         }
 
@@ -99,10 +98,8 @@ namespace Megatech.FMS.WebAPI.Models
         public FlightStatus FlightStatus { get; set; }
         public decimal? Gallon
         {
-            get
-            {
-                return Math.Round(Volume / AppSetting.GALLON_TO_LITTRE,0);
-            }
+            get;
+            set;
         }
 
         public REFUEL_ITEM_TYPE RefuelItemType { get; set; }
@@ -111,7 +108,16 @@ namespace Megatech.FMS.WebAPI.Models
         {
             get { return Status == REFUEL_ITEM_STATUS.DONE; }
         }
-        
+
+        internal void CalculateWeight()
+        {
+            this.Weight = Math.Round(this.Volume * this.Density, 0, MidpointRounding.AwayFromZero);
+            decimal galToLit = AppSetting.GALLON_TO_LITTRE;
+            if (this.Airline != null && this.Airline.Vendor == Vendor.PA)
+                galToLit = AppSetting.GALLON_TO_LITTRE_PA;
+            this.Gallon = Math.Round(this.Volume / galToLit, 0, MidpointRounding.AwayFromZero);
+        }
+
         public decimal? Extract { get; set; }
 
         public bool HasExtract { get { return Extract > 0; } }
@@ -131,9 +137,13 @@ namespace Megatech.FMS.WebAPI.Models
         [DoNotNotify]
         public Guid LocalGuid { get; set; }
 
+        public string InvoiceNumber { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public bool IsReadOnly { get; set; }
 
+        public bool IsDeleted { get; set; }
 
         public RefuelViewModel Copy()
         {
@@ -145,5 +155,6 @@ namespace Megatech.FMS.WebAPI.Models
 
             return model;
         }
+        
     }
 }

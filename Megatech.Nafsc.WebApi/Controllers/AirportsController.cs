@@ -9,6 +9,10 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using FMS.Data;
+using Megatech.FMS.WebAPI.Models;
+using Newtonsoft.Json;
+using System.IO;
+using System.Web.Hosting;
 
 namespace Megatech.FMS.WebAPI.Controllers
 {
@@ -17,9 +21,10 @@ namespace Megatech.FMS.WebAPI.Controllers
         private DataContext db = new DataContext();
 
         // GET: api/Airports
-        public IQueryable<Airport> GetAirports()
+        public IEnumerable<AirportModel> GetAirports()
         {
-            return db.Airports;
+            string data = File.ReadAllText(HostingEnvironment.MapPath("~/files/airports.json"));
+            return  JsonConvert.DeserializeObject<ICollection<AirportModel>>(data);
         }
 
         // GET: api/Airports/5
