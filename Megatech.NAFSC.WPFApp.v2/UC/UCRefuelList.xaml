@@ -59,7 +59,6 @@
             </Style>
         </ListView.ItemContainerStyle>
 
-        
 
         <ListView.ItemTemplate >
             
@@ -89,19 +88,19 @@
                     <TextBlock Text="{Binding AircraftType}" Grid.Column="2" Grid.Row="0" ></TextBlock>
                     <TextBlock Text="{Binding AircraftCode}" Grid.Column="2" Grid.Row="1" ></TextBlock>
                     <StackPanel Grid.Column="3" Grid.Row="0"   Orientation="Horizontal">
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/airplane-landing-xxl.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/airplane-landing-xxl.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding ArrivalTime, StringFormat={}{0:HH:mm}}" ></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="3" Grid.Row="1"   Orientation="Horizontal">
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/airplane-takeoff-xxl.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/airplane-takeoff-xxl.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}}" ></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="4" Grid.Row="0"   Orientation="Horizontal">
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/refuel.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/refuel.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding RefuelTime, StringFormat={}{0:HH:mm}}" ></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="4" Grid.Row="1"  Orientation="Horizontal" >
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/map.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/map.png" Width="20" Height="20"></Image>
                         <TextBlock HorizontalAlignment="Center">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0}/{1}">
@@ -112,15 +111,15 @@
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="5" Grid.Row="0"   Orientation="Horizontal">
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/driver.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/driver.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding DriverName}" ></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="5" Grid.Row="1"   Orientation="Horizontal">
-                        <Image  Source="/Megatech.NAFSC.WPFApp;component/Images/operator.png" Width="20" Height="20"></Image>
+                        <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/operator.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding OperatorName}" ></TextBlock>
                     </StackPanel>
-                    
-                    <Image  Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp;component/Images/printer.png" Width="20" Height="20" Visibility="{Binding Printed, Converter={StaticResource VisibilityConverter}}"></Image>
+
+                    <Image  Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp.v2;component/Images/printer.png" Width="20" Height="20" Visibility="{Binding Printed, Converter={StaticResource VisibilityConverter}}"></Image>
 
                     <StackPanel Grid.Column="7" Grid.RowSpan="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasExtract, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock Text="{StaticResource extract}" HorizontalAlignment="Center"></TextBlock>

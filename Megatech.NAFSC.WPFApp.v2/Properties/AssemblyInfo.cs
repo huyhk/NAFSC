@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Megatech.NAFSC.WPFApp.v2")]
+[assembly: AssemblyTitle("Megatech.NAFSC.WPFApp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Megatech.NAFSC.WPFApp.v2")]
+[assembly: AssemblyCompany("Megatech")]
+[assembly: AssemblyProduct("Megatech.NAFSC.WPFApp")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

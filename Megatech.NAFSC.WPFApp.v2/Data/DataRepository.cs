@@ -546,6 +546,7 @@ namespace Megatech.NAFSC.WPFApp.Data
                             }
                         }
                         _db.SaveChanges();
+
                         //post invoices
 
                         var localInvoices = _db.Invoices.Where(lr => !lr.Synced ).ToList();
@@ -553,14 +554,24 @@ namespace Megatech.NAFSC.WPFApp.Data
                         while (canSync && i < localInvoices.Count)
                         {
                             var item = localInvoices[i++];
+                            
                             var model = JsonConvert.DeserializeObject<InvoiceViewModel>(item.JsonData);
                             if (model.CanSync)
                             {
+                                if (!string.IsNullOrEmpty(model.ImagePath))
+                                {
+                                    if (File.Exists(model.ImagePath))
+                                    {
+                                        byte[] imageArray = File.ReadAllBytes(model.ImagePath);
+                                        string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                                        model.ImageString = base64ImageRepresentation;
+
+                                    }
+                                }
                                 var response = client.PostInvoice(model);
                                 var respItem = JsonConvert.DeserializeObject<InvoiceViewModel>(response);
-                                if (respItem == null)
-                                    canSync = false;
-                                else
+                                if (respItem != null)
+                                    
                                 {
                                     item.Id = respItem.Id;
                                     item.Synced = true;

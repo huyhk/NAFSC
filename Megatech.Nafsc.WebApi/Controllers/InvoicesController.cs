@@ -16,21 +16,22 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Web.Hosting;
 using Megatech.NAFSC.DataExport;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Megatech.FMS.WebAPI.Controllers
 {
     [RoutePrefix("api/invoices")]
     public class InvoicesController : ApiController
     {
-        public InvoicesController()
-        
+        public InvoicesController()        
         {
-            HostingEnvironment.QueueBackgroundWorkItem(t =>
-            {
+            Logging.Logger.SetPath(HostingEnvironment.MapPath("~/Logs"));
+
+            Task.Run(() => {
                 var exporter = new Exporter();
                 exporter.Export();
             });
-
         }
         private DataContext db = new DataContext();
 
@@ -55,7 +56,6 @@ namespace Megatech.FMS.WebAPI.Controllers
 
             if (!ModelState.IsValid)
             {
-                Logging.Logger.AppendLog("INVOICE-DATA", JsonConvert.SerializeObject(model), "invoice-data");
                 foreach (var item in ModelState.Values)
                 {
 
@@ -69,9 +69,15 @@ namespace Megatech.FMS.WebAPI.Controllers
 
                 var refuel = db.RefuelItems.Include(r => r.Flight).FirstOrDefault(r => r.Id == model.RefuelItemId);
                 if (refuel == null)
+                {
+                    Logging.Logger.AppendLog("BAD-REQUEST", $"No refuel item for id {model.RefuelItemId}", "invoices");
                     return BadRequest(ModelState);
-
+                }
                 var invoice = JsonConvert.DeserializeObject<Invoice>(JsonConvert.SerializeObject(model));
+                var existed = db.Invoices.FirstOrDefault(inv => inv.InvoiceNumber == invoice.InvoiceNumber
+                && (inv.Flight.Id == refuel.FlightId) && (inv.Vendor == invoice.Vendor));
+                if (existed != null)
+                    return Ok(existed);
                 invoice.FlightId = refuel.FlightId;
                 invoice.CustomerId = refuel.Flight.AirlineId ?? 0;
                 invoice.UserCreatedId = invoice.UserUpdatedId = user.Id;
@@ -81,6 +87,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                     SaveImage(model.ImageString, fileName, folderPath);
                     invoice.ImagePath = fileName;
                 }
+                else
+                    Logging.Logger.AppendLog("INVOICE", "NO image string found", "invoices");
                 if (invoice.Price == 0)
                 {
                     var price = db.ProductPrices.Include(p => p.Agency).Include(p => p.Customer).OrderByDescending(p => p.StartDate)
@@ -250,6 +258,7 @@ namespace Megatech.FMS.WebAPI.Controllers
 
         private void SaveImage(string base64String, string fileName, string folderPath)
         {
+            Logging.Logger.AppendLog("IMAGE", $"Save image to path {folderPath}/{fileName}", "invoices");
             SaveImage(Convert.FromBase64String(base64String), fileName, folderPath);
         }
         private void SaveImage(byte[] bytes, string fileName, string folderPath)
@@ -268,7 +277,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-               
+                Logging.Logger.LogException(ex, "invoice");
             }
         }
 

@@ -1,8 +1,9 @@
 ﻿using FMS.Data;
+using Megatech.FMS.Logging;
 using Newtonsoft.Json;
-using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -12,23 +13,24 @@ namespace Megatech.NAFSC.DataExport
 {
     public class Exporter
     {
-        private string EXPORT_BASE_URL = "http://116.193.76.111:8080/";
+        private string EXPORT_BASE_URL = ConfigurationManager.AppSettings["EXPORT_BASE_URL"]?? "http://116.193.76.111:8080/";
 
         public Exporter()
         {
-            Log.Logger = new LoggerConfiguration()
-               .MinimumLevel.Debug()
-               .WriteTo.File(@"E:\WEBHOST\nafsc\nafscapi.megatech.com.vn\logs\logfile.log", rollingInterval: RollingInterval.Day)
-               .CreateLogger();
+            if (string.IsNullOrEmpty(Logger.GetPath()))
+            {
+            }
         }
         public IEnumerable<ExportResult> Export()
         {
             using (var db = new DataContext())
             {
+                var date = new DateTime(2022, 09, 17);
                 var result = new List<ExportResult>();
-                var ids = db.Invoices.Where(inv => inv.ExportedResult != 0).Select(inv => inv.Id).ToArray();
+                var ids = db.Invoices.Where(inv => inv.ExportedResult != 0 && inv.ExportedResult!=2 && inv.Vendor == OilCompany.SKYPEC && inv.DateCreated>=date).Select(inv => inv.Id).ToArray();
                 foreach (var item in ids)
                 {
+                    Logger.AppendLog("Export", $"Export Invoice Id {item}","export") ;
                     result.Add (Export(item));
                 }
                 return result;
@@ -42,7 +44,7 @@ namespace Megatech.NAFSC.DataExport
                 using (var db = new DataContext())
                 {
                     var inv = db.Invoices.Include(i => i.Items).Include(i => i.Flight).Include(i => i.Customer).FirstOrDefault(i => i.Id == id);
-                    if (inv != null && inv.Flight != null)
+                    if (inv != null && inv.Flight != null && !string.IsNullOrEmpty(inv.ImagePath ))
                     {
                         var exportModel = new ExportModel
                         {
@@ -97,10 +99,14 @@ namespace Megatech.NAFSC.DataExport
                             return result;
                         }
                     }
-                    else return new ExportResult { Result = EXPORT_RESULT.FAILED, Message = $"Invoice id {id} not exists" };
+                    else if (inv == null)
+                        return new ExportResult { Result = EXPORT_RESULT.FAILED, Message = $"Invoice id {id} not exists" };
+                    else if (string.IsNullOrEmpty(inv.ImagePath))
+                        return new ExportResult { Result = EXPORT_RESULT.FAILED, Message = $"Invoice id {id} not have image path" };
                 }
             }catch (Exception ex)
             {
+                Logger.LogException(ex, "export");
                 return new ExportResult { Result = EXPORT_RESULT.FAILED, Message = ex.StackTrace };
 
             }

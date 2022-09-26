@@ -138,7 +138,7 @@ namespace Megatech.NAFSC.WPFApp
             // Print each line of the file.
             while (count < linesPerPage && i < textToPrint.Length)
             {
-                line = textToPrint[i++];
+                line = textToPrint[i++].ToUpper();
                 int margin = 0;
                 if (Regex.IsMatch(line, @"(?s)%(-?\d+)%.*"))
                 {
@@ -174,7 +174,7 @@ namespace Megatech.NAFSC.WPFApp
             // Print each line of the file.
             while (count < linesPerPage && i < textToPrint.Length)
             {
-                line = textToPrint[i++];
+                line = textToPrint[i++].ToUpper();
        
                 if (Regex.IsMatch(line, @"(?s)#(-?\d+)#.*"))
                 {
@@ -271,7 +271,7 @@ namespace Megatech.NAFSC.WPFApp
             builder.Append("------------------------------------------------------------------\n");
             builder.Append("           Buyer                            Seller        \n");
             builder.Append("  (Signature and full name)      (Signature and full name)     \n");
-            return builder.ToString().Split(new char[] { '\n' });
+            return builder.ToString().ToUpper().Split(new char[] { '\n' });
 
         }
         private string[] BuildSkypecBill(InvoiceViewModel model)

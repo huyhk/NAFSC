@@ -32,7 +32,7 @@ namespace Megatech.NAFSC.WPFApp
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            AutoUpdater.Start(ConfigurationManager.AppSettings["updater_url"]);
+            //AutoUpdater.Start(ConfigurationManager.AppSettings["updater_url"]);
             CheckInternet();
         }
 
