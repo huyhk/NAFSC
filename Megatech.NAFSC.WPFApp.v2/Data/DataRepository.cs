@@ -35,6 +35,25 @@ namespace Megatech.NAFSC.WPFApp.Data
 
         }
 
+        internal ICollection<InvoiceViewModel> GetInvoices(bool synced)
+        {
+            using (var _db = new LocalDbContext())
+            {
+                
+                var localList = _db.Invoices.Where(lr => lr.Synced == synced).ToList();
+                var list = new List<InvoiceViewModel>();
+                foreach (var localItem in localList)
+                {
+                    var item = JsonConvert.DeserializeObject<InvoiceViewModel>(localItem.JsonData);
+                    item.LocalGuid = localItem.Key;
+                    list.Add(item);
+                }
+
+                //list = localList.Select(lr => JsonConvert.DeserializeObject<RefuelViewModel>(lr.JsonData)).ToList();
+                return list.OrderBy(r => r.RefuelTime).ThenBy(r => r.Id).ToList();
+            }
+        }
+
         internal void GetRemoteAirlines()
         {
             try
@@ -120,8 +139,9 @@ namespace Megatech.NAFSC.WPFApp.Data
                 var list = new List<RefuelViewModel>();
                 foreach (var localItem in localList)
                 {
-                    var item = JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
-                    item.LocalGuid = localItem.Key;
+                    var item = RefuelViewModel.FromLocalItem(localItem);// JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
+                    //item.LocalGuid = localItem.Key;
+                    //item.Synced = localItem.Synced;
                     list.Add(item);
                 }
 
@@ -130,6 +150,17 @@ namespace Megatech.NAFSC.WPFApp.Data
             }
 
         }
+
+       
+
+        internal int CountNotSyncedInvoice()
+        {
+            using (var db = new LocalDbContext())
+            {
+                return db.Invoices.Count(inv => inv.Synced == false);
+            }
+        }
+
         public RefuelViewModel GetRefuel(Guid guid)
         {
             var localItem = _db.Refuels.FirstOrDefault(lr => lr.Key == guid);
@@ -137,7 +168,7 @@ namespace Megatech.NAFSC.WPFApp.Data
 
             if (localItem != null)
             {
-                item = JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
+                item = RefuelViewModel.FromLocalItem(localItem);// JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
                 item.InvoiceGuid = localItem.InvoiceGuid;
                 item.LocalGuid = localItem.Key;
             }
@@ -175,7 +206,7 @@ namespace Megatech.NAFSC.WPFApp.Data
 
                 if (localItem != null)
                 {
-                    item = JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
+                    item = RefuelViewModel.FromLocalItem(localItem);//JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
                     item.InvoiceGuid = localItem.InvoiceGuid;
                     item.LocalGuid = localItem.Key;
                 }
@@ -247,7 +278,7 @@ namespace Megatech.NAFSC.WPFApp.Data
         {
             var localItem = new LocalRefuel();
 
-            model.RefuelTime = model.Airline != null && model.Airline.Vendor == Vendor.SKYPEC ? model.EndTime : model.StartTime;
+            //model.RefuelTime = model.Airline != null && model.Airline.Vendor == Vendor.SKYPEC ? model.EndTime : model.StartTime;
             model.TruckNo = AppSetting.CurrentSetting.TruckNo;
 
             var canPost = false;
@@ -311,8 +342,8 @@ namespace Megatech.NAFSC.WPFApp.Data
 
             try
             {
-                var respItem = JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
-                respItem.LocalGuid = localItem.Key;
+                var respItem = RefuelViewModel.FromLocalItem(localItem);// JsonConvert.DeserializeObject<RefuelViewModel>(localItem.JsonData);
+                //respItem.LocalGuid = localItem.Key;
 
                 return respItem;
             }
@@ -381,24 +412,29 @@ namespace Megatech.NAFSC.WPFApp.Data
             if (!canPost)
             {
                 invoice.ImageString = null;
-                if (invoice.Id == 0) //new item                
+                if (invoice.Id == 0 && invoice.LocalGuid == Guid.Empty) //new item                
                 {
                     
                     localItem = new LocalInvoice
                     {
                         Id = 0,
-                        JsonData = JsonConvert.SerializeObject(invoice),
+                        //JsonData = JsonConvert.SerializeObject(invoice),
                         Key = Guid.NewGuid(),
                         InvoiceNumber = invoice.InvoiceNumber,
                         Synced = false
                     };
+                    invoice.LocalGuid = localItem.Key;
+                    localItem.JsonData = JsonConvert.SerializeObject(invoice);
                     _db.Invoices.Add(localItem);
                 }
                 else
                 {
-                    localItem = _db.Invoices.FirstOrDefault(lr => lr.Id == invoice.Id);
+                    localItem = _db.Invoices.FirstOrDefault(lr => lr.Id == invoice.Id );
+                    if (localItem == null)
+                        localItem = _db.Invoices.FirstOrDefault(lr => lr.Key == invoice.LocalGuid);
                     if (localItem != null)
                     {
+                        invoice.LocalGuid = localItem.Key;
                         localItem.JsonData = JsonConvert.SerializeObject(invoice);
                         localItem.Id = invoice.Id;
                         localItem.InvoiceNumber = invoice.InvoiceNumber;
@@ -415,6 +451,8 @@ namespace Megatech.NAFSC.WPFApp.Data
                             InvoiceNumber = invoice.InvoiceNumber,
                             Synced = false
                         };
+                        invoice.LocalGuid = localItem.Key;
+                        localItem.JsonData = JsonConvert.SerializeObject(invoice);
                         _db.Invoices.Add(localItem);
                     }
                 }
@@ -426,7 +464,7 @@ namespace Megatech.NAFSC.WPFApp.Data
             if (refuel != null)
             {
                 refuel.InvoiceGuid = localItem.Key;
-                RefuelViewModel refuelModel = JsonConvert.DeserializeObject<RefuelViewModel>(refuel.JsonData);
+                RefuelViewModel refuelModel = RefuelViewModel.FromLocalItem(refuel);
                 refuelModel.Printed = true;
                 refuelModel.InvoiceGuid = localItem.Key;
                 refuel.JsonData = JsonConvert.SerializeObject(refuelModel);
@@ -438,11 +476,23 @@ namespace Megatech.NAFSC.WPFApp.Data
             item.LocalGuid = localItem.Key;
             return item;
         }
-
+        internal void CancelInvoice(Guid invoiceGuid)
+        {
+            var cancel = _db.Invoices.FirstOrDefault(inv => inv.Key == invoiceGuid);
+            if (cancel != null)
+                _db.Invoices.Remove(cancel);
+            _db.SaveChanges();
+        }
         internal void CancelInvoice(int id)
         {
             ApiHelper client = new ApiHelper();
             var response = client.CancelInvoice(id);
+            if (!string.IsNullOrEmpty(response))
+            {
+                var cancel = _db.Invoices.FirstOrDefault(inv => inv.Id == id);
+                if (cancel != null)
+                    _db.Invoices.Remove(cancel);
+            }
 
         }
 
@@ -570,8 +620,7 @@ namespace Megatech.NAFSC.WPFApp.Data
                                 }
                                 var response = client.PostInvoice(model);
                                 var respItem = JsonConvert.DeserializeObject<InvoiceViewModel>(response);
-                                if (respItem != null)
-                                    
+                                if (respItem != null)                                    
                                 {
                                     item.Id = respItem.Id;
                                     item.Synced = true;
@@ -596,13 +645,19 @@ namespace Megatech.NAFSC.WPFApp.Data
                             var item = localList[i++];
                             var model = JsonConvert.DeserializeObject<RefuelViewModel>(item.JsonData);
                             var response = client.PostRefuel(model);
-                            var respItem = JsonConvert.DeserializeObject<RefuelViewModel>(response);
-                            if (respItem == null)
-                                canSync = false;
-                            else
+                            try
                             {
-                                item.Id = respItem.Id;
-                                item.Synced = true;
+                                var respItem = JsonConvert.DeserializeObject<RefuelViewModel>(response);
+                                if (respItem == null)
+                                    canSync = false;
+                                else
+                                {
+                                    item.Id = respItem.Id;
+                                    item.Synced = true;
+                                }
+                            }
+                            catch (Exception ex)
+                            { 
                             }
                         }
                         _db.SaveChanges();

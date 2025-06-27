@@ -106,7 +106,12 @@
         <clr:String x:Key="capture_image_invoice">Chụp hình số phiếu: </clr:String>
         <clr:String x:Key="invoice_saved_ok">Đã lưu phiếu thành công</clr:String>
 
+        <clr:String x:Key="invoice_error">Hóa đơn chưa đồng bộ</clr:String>
 
+        <clr:String x:Key="camera_not_start">Không khởi động được camera, vui lòng kiểm tra lại</clr:String>
+
+
+        
 
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">            
             <Setter Property="FontSize" Value="14"/>

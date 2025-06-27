@@ -1,4 +1,5 @@
 ﻿
+using Megatech.FMS.Logging;
 using Megatech.FMS.WebAPI.Models;
 using Megatech.NAFSC.WPFApp.Data;
 using System;
@@ -40,7 +41,9 @@ namespace Megatech.NAFSC.WPFApp
         private FlowDocument docPreview;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            PrintText();
+            
+                PrintText();
+           
         }
 
         private void Print()
@@ -76,7 +79,7 @@ namespace Megatech.NAFSC.WPFApp
                 if (textToPrint != null)
                 {
                    
-                    printFont = new Font("Consolas", 10);
+                    printFont = new Font("Courier New", 9);
                     PrintDocument pd = new PrintDocument();
                     
                     if (isV2)
@@ -100,7 +103,7 @@ namespace Megatech.NAFSC.WPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(FindResource("printer_error_msg").ToString(), FindResource("printer_error").ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(FindResource("printer_error_msg").ToString()  +"\r\n" + ex.Message, FindResource("printer_error").ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -264,7 +267,7 @@ namespace Megatech.NAFSC.WPFApp
             foreach (var itemModel in model.Items)
             {
                 builder.Append(String.Format("|{0,2} |{1,-19}|{2,8:#.00} oC|{3,8:#}|{4,9:#}|{5,9:#}|\n", i++, itemModel.TruckNo, itemModel.Temperature, itemModel.Gallon, itemModel.Volume, itemModel.Weight));
-                builder.Append(String.Format("|   |{0,9:#}/{0,-9:#}|{2,6:#.0000} kg/l|        |         |         |\n", itemModel.StartNumber, itemModel.EndNumber, itemModel.Density));
+                builder.Append(String.Format("|   |{0,9:#}/{1,-9:#}|{2,6:0.0000} kg/l|        |         |         |\n", itemModel.StartNumber, itemModel.EndNumber, itemModel.Density));
                 builder.Append("------------------------------------------------------------------\n");
             }
             builder.Append(String.Format("|   | Total                         |{0,8:#}|{1,9:#}|{2,9:#}|\n", model.Gallon, model.Volume, model.Weight));
@@ -739,8 +742,9 @@ namespace Megatech.NAFSC.WPFApp
             
             model = db.GetInvoice(invoiceId, invoiceGuid);
             
+            ///Add VendorModel
 
-            print_template = model.Vendor == Vendor.PA? 2 :( model.IsInternational ? 1 : 0);
+            print_template = model.VendorModelCode == Vendor.PA.ToString()? 2 :( model.IsInternational ? 1 : 0);
 
             (tabCtl.Items[0] as TabItem).Header = label + ": " + model.InvoiceNumber;
             if (model.ChildInvoice != null)
@@ -866,26 +870,33 @@ namespace Megatech.NAFSC.WPFApp
         private void btnCapture_Click(object sender, RoutedEventArgs e)
         {
             var file = tabCtl.SelectedIndex == 0 ? model.InvoiceNumber : model.ChildInvoice.InvoiceNumber;
-            var window = new ImageCaptureWindow(file);
-            window.ShowDialog();
-            if (tabCtl.SelectedIndex == 0)
+            try
             {
-                model.ImagePath = window.ImagePath;
-                
+                var window = new ImageCaptureWindow(file);
+                window.ShowDialog();
+                if (tabCtl.SelectedIndex == 0)
+                {
+                    model.ImagePath = window.ImagePath;
+
+                }
+                else
+                    model.ChildInvoice.ImagePath = window.ImagePath;
+                SetImage(tabCtl.SelectedIndex, window.ImagePath);
             }
-            else
-                model.ChildInvoice.ImagePath = window.ImagePath;
-            SetImage(tabCtl.SelectedIndex, window.ImagePath);
+            catch (Exception ex)
+            {
+                MessageBox.Show(FindResource("camera_not_start").ToString(), "error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnPost_Click(object sender, RoutedEventArgs e)
         {
             if (model.Exported)
                 MessageBox.Show("Warning: This invoice is already posted");
-            else if (string.IsNullOrEmpty(model.ImagePath))
-                MessageBox.Show("Warning: This invoice has no image captured");
-            else if (!File.Exists(model.ImagePath))
-                MessageBox.Show("Warning: Image not found");
+            //else if (string.IsNullOrEmpty(model.ImagePath))
+            //    MessageBox.Show("Warning: This invoice has no image captured");
+            //else if (!File.Exists(model.ImagePath))
+            //    MessageBox.Show("Warning: Image not found");
             else
             {
                 var db = new DataRepository();

@@ -14,6 +14,9 @@ namespace Megatech.FMS.WebAPI.Models
             Items = new List<InvoiceItemModel>();
             Currency = Models.Currency.VND;
             Vendor = Vendor.SKYPEC;
+
+            VendorModelCode = "SKYPEC";
+           
         }
         public InvoiceViewModel(List<RefuelViewModel> refuels, InvoiceOption option)
         {
@@ -75,6 +78,9 @@ namespace Megatech.FMS.WebAPI.Models
             Currency = item.Airline.Currency;
             Unit = item.Airline.Unit;
             Vendor = item.Airline.Vendor;
+            VendorModelId = item.Airline.VendorModelId;
+            VendorModelCode = item.Airline.VendorModelCode;
+
             StartTime = item.StartTime;
             EndTime = item.EndTime;
             QualityNo = item.QualityNo;
@@ -112,7 +118,7 @@ namespace Megatech.FMS.WebAPI.Models
 
         public string Address { get; set; }
 
-        public DateTime RefuelTime { get; set; }
+        public DateTime? RefuelTime { get; set; }
 
         public string QualityNo { get; set; }
 
@@ -215,7 +221,9 @@ namespace Megatech.FMS.WebAPI.Models
         public Unit Unit { get; set; }
         public Currency Currency { get; set; }
         public Vendor Vendor { get; set; }
+        public int? VendorModelId { get; set; }
 
+        public string VendorModelCode { get; set; }
         public decimal Subtotal {
             get {
                 return Math.Round(Price * (decimal)(Unit == Unit.KG?Weight: Gallon), Currency == Currency.USD ? 2 : 0, MidpointRounding.AwayFromZero);
@@ -272,9 +280,22 @@ namespace Megatech.FMS.WebAPI.Models
         public bool Exported { get; set; }
         public bool CanSync
         {
-            get { return Vendor == Vendor.PA || !string.IsNullOrEmpty(ImagePath) ; }
+            get { return true;//
+            }
+            //VendorModelCode == Vendor.PA.ToString() || !string.IsNullOrEmpty(ImagePath) ; 
         }
 
+        public string SyncError
+        {
+            get
+            {
+                if (VendorModelCode == Vendor.PA.ToString())
+                    return string.Empty;
+                else if (string.IsNullOrEmpty(ImagePath))
+                    return "No image captured";
+                else return string.Empty;
+            }
+        }
         public bool CanExport
         {
             get { return !Exported && !string.IsNullOrEmpty(ImagePath); }

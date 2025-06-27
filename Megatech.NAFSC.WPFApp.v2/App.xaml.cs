@@ -14,6 +14,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Configuration;
+using System.Windows.Threading;
+using Megatech.FMS.Logging;
 
 namespace Megatech.NAFSC.WPFApp
 {
@@ -22,7 +24,7 @@ namespace Megatech.NAFSC.WPFApp
     /// </summary>
     public partial class App : Application
     {
-
+        public static string Device_Id;
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
@@ -31,9 +33,20 @@ namespace Megatech.NAFSC.WPFApp
 
         protected override void OnStartup(StartupEventArgs e)
         {
+
+            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             base.OnStartup(e);
             //AutoUpdater.Start(ConfigurationManager.AppSettings["updater_url"]);
             CheckInternet();
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+
+            LogHelper.SendException(e.Exception);
+
+            e.Handled = true;
+
         }
 
         private void CheckInternet()
@@ -67,6 +80,7 @@ namespace Megatech.NAFSC.WPFApp
             TextBox tb = (TextBox)sender;
             tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
         }
+
     }
 
     

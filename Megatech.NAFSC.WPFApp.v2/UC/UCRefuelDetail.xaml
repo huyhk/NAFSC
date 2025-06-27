@@ -11,7 +11,7 @@
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <cv:DecimalPercentageConverter x:Key="DecimalPercentageConverter"/>
-        
+
         <Style TargetType="TextBlock">
 
             <Setter Property="TextAlignment" Value="Center"></Setter>
@@ -67,8 +67,9 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -151,7 +152,9 @@
                   SelectedValue="{Binding OperatorId, Mode=TwoWay}"
                   StaysOpenOnEdit="True">
         </ComboBox>
-        <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="12" Grid.ColumnSpan="4"  SelectionChanged="lvItems_SelectionChanged">
+        <Label Grid.Row="12" Grid.Column="0" Content="Công ty xăng dầu"></Label>
+        <TextBlock Grid.Row="12" Grid.Column="1" Text="{Binding VendorModelCode}"></TextBlock>
+        <ListView BorderThickness="0" Name="lvItems" Grid.Column="0" Grid.Row="13" Grid.ColumnSpan="4"  SelectionChanged="lvItems_SelectionChanged">
             <ListView.DataContext>
                 <data:RefuelViewModel/>
             </ListView.DataContext>

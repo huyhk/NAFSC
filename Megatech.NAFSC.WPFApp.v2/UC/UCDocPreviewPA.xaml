@@ -15,7 +15,7 @@
             <FlowDocument Name="docPreview">
                 <Paragraph>
                     <Run Text="Công ty xăng dầu:  "></Run>
-                    <Run Text="{Binding Vendor, Mode=OneTime}"></Run>
+                    <Run Text="{Binding VendorModelCode, Mode=OneTime}"></Run>
                 </Paragraph>
 
 

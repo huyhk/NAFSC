@@ -33,7 +33,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <CheckBox Content="Số hóa đơn tự động" IsChecked="{Binding AutoNumber}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="0" Name="chkauto" FontSize="18" VerticalAlignment="Center" ></CheckBox>
+        <CheckBox Content="Số hóa đơn tự động" IsChecked="{Binding AutoNumber}" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="0" Name="chkauto" FontSize="18" VerticalAlignment="Center" ></CheckBox>
 
         <TextBlock Text="Số hóa đơn"  Grid.Row="1" Grid.Column="0" FontSize="18" VerticalAlignment="Center"></TextBlock>
         <TextBox Name="txtInvoiceNumber" Text="{Binding InvoiceNumber}" Grid.Column="1" FontSize="18" VerticalAlignment="Center" Grid.Row="1"></TextBox>

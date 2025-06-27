@@ -40,9 +40,12 @@ namespace Megatech.NAFSC.WPFApp.Helpers
                     {
                         response = result.Content.ReadAsStringAsync().Result;
                     }
+
                 }
                 catch (Exception ex)
-                { }
+                {
+                    response = ex.Message;
+                }
             }
             return response;
 
@@ -77,7 +80,7 @@ namespace Megatech.NAFSC.WPFApp.Helpers
             return t.Result;
         }
 
-        internal object CancelInvoice(int id)
+        internal string CancelInvoice(int id)
         {
             var url = "api/invoices/cancel";
 

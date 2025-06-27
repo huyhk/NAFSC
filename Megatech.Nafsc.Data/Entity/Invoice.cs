@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Megatech.Nafsc.Data.Entity;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace FMS.Data
@@ -58,6 +60,8 @@ namespace FMS.Data
 
         public List<InvoiceItem> Items { get; set; }
 
+        //public FLIGHT_CREATED_LOCATION? CreatedLocation { get; set; }
+
         public decimal SubTotal
         {
             get;
@@ -83,6 +87,14 @@ namespace FMS.Data
         }
 
         public OilCompany Vendor { get; set; }
+
+        [NotMapped]
+        public int? VendorModelId { get { return Flight?.VendorModelId; } }
+
+        [NotMapped]
+        public VendorModel  VendorModel { get { return Flight?.VendorModel; } }
+        [NotMapped]
+        public string VendorModelCode { get { return VendorModel?.Code; } }
 
         public Currency Currency { get; set; }
 

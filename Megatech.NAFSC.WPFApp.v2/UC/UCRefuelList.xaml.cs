@@ -76,7 +76,7 @@ namespace Megatech.NAFSC.WPFApp.UC
                         model.Status = REFUEL_ITEM_STATUS.PROCESSING;
                         _db.PostRefuel(model);
 
-                        RefuelWindow refuelwd = new RefuelWindow((RefuelViewModel)item.DataContext);
+                        RefuelWindow refuelwd = new RefuelWindow(model);
                         Window wnd = Window.GetWindow(this);
 
                         refuelwd.ShowDialog();

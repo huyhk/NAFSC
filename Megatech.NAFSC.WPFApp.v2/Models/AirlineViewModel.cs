@@ -29,6 +29,9 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Vendor Vendor { get; set; }
 
+        public int? VendorModelId { get; set; }
+
+        public string VendorModelCode { get; set; }
         public string ProductName { get; set; }
 
         public string InvoiceName { get; set; }

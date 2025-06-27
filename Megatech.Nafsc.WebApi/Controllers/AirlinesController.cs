@@ -23,8 +23,9 @@ namespace Megatech.FMS.WebAPI.Controllers
         {
             var today = DateTime.Today;
             //select general price
-            var gprice = db.ProductPrices.Include(p => p.Product).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
-            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, Currency = global::FMS.Data.Currency.VND };
+            var gprice = db.ProductPrices.Include(p => p.Product).Include(p=>p.VendorModel)
+                .FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
+            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, Currency = global::FMS.Data.Currency.VND, VendorModel = new Nafsc.Data.Entity.VendorModel { Code = "SKYPEC"} };
            
             var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Include(p=>p.Product).OrderByDescending(p=>p.StartDate);
             var list = from a in db.Airlines
@@ -46,6 +47,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                            InvoiceTaxCode = a.InvoiceTaxCode ,
                            Currency = p == null? Currency.VND: p.Currency,
                            Vendor = p == null ? Vendor.SKYPEC: (Vendor)p.OilCompany,
+
+                           VendorModelCode = p.VendorModel.Code,
+                           VendorModelId = p.VendorModel.Id,
                            Unit = p==null? Unit.KG: p.Unit
 
                        };

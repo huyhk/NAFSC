@@ -1,4 +1,5 @@
 ﻿using FMS.Data;
+using Megatech.Nafsc.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,9 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Vendor Vendor { get; set; }
 
+        public int? VendorModelId { get; set; }
+        public string VendorModelCode { get; set; }
+
         public decimal TaxRate { get; set; }
 
         public decimal? Weight { get; set; }
@@ -70,7 +74,7 @@ namespace Megatech.FMS.WebAPI.Models
         public List<RefuelViewModel> Others { get; set; }
 
         public FlightStatus FlightStatus { get; set; }
-        public decimal? Gallon { get;  set; }
+        public decimal? Gallon { get; set; } = 0.0M;
 
         public REFUEL_ITEM_TYPE RefuelItemType { get; set; }
 

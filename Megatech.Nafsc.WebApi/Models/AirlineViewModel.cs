@@ -1,4 +1,5 @@
 ﻿using FMS.Data;
+using Megatech.Nafsc.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,6 +27,9 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Vendor Vendor { get; set; }
 
+        public int? VendorModelId { get; set; }
+        public string VendorModelCode { get; set; }
+
         public Unit Unit { get; set; }
 
         public string ProductName { get; set; }
@@ -42,8 +46,11 @@ namespace Megatech.FMS.WebAPI.Models
     {
 
         SKYPEC,
-        PA
+        PA,
+        TAPETCO
 
     }
+
+  
     
 }

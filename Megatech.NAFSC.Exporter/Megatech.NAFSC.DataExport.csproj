@@ -50,9 +50,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Megatech.FMS.Logger">
-      <HintPath>..\..\Megatech.FMS\Megatech.FMS.Logger\bin\Release\Megatech.FMS.Logger.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -75,7 +72,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exporter.cs" />
+    <Compile Include="IExporter.cs" />
+    <Compile Include="SkyecExporter.cs" />
     <Compile Include="ExportModel.cs" />
     <Compile Include="ExportResultModel.cs" />
     <Compile Include="LoginModel.cs" />
@@ -86,6 +84,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Megatech.FMS.Logger\Megatech.FMS.Logger.csproj">
+      <Project>{6f23a223-be96-4b31-8208-c0375a751bf4}</Project>
+      <Name>Megatech.FMS.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Megatech.Nafsc.Data\Megatech.Nafsc.Data.csproj">
       <Project>{f9b9d567-c9d3-46ca-936f-8d5aa023d8fc}</Project>
       <Name>Megatech.Nafsc.Data</Name>

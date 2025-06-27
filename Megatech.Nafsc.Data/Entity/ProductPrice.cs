@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Megatech.Nafsc.Data.Entity;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +27,11 @@ namespace FMS.Data
         
         public OilCompany OilCompany { get; set; }
 
+        [Column("OilCompanyTemplateId")]
+        public int? VendorModelId { get; set; }
+        [ForeignKey(nameof(VendorModelId))]
+        public VendorModel  VendorModel { get; set; }
+
         public Currency Currency { get; set; }
 
         public int? AgencyId { get; set; }
@@ -38,7 +45,8 @@ namespace FMS.Data
     public enum OilCompany
     {
         SKYPEC,
-        PA
+        PA,
+        TAPETCO
      }
     public enum Currency
     {

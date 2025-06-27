@@ -1,5 +1,8 @@
 ﻿using FMS.Data;
 using Megatech.FMS.Logging;
+using Megatech.NAFSC.Exporter;
+
+//using Megatech.FMS.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,15 +14,15 @@ using System.Net.Http;
 
 namespace Megatech.NAFSC.DataExport
 {
-    public class Exporter
+    public class SkyecExporter:IExporter
     {
         private string EXPORT_BASE_URL = ConfigurationManager.AppSettings["EXPORT_BASE_URL"]?? "http://116.193.76.111:8080/";
 
-        public Exporter()
+        public SkyecExporter()
         {
-            if (string.IsNullOrEmpty(Logger.GetPath()))
-            {
-            }
+            //if (string.IsNullOrEmpty(Logger.GetPath()))
+            //{
+            //}
         }
         public IEnumerable<ExportResult> Export()
         {
@@ -27,10 +30,10 @@ namespace Megatech.NAFSC.DataExport
             {
                 var date = new DateTime(2022, 09, 17);
                 var result = new List<ExportResult>();
-                var ids = db.Invoices.Where(inv => inv.ExportedResult != 0 && inv.ExportedResult!=2 && inv.Vendor == OilCompany.SKYPEC && inv.DateCreated>=date).Select(inv => inv.Id).ToArray();
+                var ids = db.Invoices.Where(inv => inv.ExportedResult != 0 && inv.ExportedResult!=2 && inv.Flight.VendorModel.Code == VendorModelCode && inv.DateCreated>=date).Select(inv => inv.Id).ToArray();
                 foreach (var item in ids)
                 {
-                    Logger.AppendLog("Export", $"Export Invoice Id {item}","export") ;
+                    //Logger.AppendLog("Export", $"Export Invoice Id {item}","export") ;
                     result.Add (Export(item));
                 }
                 return result;
@@ -43,8 +46,8 @@ namespace Megatech.NAFSC.DataExport
             {
                 using (var db = new DataContext())
                 {
-                    var inv = db.Invoices.Include(i => i.Items).Include(i => i.Flight).Include(i => i.Customer).FirstOrDefault(i => i.Id == id);
-                    if (inv != null && inv.Flight != null && !string.IsNullOrEmpty(inv.ImagePath ))
+                    var inv = db.Invoices.Include(i => i.Items).Include(i => i.Flight).Include(i => i.Customer).FirstOrDefault(i => i.Id == id && i.Flight.VendorModel.Code== VendorModelCode);
+                    if (inv != null && inv.Flight != null && !string.IsNullOrEmpty(inv.ImagePath ) )
                     {
                         var exportModel = new ExportModel
                         {
@@ -113,6 +116,9 @@ namespace Megatech.NAFSC.DataExport
             return new  ExportResult { Result = EXPORT_RESULT.FAILED, Message = "unknown error" };
         }
         private string _token;
+
+        public string VendorModelCode { get;set;} = "SKYPEC";
+
         private string Login()
         {
             using (var client = new HttpClient())

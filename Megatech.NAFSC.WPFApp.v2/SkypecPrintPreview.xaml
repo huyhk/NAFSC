@@ -7,7 +7,7 @@
         xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
         xmlns:uc="clr-namespace:Megatech.NAFSC.WPFApp.UC"  
         mc:Ignorable="d"
-        Title="Phiếu xuất kho Skypec" Height="720" Width="680" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="Phiếu xuất kho Skypec" Height="720" Width="880" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         
         <Style TargetType="Paragraph">
@@ -52,7 +52,11 @@
 
                 <DockPanel Height="40">
                     <Button Content="Trở lại" Click="btnBack_Click" Name="btnBack" IsEnabled="true" Margin="0,0,5,0" ></Button>
-                   
+                    <ComboBox Name="cboFont" Visibility="Hidden">
+                        <ComboBoxItem>Courier New</ComboBoxItem>
+                        <ComboBoxItem>Consolas</ComboBoxItem>
+                    </ComboBox>
+                    
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button Content="In phiếu" Name="btnPrint" Click="Button_Click"></Button>
                         <Button Content="Chụp hình" Name="btnCapture" Click="btnCapture_Click"></Button>
@@ -80,8 +84,9 @@
                         
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="640"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+
                     </Grid.ColumnDefinitions>
                     <uc:UCDocPreviewSkypecNoPrice Grid.Column="0" x:Name="ucPreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"></uc:UCDocPreviewSkypecNoPrice>
                     <Image Grid.Column="1" VerticalAlignment="Top"></Image>

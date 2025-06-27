@@ -1,4 +1,5 @@
 ﻿using FMS.Data;
+using Megatech.NAFSC.WPFApp.Data;
 using Megatech.NAFSC.WPFApp.Global;
 using Newtonsoft.Json;
 using PropertyChanged;
@@ -122,6 +123,8 @@ namespace Megatech.FMS.WebAPI.Models
 
         public bool HasExtract { get { return Extract > 0; } }
 
+
+
         public string DriverName { get; set; }
 
         public string OperatorName { get; set; }
@@ -145,6 +148,11 @@ namespace Megatech.FMS.WebAPI.Models
 
         public bool IsDeleted { get; set; }
 
+        public bool Synced { get; set; }
+        public bool NotSynced { get { return !Synced; }  }
+
+
+        public string VendorModelCode { get { return Airline?.VendorModelCode; } }
         public RefuelViewModel Copy()
         {
             var model =  JsonConvert.DeserializeObject<RefuelViewModel>(JsonConvert.SerializeObject(this));
@@ -152,10 +160,22 @@ namespace Megatech.FMS.WebAPI.Models
             model.Status = REFUEL_ITEM_STATUS.NONE;
             model.Printed = false;
             model.LocalGuid = Guid.Empty;
+            //model.RealAmount = 0;
+            //model.Weight = 0;
+
+            model.Synced = false;
 
             return model;
         }
-        
-        
+
+        internal static RefuelViewModel FromLocalItem(LocalRefuel refuel)
+        {
+
+            var model = JsonConvert.DeserializeObject<RefuelViewModel>(refuel.JsonData);
+            model.Synced = refuel.Synced;
+            model.LocalGuid = refuel.Key;
+            
+            return model;
+        }
     }
 }

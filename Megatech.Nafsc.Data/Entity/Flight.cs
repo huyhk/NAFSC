@@ -11,6 +11,7 @@ using FMS.Data;
 using System.IO;
 using System.Data.Entity.Migrations;
 using System.ComponentModel.DataAnnotations;
+using Megatech.Nafsc.Data.Entity;
 
 namespace FMS.Data
 {
@@ -113,6 +114,12 @@ namespace FMS.Data
         public bool ImportError { get; set; }
 
         public OilCompany OilCompany { get; set; }
+
+        [Column("OilCompanyTemplateId")]
+        public int? VendorModelId { get; set; }
+
+        [ForeignKey(nameof(VendorModelId))]
+        public VendorModel  VendorModel { get; set; }
     }
     public enum FlightStatus
     {

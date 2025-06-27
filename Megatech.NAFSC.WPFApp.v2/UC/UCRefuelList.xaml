@@ -118,9 +118,11 @@
                         <Image  Source="/Megatech.NAFSC.WPFApp.v2;component/Images/operator.png" Width="20" Height="20"></Image>
                         <TextBlock Text="{Binding OperatorName}" ></TextBlock>
                     </StackPanel>
+                    <StackPanel Grid.Column="6" Grid.RowSpan="2"   Orientation="Horizontal">
+                        <Image    VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp.v2;component/Images/printer.png" Width="20" Height="20" Visibility="{Binding Printed, Converter={StaticResource VisibilityConverter}}"></Image>
 
-                    <Image  Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp.v2;component/Images/printer.png" Width="20" Height="20" Visibility="{Binding Printed, Converter={StaticResource VisibilityConverter}}"></Image>
-
+                        <Image    VerticalAlignment="Center"   Source="/Megatech.NAFSC.WPFApp.v2;component/Images/notsynced.png" Width="20" Height="20" Visibility="{Binding NotSynced, Converter={StaticResource VisibilityConverter}}"></Image>
+                    </StackPanel>
                     <StackPanel Grid.Column="7" Grid.RowSpan="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasExtract, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock Text="{StaticResource extract}" HorizontalAlignment="Center"></TextBlock>
                         <TextBlock Text="{Binding Extract, StringFormat={}{0:0,0}}" HorizontalAlignment="Center" ></TextBlock>

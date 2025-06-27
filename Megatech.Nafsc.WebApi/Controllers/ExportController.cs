@@ -13,7 +13,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         [Route("api/export/{id?}")]
         public IHttpActionResult Post(int? id = null)
         {
-            var exp =             new Exporter();
+            var exp =  new SkyecExporter();
             if (id != null )
             {
                 var ret = exp.Export((int)id);

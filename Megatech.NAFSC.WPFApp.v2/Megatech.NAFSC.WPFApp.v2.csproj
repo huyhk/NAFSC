@@ -17,6 +17,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,7 +32,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -75,8 +75,13 @@
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\tanker.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -126,13 +131,18 @@
     <Compile Include="Global\TouchTextBox.cs" />
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ErmHelper.cs" />
+    <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\InternetHelper.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\NumberConvert.cs" />
     <Compile Include="ImageCaptureWindow.xaml.cs">
       <DependentUpon>ImageCaptureWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoicesWindow.xaml.cs">
+      <DependentUpon>InvoicesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="InvoiceWindow.xaml.cs">
       <DependentUpon>InvoiceWindow.xaml</DependentUpon>
@@ -190,6 +200,9 @@
     <Compile Include="UC\UCRefuelDetail.xaml.cs">
       <DependentUpon>UCRefuelDetail.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UC\UCInvoiceList.xaml.cs">
+      <DependentUpon>UCInvoiceList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UC\UCRefuelList.xaml.cs">
       <DependentUpon>UCRefuelList.xaml</DependentUpon>
     </Compile>
@@ -204,6 +217,10 @@
     <Page Include="InputDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InvoicesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="InvoiceWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -289,6 +306,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UC\UCInvoiceList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UC\UCRefuelList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -325,10 +346,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="airports.json" />
-    
+    <None Include="airports.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.manifest" />
-  
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -390,23 +411,13 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Nafsc.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Nafsc_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Nafsc.mdf</DependentUpon>
-    </Content>
-    <Content Include="Security.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Security_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Security.mdf</DependentUpon>
-    </Content>
     <Resource Include="UC\airplane-landing-xxl.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Megatech.FMS.Logger\Megatech.FMS.Logger.csproj">
+      <Project>{6f23a223-be96-4b31-8208-c0375a751bf4}</Project>
+      <Name>Megatech.FMS.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Megatech.Nafsc.Data\Megatech.Nafsc.Data.csproj">
       <Project>{f9b9d567-c9d3-46ca-936f-8d5aa023d8fc}</Project>
       <Name>Megatech.Nafsc.Data</Name>
@@ -486,6 +497,25 @@
       <Version>6.15.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\synced.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\notsynced.png" />
+    <Content Include="Nafsc.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Nafsc_log.ldf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>Nafsc.mdf</DependentUpon>
+    </Content>
+    <Content Include="Security.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Security_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>Security.mdf</DependentUpon>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
 </Project>

@@ -29,13 +29,13 @@ namespace Megatech.FMS.WebAPI.Controllers
             Logging.Logger.SetPath(HostingEnvironment.MapPath("~/Logs"));
 
             Task.Run(() => {
-                var exporter = new Exporter();
+                var exporter = new SkyecExporter();
                 exporter.Export();
             });
         }
         private DataContext db = new DataContext();
 
-        [Authorize]        
+        [Authorize]
         // POST: api/Invoices
         [ResponseType(typeof(InvoiceViewModel))]
         public IHttpActionResult PostInvoice(InvoiceViewModel model)
@@ -59,9 +59,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                 foreach (var item in ModelState.Values)
                 {
 
-                    Logging.Logger.AppendLog("INVOICE-ERROR", item.Errors.FirstOrDefault().ErrorMessage , "invoices");
+                    Logging.Logger.AppendLog("INVOICE-ERROR", item.Errors.FirstOrDefault().ErrorMessage, "invoices");
                 }
-               
+
                 return BadRequest(ModelState);
             }
             try
@@ -75,9 +75,11 @@ namespace Megatech.FMS.WebAPI.Controllers
                 }
                 var invoice = JsonConvert.DeserializeObject<Invoice>(JsonConvert.SerializeObject(model));
                 var existed = db.Invoices.FirstOrDefault(inv => inv.InvoiceNumber == invoice.InvoiceNumber
-                && (inv.Flight.Id == refuel.FlightId) && (inv.Vendor == invoice.Vendor));
+                && (inv.Flight.Id == refuel.FlightId) );
                 if (existed != null)
                     return Ok(existed);
+
+                //invoice.CreatedLocation = FLIGHT_CREATED_LOCATION.APP;
                 invoice.FlightId = refuel.FlightId;
                 invoice.CustomerId = refuel.Flight.AirlineId ?? 0;
                 invoice.UserCreatedId = invoice.UserUpdatedId = user.Id;
@@ -85,7 +87,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 {
                     var fileName = model.InvoiceNumber + ".jpg";
                     SaveImage(model.ImageString, fileName, folderPath);
-                    invoice.ImagePath = fileName;
+                    invoice.ImagePath = Path.Combine(folderPath,fileName);
                 }
                 else
                     Logging.Logger.AppendLog("INVOICE", "NO image string found", "invoices");
@@ -119,7 +121,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     {
                         var fileName = model.ChildInvoice.InvoiceNumber + ".jpg";
                         SaveImage(model.ChildInvoice.ImageString, fileName, folderPath);
-                        child.ImagePath = fileName;
+                        child.ImagePath = Path.Combine(folderPath,fileName);
                     }
                 }
                 else
@@ -144,7 +146,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                 }
 
                 db.SaveChanges();
-                if (model.Vendor == Vendor.SKYPEC)
+                if (model.Vendor == Vendor.SKYPEC || model.VendorModelCode == "SKYPEC")
                 {
                     Export(invoice);
                     if (child != null)
@@ -165,7 +167,7 @@ namespace Megatech.FMS.WebAPI.Controllers
         {
             if (!string.IsNullOrEmpty(invoice.ImagePath))
             {
-                var exporter = new Exporter();
+                var exporter = new SkyecExporter();
                 var result = exporter.Export(invoice.Id);
                 invoice.ExportedResult = (int)result.Result ;
                 invoice.DateExported = DateTime.Now;
@@ -221,39 +223,47 @@ namespace Megatech.FMS.WebAPI.Controllers
 
         public IHttpActionResult Get(int id)
         {
-            
-            var model = db.Invoices.AsNoTracking()      
-                .Include(inv=>inv.Flight)          
-                .Include(inv=>inv.Items)
-                .Include(inv => inv.ChildInvoice.Items)                
-                .FirstOrDefault(inv => inv.Id == id);
-                      
-            
-
-            var resp = JsonConvert.DeserializeObject<InvoiceViewModel>(JsonConvert.SerializeObject(model,new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
-
-            resp.FlightCode = model.Flight.Code;
-            resp.AircraftCode = model.Flight.AircraftCode;
-            resp.AircraftType = model.Flight.AircraftType;
-            resp.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
-            resp.RouteName = model.Flight.RouteName;
-            resp.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
-
-            if (resp.ChildInvoice != null)
+            try
             {
-                resp.ChildInvoice.FlightCode = model.Flight.Code;
-                resp.ChildInvoice.AircraftCode = model.Flight.AircraftCode;
-                resp.ChildInvoice.AircraftType = model.Flight.AircraftType;
-                resp.ChildInvoice.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
-                resp.ChildInvoice.RouteName = model.Flight.RouteName;
-                resp.ChildInvoice.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
+                var model = db.Invoices.AsNoTracking()
+                    .Include(inv => inv.Flight.VendorModel)
+                    .Include(inv => inv.Items)
+                    .Include(inv => inv.ChildInvoice.Items)
+                    .FirstOrDefault(inv => inv.Id == id);
 
+
+                //model.VendorModel = model.Flight.VendorModel;
+                //model.VendorModelId = model.Flight.VendorModelId;
+
+                var resp = JsonConvert.DeserializeObject<InvoiceViewModel>(JsonConvert.SerializeObject(model, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+
+                resp.FlightCode = model.Flight.Code;
+                resp.AircraftCode = model.Flight.AircraftCode;
+                resp.AircraftType = model.Flight.AircraftType;
+                resp.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
+                resp.RouteName = model.Flight.RouteName;
+                resp.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
+
+                if (resp.ChildInvoice != null)
+                {
+                    resp.ChildInvoice.FlightCode = model.Flight.Code;
+                    resp.ChildInvoice.AircraftCode = model.Flight.AircraftCode;
+                    resp.ChildInvoice.AircraftType = model.Flight.AircraftType;
+                    resp.ChildInvoice.IsInternational = model.Flight.FlightType == FlightType.OVERSEA;
+                    resp.ChildInvoice.RouteName = model.Flight.RouteName;
+                    resp.ChildInvoice.ParkingLot = model.Flight.Parking + "/" + model.Flight.ValvePit.ToString();
+
+                }
+
+                resp.OperatorName = (db.RefuelItems.Include(r => r.Operator).Where(re => re.InvoiceId == id).Select(re => re.Operator).FirstOrDefault() ?? new User()).FullName;
+
+
+                return Ok(resp);
             }
-            
-            resp.OperatorName = (db.RefuelItems.Include(r => r.Operator).Where(re => re.InvoiceId == id).Select(re => re.Operator).FirstOrDefault() ?? new User()).FullName;
-
-
-            return Ok(resp);
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
         }
 
         private void SaveImage(string base64String, string fileName, string folderPath)

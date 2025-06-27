@@ -106,11 +106,17 @@ namespace Megatech.NAFSC.WPFApp
         {
             if (MessageBox.Show(FindResource("cancel_invoice_confirm").ToString(), FindResource("confirm").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                db.CancelInvoice(model.InvoiceId);
-                model.InvoiceId = 0;
-                model.InvoiceGuid = new Guid();
-                model.Printed = false;
-                db.PostRefuel(model);
+                if (model.InvoiceId == 0 && model.InvoiceGuid != Guid.Empty)
+                    repo.CancelInvoice(model.InvoiceGuid);
+                else
+                {
+                    db.CancelInvoice(model.InvoiceId);
+                }
+                    model.InvoiceId = 0;
+                    model.InvoiceGuid = Guid.Empty;
+                    model.Printed = false;
+                    db.PostRefuel(model);
+                
                 SetEnable();
             }
         }
@@ -129,7 +135,7 @@ namespace Megatech.NAFSC.WPFApp
 
                 if (!IsError())
                 {
-                    InvoiceWindow wnd = new InvoiceWindow(model.Volume, model.Airline.Vendor);
+                    InvoiceWindow wnd = new InvoiceWindow(model.Volume, model.VendorModelCode != "PA");
 
                     if (wnd.ShowDialog().Value)
                     {
@@ -147,16 +153,33 @@ namespace Megatech.NAFSC.WPFApp
 
                         }
 
+                        PreviewInvoice(invoiceId, invoiceGuid);
                     }
-                    else { invoiceId = 0; invoiceGuid = Guid.Empty; }
+                    else
+                    {
+
+                      
+
+                    }
+
                 }
 
 
             }
+            else
+            {
+                PreviewInvoice(invoiceId, invoiceGuid);
+
+            }
+            
+        }
+
+        private void PreviewInvoice(int invoiceId, Guid invoiceGuid)
+        {
             if (invoiceId > 0 || invoiceGuid != Guid.Empty)
             {
                 SetEnable();
-                if (model.Airline.Vendor == Vendor.PA)
+                if (model.Airline.VendorModelCode == Vendor.PA.ToString())
                 {
                     PrintPreview preview = new PrintPreview();
 
@@ -171,7 +194,6 @@ namespace Megatech.NAFSC.WPFApp
                     preview.ShowDialog();
                 }
             }
-            
         }
 
         private bool IsError()
@@ -195,6 +217,8 @@ namespace Megatech.NAFSC.WPFApp
             if (isError)
                 MessageBox.Show(msg, FindResource("invalid_data").ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
 
+
+            //throw new Exception(msg);
             return isError;
         }
         protected override void OnClosing(CancelEventArgs e)
@@ -216,7 +240,7 @@ namespace Megatech.NAFSC.WPFApp
             if (MessageBox.Show(FindResource("new_refuel_msg").ToString(), FindResource("confirm").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 var newModel = model.Copy();
-
+                
                 if (newModel != null)
                 {
                     SelectUserWindow su = new SelectUserWindow(newModel);
@@ -225,6 +249,8 @@ namespace Megatech.NAFSC.WPFApp
                     {
                         newModel.OperatorId = su.OperatorId;
                         newModel.DriverId = su.DriverId;
+                        newModel.RealAmount = 0;
+                        newModel.Weight = 0;
                         
                         newModel.Status = REFUEL_ITEM_STATUS.PROCESSING;
                         var respItem = db.PostRefuel(newModel);

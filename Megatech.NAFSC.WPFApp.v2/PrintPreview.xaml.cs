@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using static System.Net.WebRequestMethods;
 
 namespace Megatech.NAFSC.WPFApp
 {
@@ -735,15 +736,18 @@ namespace Megatech.NAFSC.WPFApp
             var label = FindResource("invoice_number").ToString();
             
             model = db.GetInvoice(invoiceId, invoiceGuid);
-            
-                
-                rad0.IsChecked =  model.Vendor == Vendor.SKYPEC;
-                //rad1.IsChecked = model.IsInternational && model.Vendor == Vendor.SKYPEC;
-            rad2.IsChecked = model.Vendor == Vendor.PA;
 
+            ///Update 2025-05-31, vendor code. If PA, default selected is PA, otherwise SKYPEC
 
+            //rad0.IsChecked =  model.Vendor == Vendor.SKYPEC;
+            rad0.IsChecked = model.VendorModelCode != "PA";
+            //rad1.IsChecked = model.IsInternational && model.Vendor == Vendor.SKYPEC;
+            //rad2.IsChecked = model.Vendor == Vendor.PA;
+            rad2.IsChecked = model.VendorModelCode == "PA";
 
-            print_template = model.Vendor == Vendor.PA? 2 :( model.IsInternational ? 1 : 0);
+            ///Update 2025-05-31, vendor code. If PA, template  is PA, otherwise SKYPEC
+            print_template = model.VendorModelCode == "PA" ? 2 : (model.IsInternational ? 1 : 0);
+            //print_template = model.Vendor == Vendor.PA? 2 :( model.IsInternational ? 1 : 0);
 
             (tabCtl.Items[0] as TabItem).Header = label + ": " + model.InvoiceNumber;
             if (model.ChildInvoice != null)

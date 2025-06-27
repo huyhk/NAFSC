@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="Megatech.NAFSC.WPFApp.UC.UCInvoiceList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Megatech.NAFSC.WPFApp.UC"
+             xmlns:cvt="clr-namespace:Megatech.NAFSC.WPFApp"
+             xmlns:data="clr-namespace:Megatech.FMS.WebAPI.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.DataContext>
+        <data:InvoiceViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="Image">
+            <Setter Property="Margin" Value="2"></Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+           TargetType="TextBlock" x:Key="TitleText">
+            
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+           TargetType="TextBlock" x:Key="GroupHeader">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+        <cvt:VisibilityConverter x:Key="VisibilityConverter"></cvt:VisibilityConverter>
+        <cvt:StatusConverter x:Key="StatusConverter"></cvt:StatusConverter>
+        <data:InvoiceViewModel x:Key="DesignViewModel"/>
+    </UserControl.Resources>
+
+    <ListView Name="lvInvoiceList" Width="Auto" Height="Auto" Grid.Row="1" d:DataContext="{Binding Source={StaticResource DesignViewModel}}" >
+
+        
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="BorderBrush" Value="Black" />
+                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                <Setter Property="Padding" Value="10"/>
+                <EventSetter Event="MouseLeftButtonUp" Handler="ListView_ItemClicked"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Status}" Value="DONE">
+                        <Setter Property="Background" Value="LightBlue" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="NONE">
+                        <Setter Property="Background" Value="White" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ListView.ItemContainerStyle>
+
+
+        <ListView.ItemTemplate >
+            
+            <DataTemplate >
+                <Grid >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                      <TextBlock  Text="{Binding FlightCode}" Grid.Column="1" Grid.Row="0" Style="{StaticResource TitleText}"></TextBlock>
+                    <TextBlock Text="{Binding RouteName}" Grid.Column="1" Grid.Row="1" ></TextBlock>
+                    <TextBlock Text="{Binding AircraftType}" Grid.Column="2" Grid.Row="0" ></TextBlock>
+                    <TextBlock Text="{Binding AircraftCode}" Grid.Column="2" Grid.Row="1" ></TextBlock>
+                    <TextBlock Text="{Binding InvoiceNumber}" Grid.Column="3" Grid.Row="0" ></TextBlock>
+                    <TextBlock Text="{Binding CustomerName}" Grid.Column="3" Grid.Row="1" ></TextBlock>
+                    <TextBlock Text="{Binding Volume}" Grid.Column="4" Grid.Row="0" ></TextBlock>
+                    <TextBlock Text="{Binding Weight}" Grid.Column="4" Grid.Row="1" ></TextBlock>
+
+
+
+                </Grid>
+
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
+</UserControl>

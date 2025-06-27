@@ -77,12 +77,29 @@
 
                     <Button Content="Cấu hình" Click="Button_Click" Padding="5" ></Button>
                     <Button  Visibility="Hidden" Content="Cập nhật danh sách" Click="btnUpdate_Click" Name="btnUpdate" Padding="5" ></Button>
-
+                    
                     <Button  Name="btnLogout" Click="btnLogout_Click" HorizontalAlignment="Right"  DockPanel.Dock="Right">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/exit.png" Height="32"></Image>
                             <Label Content="{StaticResource logout}" VerticalAlignment="Center"></Label>
                         </StackPanel>
+                    </Button>
+
+                    <Button Content="{StaticResource invoice_error}" Name="btnInvoices" Click="btnInvoices_Click" Visibility="Hidden" HorizontalAlignment="Right"  DockPanel.Dock="Right" Margin="10,0" Padding="10,0">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard BeginTime="00:00:00" 
+                                    RepeatBehavior="Forever" 
+                                    Storyboard.TargetName="btnInvoices" 
+                                    Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)">
+                                            <ColorAnimation From="Black" To="Red" Duration="0:0:1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </Button.Triggers>
                     </Button>
                 </DockPanel>
             </ToolBar>

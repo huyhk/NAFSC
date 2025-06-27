@@ -118,6 +118,7 @@ namespace Megatech.NAFSC.WPFApp.Helpers
             }
             catch (Exception ex)
             {
+                Log(ex.Message);
             }
         }
 

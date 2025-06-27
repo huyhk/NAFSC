@@ -28,6 +28,8 @@ namespace Megatech.FMS.WebAPI.Models
             ProductName = item.Airline.ProductName;
             Currency = item.Airline.Currency;
             Vendor = item.Airline.Vendor;
+            VendorModelId = item.Airline.VendorModelId;
+            VendorModelCode = item.Airline.VendorModelCode;
             Unit = item.Airline.Unit;
             StartTime = item.StartTime;
             EndTime = item.EndTime;
@@ -149,6 +151,11 @@ namespace Megatech.FMS.WebAPI.Models
 
         public Currency Currency { get; set; }
         public Vendor Vendor { get; set; }
+
+        
+        public int? VendorModelId { get; set; }
+
+        public string VendorModelCode { get; set; }
         public Unit Unit { get; set; }
 
         public bool IsInternational { get; set; }

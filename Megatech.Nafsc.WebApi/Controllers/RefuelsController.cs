@@ -84,7 +84,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             query = query
                     .Where(r => r.Flight.RefuelScheduledTime.Value >= start)
                     .Where(r => r.Flight.RefuelScheduledTime.Value <= end);
-              //  .Where(r => r.RefuelItemType == type);
+            //  .Where(r => r.RefuelItemType == type);
             //if (airportId != 0)
             //    query = query.Where(r => r.Flight.AirportId == airportId);
             /*
@@ -93,6 +93,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                         else
                             query = query.Where(r => r.Truck.Code != truckNo);
             */
+
+            Logger.AppendLog("query",query.ToString(),"query");
             var list = query.OrderBy(r=>r.Flight.RefuelScheduledTime)
                 .Select(r => new RefuelViewModel
                 {
@@ -110,7 +112,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Status = r.Status,
                     ArrivalTime = r.Flight.ArrivalScheduledTime ?? DateTime.MinValue,
                     DepartureTime = r.Flight.DepartureScheduledTime ?? DateTime.MinValue,
-                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? (r.RefuelTime?? (r.Flight.OilCompany == OilCompany.PA? r.StartTime: r.EndTime)) : r.Flight.RefuelScheduledTime,
+                    RefuelTime = r.Status == REFUEL_ITEM_STATUS.DONE ? (r.RefuelTime?? (r.Flight.VendorModel.Code == "PA"? r.StartTime: r.EndTime)) : r.Flight.RefuelScheduledTime,
                     //RefuelTime =  r.Flight.RefuelScheduledTime,
                     RealAmount = r.Amount,
                     StartTime = r.StartTime,
@@ -130,7 +132,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     TruckNo = r.Truck.Code,
                     Gallon = r.Gallon,
                     AirlineId = r.Flight.AirlineId ?? 0,
-                    Airline = new AirlineViewModel { Name = r.Flight.Airline.Name, InvoiceName = r.Flight.Airline.InvoiceName },
+                    Airline = new AirlineViewModel { Id = r.Flight.AirlineId??0, Name = r.Flight.Airline.Name, InvoiceName = r.Flight.Airline.InvoiceName, VendorModelId = r.Flight.VendorModelId, VendorModelCode = r.Flight.VendorModel.Code },
                     RefuelItemType = r.RefuelItemType,
                     DriverId = r.DriverId,
                     OperatorId = r.OperatorId,
@@ -140,7 +142,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                     Extract = r.Extract,
                     Volume = r.Volume,
                     Weight = r.Weight, 
-                    IsDeleted = r.IsDeleted
+                    IsDeleted = r.IsDeleted,
+                    VendorModelId = r.Flight.VendorModelId,
+                    VendorModelCode = r.Flight.VendorModel.Code
 
 
                 }).Skip((p-1)*ps).Take(ps).ToList();//.OrderBy(r => r.Status).ThenByDescending(r => r.RefuelTime);
@@ -238,6 +242,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                 refuel.Currency = airline.Currency;
                 refuel.Unit = airline.Unit;
                 refuel.Vendor = airline.Vendor;
+                refuel.VendorModelId = airline.VendorModelId;
+                refuel.VendorModelCode = airline.VendorModelCode;
             }
 
             //if (refuel.FlightStatus == FlightStatus.REFUELED)
@@ -286,7 +292,9 @@ namespace Megatech.FMS.WebAPI.Controllers
                        OperatorId = r.OperatorId,
                        Currency = r.Currency,
                        Unit = r.Unit,
-                       Price = r.Price
+                       Price = r.Price, 
+                       VendorModelId = refuel.VendorModelId,
+                       VendorModelCode = refuel.VendorModelCode,
 
 
                    }).ToList();
@@ -349,6 +357,7 @@ namespace Megatech.FMS.WebAPI.Controllers
             }
             var transaction = db.Database.BeginTransaction();
             Logger.AppendLog("REFUEL", "Start post " + refuel.FlightCode);
+            Logger.AppendLog("REFUEL", JsonConvert.SerializeObject(refuel),"post-data");
             try
             {
                 db.DisableFilter("IsNotDeleted");
@@ -377,9 +386,11 @@ namespace Megatech.FMS.WebAPI.Controllers
                             AirportId = user.AirportId,
                             CreatedLocation = FLIGHT_CREATED_LOCATION.APP,
                             Status = FlightStatus.ASSIGNED,
-                            UserCreatedId = user.Id
+                            UserCreatedId = user.Id,
+                            VendorModelId = refuel.VendorModelId,
 
                         };
+
                         db.Flights.Add(fl);
                         db.SaveChanges();
                         refuel.FlightId = fl.Id;
@@ -479,7 +490,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                     flight.FlightType = refuel.FlightType;
                     flight.DateUpdated = DateTime.Now;
                     flight.UserUpdatedId = userId;
-
+                    flight.VendorModelId = refuel.VendorModelId;
                     //get current price
                     if (refuel.Status == REFUEL_ITEM_STATUS.DONE)
                     {
@@ -492,6 +503,7 @@ namespace Megatech.FMS.WebAPI.Controllers
                         if (price != null)
                         {
                             flight.OilCompany = price.OilCompany;
+                            flight.VendorModelId = price.VendorModelId;
                             model.Price = price.Price;
                             model.Unit = price.Unit;
                             model.Currency = price.Currency;
@@ -557,6 +569,8 @@ namespace Megatech.FMS.WebAPI.Controllers
                     newItem.Currency = airline.Currency;
                     newItem.Unit = airline.Unit;
                     newItem.Vendor = airline.Vendor;
+                    newItem.VendorModelId = airline.VendorModelId;
+                    newItem.VendorModelCode = airline.VendorModelCode;
                 }
 
                 //if (flight.Status == FlightStatus.REFUELED)
@@ -632,8 +646,10 @@ namespace Megatech.FMS.WebAPI.Controllers
             
 
             //select general price
-            var gprice = db.ProductPrices.Include(p => p.Product).Where(p => !p.IsDeleted).FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
-            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" } };
+            var gprice = db.ProductPrices.Include(p => p.Product).Include(p=>p.VendorModel)
+                .Where(p => !p.IsDeleted)
+                .FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
+            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, VendorModel = new Nafsc.Data.Entity.VendorModel { } };
 
             var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Where(p => !p.IsDeleted).Include(p => p.Product).OrderByDescending(p => p.StartDate);
             var airlinequery = (from a in db.Airlines.Where(a => a.Id == refuel.AirlineId)
@@ -656,6 +672,48 @@ namespace Megatech.FMS.WebAPI.Controllers
                                     
                                     Currency = p == null ? gprice.Currency : p.Currency,
                                     Vendor = (Vendor)(p == null ? gprice.OilCompany : p.OilCompany),
+                                    VendorModelId = p.VendorModelId,
+                                    VendorModelCode = p.VendorModel.Code,
+                                    Unit = p == null ? gprice.Unit : p.Unit
+
+                                });
+            var airline = airlinequery.FirstOrDefault();
+            return airline;
+        }
+
+        private AirlineViewModel GetAirline(DateTime today, int airlineId)
+        {        
+
+
+            //select general price
+            var gprice = db.ProductPrices.Include(p => p.Product).Include(p => p.VendorModel)
+                .Where(p => !p.IsDeleted)
+                .FirstOrDefault(p => p.StartDate <= today && p.EndDate >= today && p.Customer == null);
+            if (gprice == null) gprice = new ProductPrice { Price = 0, Product = new Product { Name = "" }, VendorModel = new Nafsc.Data.Entity.VendorModel { } };
+
+            var prices = db.ProductPrices.Where(p => p.StartDate <= today && p.EndDate >= today).Where(p => !p.IsDeleted).Include(p => p.Product).OrderByDescending(p => p.StartDate);
+            var airlinequery = (from a in db.Airlines.Where(a => a.Id == airlineId)
+                                let p = prices.Where(p => p.CustomerId == a.Id).FirstOrDefault()
+                                //join p in prices
+                                //on a.Id equals p.CustomerId into hasPrice
+                                //from hs in hasPrice.DefaultIfEmpty()
+                                select new AirlineViewModel
+                                {
+                                    Id = a.Id,
+                                    Name = a.Name,
+                                    Code = a.Code,
+                                    TaxCode = a.TaxCode,
+                                    Address = a.Address,
+                                    Price = p == null ? gprice.Price : p.Price,
+                                    ProductName = p == null ? gprice.Product.Name : p.Product.Name,
+                                    InvoiceAddress = a.InvoiceAddress,
+                                    InvoiceName = p == null ? "" : p.Agency.Name,
+                                    InvoiceTaxCode = a.InvoiceTaxCode,
+
+                                    Currency = p == null ? gprice.Currency : p.Currency,
+                                    Vendor = (Vendor)(p == null ? gprice.OilCompany : p.OilCompany),
+                                    VendorModelId = p.VendorModelId,
+                                    VendorModelCode = p.VendorModel.Code,
                                     Unit = p == null ? gprice.Unit : p.Unit
 
                                 });

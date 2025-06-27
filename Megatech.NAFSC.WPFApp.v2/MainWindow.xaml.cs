@@ -2,6 +2,7 @@
 using Megatech.FMS.WebAPI.Models;
 using Megatech.NAFSC.WPFApp.Data;
 using Megatech.NAFSC.WPFApp.Global;
+using Megatech.NAFSC.WPFApp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,15 +56,20 @@ namespace Megatech.NAFSC.WPFApp
             }
             this.Title = FindResource("app_name").ToString() + " - " + AppSetting.CurrentSetting.TruckNo;
             LoadData();
-            //tmr.Interval = new TimeSpan(0, 0, 1, 0);
-            //tmr.Tick += Tmr_Tick;
-            //tmr.Start();
+            tmr.Interval = new TimeSpan(0, 0, 1, 0);
+            tmr.Tick += Tmr_Tick;
+            tmr.Start();
             dtPicker.SelectedDate = DateTime.Today;
         }
-
+        protected override void OnActivated(EventArgs e)
+        {
+            LoadData();
+            base.OnActivated(e);
+        }
         private void Tmr_Tick(object sender, EventArgs e)
         {
             UpdateData();
+            LogHelper.SendExceptionFiles();
         }
 
         DispatcherTimer tmr = new DispatcherTimer();
@@ -79,6 +85,21 @@ namespace Megatech.NAFSC.WPFApp
             //ucActiveRefuelList.SetDataSource(_filteredList);
             if (_refuelList != null)
                 Navigate((int)PagingMode.First);
+
+            UpdateErrorInvoices();
+        }
+
+        private void UpdateErrorInvoices()
+        {
+            var cnt = repo.CountNotSyncedInvoice();
+            if (cnt > 0)
+            {
+                btnInvoices.Visibility = Visibility.Visible;
+                btnInvoices.Content = FindResource("invoice_error").ToString() + $" ({cnt})";
+            }
+            else
+                btnInvoices.Visibility = Visibility.Hidden;
+
         }
 
         private void TabItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -86,6 +107,12 @@ namespace Megatech.NAFSC.WPFApp
             UpdateData();
         }
 
+        private void btnInvoices_Click(object sender, RoutedEventArgs e)
+
+        {
+            InvoicesWindow wnd = new InvoicesWindow();
+            wnd.ShowDialog();
+        }
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show(FindResource("exit_confirmation_msg").ToString(), FindResource("exit_confirmation_title").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -111,7 +138,8 @@ namespace Megatech.NAFSC.WPFApp
         private void UpdateData()
         {
             tmr.Stop();
-            LoadData();
+            //LoadData();
+            UpdateErrorInvoices();
             tmr.Start();
         }
 

@@ -55,10 +55,13 @@ namespace Megatech.NAFSC.WPFApp
 
         private DataRepository _db = DataRepository.GetInstance();
         private RefuelViewModel item;
-
+        private bool isDebugMode = false;
         private void LoadData()
         {
-            
+           
+#if DEBUG
+            isDebugMode = true;
+#endif
             // new item
             if (this.item == null)
             {
@@ -72,12 +75,15 @@ namespace Megatech.NAFSC.WPFApp
             erm.Open();
             if (erm.IsError)
             {
-                bool isDebugMode = false;
-#if DEBUG
-                isDebugMode = true;
-#endif
+
                 btnStart.IsEnabled = isDebugMode;
-                MessageBox.Show(FindResource("device_error_msg").ToString(), FindResource("device_error_title").ToString(),MessageBoxButton.OK, MessageBoxImage.Error);
+                if (!isDebugMode)
+                    MessageBox.Show(FindResource("device_error_msg").ToString(), FindResource("device_error_title").ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (isDebugMode)
+            {
+                txtRealAmount.IsReadOnly = false;
+                btnSave.Visibility = Visibility.Visible;
             }
 
             ucMeter.SetDataSource(erm.CurrentData);
@@ -108,7 +114,12 @@ namespace Megatech.NAFSC.WPFApp
                 UpdateMeter();
             }
         }
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            StopRefuel();
 
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -148,7 +159,8 @@ namespace Megatech.NAFSC.WPFApp
                 if (MessageBox.Show(FindResource("stopping_confirm").ToString(), FindResource("confirm_title").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     btn.Content = FindResource("stopping");
-                    erm.End();
+                    if (!erm.IsError)
+                        erm.End();
                     tmr.Stop();
                     started = false;
                     btn.Content = FindResource("start");
@@ -161,8 +173,8 @@ namespace Megatech.NAFSC.WPFApp
 
         private void StartRefuel()
         {
-
-            erm.Start();
+            if (!erm.IsError)
+                erm.Start();
             tmr.Start();
             RefuelViewModel model = (RefuelViewModel)this.DataContext;
             model.IsReadOnly = true;
@@ -235,7 +247,11 @@ namespace Megatech.NAFSC.WPFApp
             model.EndNumber = (decimal)ermData.EndMeter;
             model.ManualTemperature = (decimal)ermData.Temperature;
             model.Status = REFUEL_ITEM_STATUS.DONE;
-            model.RefuelTime = model.EndTime;
+            //model.RefuelTime = model.EndTime == DateTime.MinValue? DateTime.Now: model.EndTime;
+            if (model.EndTime == DateTime.MinValue) model.EndTime = DateTime.Now;
+            model.RefuelTime = model.Airline != null && model.Airline.VendorModelCode == Vendor.SKYPEC.ToString() ? model.EndTime : model.StartTime;
+            if (model.RefuelTime == DateTime.MinValue) model.RefuelTime = DateTime.Now;
+
             var respItem = _db.PostRefuel(model);
             allowClose = true;
             Close();    

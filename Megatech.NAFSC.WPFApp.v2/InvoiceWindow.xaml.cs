@@ -32,10 +32,10 @@ namespace Megatech.NAFSC.WPFApp
         {
             _maxSplit = maxSplit;
         }
-        public InvoiceWindow(decimal maxSplit, Vendor vendor) : this()
+        public InvoiceWindow(decimal maxSplit, bool autoNum ) : this()
         {
             _maxSplit = maxSplit;
-            _autoNum = vendor == Vendor.SKYPEC;
+            _autoNum = autoNum;
             chkauto.IsChecked = _autoNum;
             chkauto.Visibility = _autoNum ? Visibility.Visible : Visibility.Collapsed;
             if (_autoNum)
@@ -59,6 +59,22 @@ namespace Megatech.NAFSC.WPFApp
 
         }
 
+        private void CheckBoxChanged(object sender, EventArgs e)
+        {
+            if (chkauto.IsChecked ?? false)
+                _autoNum = true;
+            else _autoNum = false;
+            if (_autoNum)
+            {
+                grid.RowDefinitions[1].Height = new GridLength(0);
+                grid.RowDefinitions[4].Height = new GridLength(0);
+            }
+            else
+            {
+                grid.RowDefinitions[1].Height = new GridLength(1.0, GridUnitType.Auto);
+                grid.RowDefinitions[4].Height = new GridLength(1.0, GridUnitType.Auto);
+            }
+        }
         private bool Validate()
         {
             var isValid = true;

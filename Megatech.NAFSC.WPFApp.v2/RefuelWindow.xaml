@@ -159,7 +159,7 @@
 
             <TextBox Text="{Binding DepartureTime, StringFormat={}{0:HH:mm}, Mode=TwoWay}" Grid.Column="3" Grid.Row="4" Tag="{StaticResource departure_time}" Style="{StaticResource Editable}" InputScope="Time"/>
             <TextBox Text="{Binding EstimateAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="5" Style="{StaticResource Editable}" Tag="{StaticResource estimate_amount}" InputScope="Number" />
-            <TextBox Text="{Binding RealAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" IsReadOnly="True"/>
+            <TextBox Text="{Binding RealAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="5" IsReadOnly="True" x:Name="txtRealAmount"/>
             <TextBox Text="{Binding Temperature, StringFormat={}{0:#,0.00}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="6" Style="{StaticResource Editable}" Tag="{StaticResource temperature}" InputScope="Number" />
             <TextBox Text="{Binding Density, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0.0000}}" Grid.Column="3" Grid.Row="6" Style="{StaticResource Editable}" Tag="{StaticResource density}" InputScope="Number"/>
             <TextBox Text="{Binding QualityNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="7" Style="{StaticResource Editable}" Tag="{StaticResource qc_no}"/>
@@ -196,7 +196,9 @@
                         <ColumnDefinition></ColumnDefinition>
 
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnStart" Click="btnStart_Click" Content="{StaticResource start}" Padding="60,40" VerticalAlignment="Top" Margin="1,42,-1,-42"/>
+                    <Button x:Name="btnStart" Click="btnStart_Click" Content="{StaticResource start}" Padding="60,40" VerticalAlignment="Top" Margin="1,42,-1,-42"/>
+
+                    <Button x:Name="btnSave" Click="btnSave_Click" Content="{StaticResource btn_save}" Padding="60,40" VerticalAlignment="Top" Visibility="Hidden" Margin="1,42,-1,-42"/>
                 </Grid>
             </StackPanel>
         </Grid>
