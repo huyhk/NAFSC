@@ -738,15 +738,15 @@ namespace Megatech.NAFSC.WPFApp
             model = db.GetInvoice(invoiceId, invoiceGuid);
 
             ///Update 2025-05-31, vendor code. If PA, default selected is PA, otherwise SKYPEC
-
+            var isSkypec = model.VendorModelCode == Vendor.SKYPEC.ToString();
             //rad0.IsChecked =  model.Vendor == Vendor.SKYPEC;
-            rad0.IsChecked = model.VendorModelCode != "PA";
+            rad0.IsChecked = isSkypec;
             //rad1.IsChecked = model.IsInternational && model.Vendor == Vendor.SKYPEC;
             //rad2.IsChecked = model.Vendor == Vendor.PA;
-            rad2.IsChecked = model.VendorModelCode == "PA";
+            rad2.IsChecked = !isSkypec;
 
             ///Update 2025-05-31, vendor code. If PA, template  is PA, otherwise SKYPEC
-            print_template = model.VendorModelCode == "PA" ? 2 : (model.IsInternational ? 1 : 0);
+            print_template = !isSkypec ? 2 : (model.IsInternational ? 1 : 0);
             //print_template = model.Vendor == Vendor.PA? 2 :( model.IsInternational ? 1 : 0);
 
             (tabCtl.Items[0] as TabItem).Header = label + ": " + model.InvoiceNumber;

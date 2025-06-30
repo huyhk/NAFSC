@@ -135,7 +135,7 @@ namespace Megatech.NAFSC.WPFApp
 
                 if (!IsError())
                 {
-                    InvoiceWindow wnd = new InvoiceWindow(model.Volume, model.VendorModelCode != "PA");
+                    InvoiceWindow wnd = new InvoiceWindow(model.Volume, model.VendorModelCode == "SKYPEC");
 
                     if (wnd.ShowDialog().Value)
                     {
