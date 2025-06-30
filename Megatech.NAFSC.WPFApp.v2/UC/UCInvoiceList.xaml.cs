@@ -59,7 +59,7 @@ namespace Megatech.NAFSC.WPFApp.UC
             if (model != null)
             {
 
-                if (model.VendorModelCode == Vendor.PA.ToString())
+                if (model.VendorModelCode != Vendor.SKYPEC.ToString())
                 {
                     PrintPreview preview = new PrintPreview();
 

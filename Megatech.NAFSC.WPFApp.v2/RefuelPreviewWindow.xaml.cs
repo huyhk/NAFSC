@@ -179,7 +179,7 @@ namespace Megatech.NAFSC.WPFApp
             if (invoiceId > 0 || invoiceGuid != Guid.Empty)
             {
                 SetEnable();
-                if (model.Airline.VendorModelCode == Vendor.PA.ToString())
+                if (model.Airline.VendorModelCode != Vendor.SKYPEC.ToString())
                 {
                     PrintPreview preview = new PrintPreview();
 
